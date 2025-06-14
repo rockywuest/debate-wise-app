@@ -53,7 +53,7 @@ const mockArguments = [
 ];
 
 const Debate = () => {
-  const [arguments, setArguments] = useState(mockArguments);
+  const [debateArguments, setDebateArguments] = useState(mockArguments);
 
   const handleReply = (parentId: string) => {
     console.log('Replying to argument:', parentId);
@@ -77,7 +77,7 @@ const Debate = () => {
         </div>
 
         <div className="max-w-4xl mx-auto space-y-6">
-          {arguments.map((argument) => (
+          {debateArguments.map((argument) => (
             <ArgumentCard
               key={argument.id}
               {...argument}
