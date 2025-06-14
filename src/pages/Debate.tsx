@@ -14,7 +14,7 @@ const Debate = () => {
   
   // Verwende die erste verfügbare Debatte oder erstelle eine Standard-Debatte
   const currentDebate = debates[0];
-  const { arguments: debateArguments, loading: argumentsLoading } = useArguments(currentDebate?.id);
+  const { debateArguments, loading: argumentsLoading } = useArguments(currentDebate?.id);
 
   const handleReply = (parentId: string) => {
     console.log('Replying to argument:', parentId);
@@ -108,6 +108,7 @@ const Debate = () => {
                 type={argument.argument_typ === 'These' ? 'neutral' : argument.argument_typ === 'Pro' ? 'pro' : 'contra'}
                 author={argument.autor_name || 'Unbekannter Autor'}
                 createdAt={argument.erstellt_am}
+                debateId={currentDebate.id}
                 childArguments={argument.childArguments?.map(child => ({
                   id: child.id,
                   title: child.argument_text.substring(0, 50) + (child.argument_text.length > 50 ? '...' : ''),

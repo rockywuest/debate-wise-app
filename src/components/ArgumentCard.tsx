@@ -3,6 +3,9 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { SummaryDialog } from './SummaryDialog';
+import { FallacyAnalysis } from './FallacyAnalysis';
+import { SteelManDialog } from './SteelManDialog';
+import { CreateArgumentForm } from './CreateArgumentForm';
 import { MessageSquare, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 interface ArgumentCardProps {
@@ -12,6 +15,7 @@ interface ArgumentCardProps {
   type: 'pro' | 'contra' | 'neutral';
   author?: string;
   createdAt: string;
+  debateId: string;
   childArguments?: Array<{
     id: string;
     title: string;
@@ -28,6 +32,7 @@ export const ArgumentCard = ({
   type,
   author,
   createdAt,
+  debateId,
   childArguments = [],
   onReply
 }: ArgumentCardProps) => {
@@ -76,6 +81,9 @@ export const ArgumentCard = ({
       <CardContent>
         <p className="text-gray-700 mb-4">{content}</p>
         
+        {/* KI-Analyse für logische Fehlschlüsse */}
+        <FallacyAnalysis argumentText={content} />
+        
         {childArguments.length > 0 && (
           <div className="mt-4 p-3 bg-muted rounded-lg">
             <h4 className="font-semibold text-sm mb-2">
@@ -106,14 +114,17 @@ export const ArgumentCard = ({
           </div>
         )}
 
-        <div className="flex gap-2 mt-4">
-          {onReply && (
-            <button
-              onClick={() => onReply(id)}
-              className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
-            >
-              Antworten
-            </button>
+        <div className="flex flex-wrap gap-2 mt-4">
+          <CreateArgumentForm 
+            debateId={debateId}
+            parentId={id}
+            buttonText="Antworten"
+            buttonVariant="outline"
+          />
+          
+          {/* Steel-Manning Button nur für Contra-Argumente */}
+          {type === 'contra' && (
+            <SteelManDialog originalArgument={content} />
           )}
           
           {childArguments.length > 0 && (
