@@ -18,7 +18,7 @@ export interface Argument {
 }
 
 export const useArguments = (debateId?: string) => {
-  const [arguments, setArguments] = useState<Argument[]>([]);
+  const [debateArguments, setDebateArguments] = useState<Argument[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -48,7 +48,7 @@ export const useArguments = (debateId?: string) => {
         childArguments: childArgs.filter(child => child.eltern_id === parent.id)
       }));
 
-      setArguments(argumentsWithChildren);
+      setDebateArguments(argumentsWithChildren);
     } catch (error: any) {
       console.error('Error fetching arguments:', error);
       toast({
@@ -115,7 +115,7 @@ export const useArguments = (debateId?: string) => {
   }, [debateId]);
 
   return {
-    arguments,
+    arguments: debateArguments,
     loading,
     fetchArguments,
     createArgument
