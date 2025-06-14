@@ -1,12 +1,12 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { ArgumentCard } from '@/components/ArgumentCard';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { CreateArgumentForm } from '@/components/CreateArgumentForm';
 import { useDebates } from '@/hooks/useDebates';
 import { useArguments } from '@/hooks/useArguments';
 import { useAuth } from '@/hooks/useAuth';
 import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 const Debate = () => {
   const { user } = useAuth();
@@ -14,12 +14,11 @@ const Debate = () => {
   
   // Verwende die erste verfügbare Debatte oder erstelle eine Standard-Debatte
   const currentDebate = debates[0];
-  const { arguments: debateArguments, loading: argumentsLoading, createArgument } = useArguments(currentDebate?.id);
+  const { arguments: debateArguments, loading: argumentsLoading } = useArguments(currentDebate?.id);
 
   const handleReply = (parentId: string) => {
     console.log('Replying to argument:', parentId);
-    // Hier würde die Logik für das Erstellen einer Antwort implementiert
-    // Für jetzt zeigen wir nur eine Konsolen-Nachricht
+    // Die Reply-Funktionalität wird durch die CreateArgumentForm mit parentId implementiert
   };
 
   if (debatesLoading || argumentsLoading) {
@@ -66,10 +65,11 @@ const Debate = () => {
             <p className="text-xl text-muted-foreground mb-6">
               Es gibt derzeit keine Debatten. Erstellen Sie die erste Debatte!
             </p>
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              Neue Debatte erstellen
-            </Button>
+            <Link to="/">
+              <Button>
+                Zur Startseite
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -88,10 +88,7 @@ const Debate = () => {
               {currentDebate.beschreibung}
             </p>
           )}
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            Neues Argument hinzufügen
-          </Button>
+          <CreateArgumentForm debateId={currentDebate.id} />
         </div>
 
         <div className="max-w-4xl mx-auto space-y-6">
