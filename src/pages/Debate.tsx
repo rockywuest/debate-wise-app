@@ -3,73 +3,91 @@ import React, { useState } from 'react';
 import { ArgumentCard } from '@/components/ArgumentCard';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-
-// Mock data for demonstration
-const mockArguments = [
-  {
-    id: '1',
-    title: 'Klimawandel erfordert sofortige Maßnahmen',
-    content: 'Die wissenschaftlichen Belege zeigen eindeutig, dass der Klimawandel eine existenzielle Bedrohung darstellt. Wir müssen jetzt handeln, um katastrophale Folgen zu vermeiden.',
-    type: 'pro' as const,
-    author: 'Dr. Schmidt',
-    createdAt: '2024-01-15',
-    childArguments: [
-      {
-        id: '2',
-        title: 'Wirtschaftliche Folgen sind zu hoch',
-        content: 'Drastische Klimamaßnahmen würden Millionen von Arbeitsplätzen kosten und die Wirtschaft schwer schädigen.',
-        type: 'contra' as const
-      },
-      {
-        id: '3',
-        title: 'Technologie kann das Problem lösen',
-        content: 'Neue Technologien wie Carbon Capture können eine Lösung bieten, ohne die Wirtschaft zu schädigen.',
-        type: 'neutral' as const
-      },
-      {
-        id: '4',
-        title: 'Grüne Arbeitsplätze entstehen',
-        content: 'Der Übergang zu erneuerbaren Energien schafft neue, zukunftssichere Arbeitsplätze in wachsenden Branchen.',
-        type: 'pro' as const
-      }
-    ]
-  },
-  {
-    id: '5',
-    title: 'Kernenergie ist notwendig für Klimaziele',
-    content: 'Ohne Kernenergie können wir die CO2-Ziele nicht erreichen. Erneuerbare Energien allein reichen nicht aus.',
-    type: 'pro' as const,
-    author: 'Prof. Müller',
-    createdAt: '2024-01-14',
-    childArguments: [
-      {
-        id: '6',
-        title: 'Sicherheitsrisiken sind zu hoch',
-        content: 'Die Risiken von Nuklearunfällen und radioaktivem Abfall überwiegen die Klimavorteile.',
-        type: 'contra' as const
-      }
-    ]
-  }
-];
+import { useDebates } from '@/hooks/useDebates';
+import { useArguments } from '@/hooks/useArguments';
+import { useAuth } from '@/hooks/useAuth';
+import { Link } from 'react-router-dom';
 
 const Debate = () => {
-  const [debateArguments, setDebateArguments] = useState(mockArguments);
+  const { user } = useAuth();
+  const { debates, loading: debatesLoading } = useDebates();
+  
+  // Verwende die erste verfügbare Debatte oder erstelle eine Standard-Debatte
+  const currentDebate = debates[0];
+  const { arguments: debateArguments, loading: argumentsLoading, createArgument } = useArguments(currentDebate?.id);
 
   const handleReply = (parentId: string) => {
     console.log('Replying to argument:', parentId);
     // Hier würde die Logik für das Erstellen einer Antwort implementiert
+    // Für jetzt zeigen wir nur eine Konsolen-Nachricht
   };
+
+  if (debatesLoading || argumentsLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">Debatten werden geladen...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center max-w-4xl mx-auto">
+            <h1 className="text-4xl font-bold mb-4">
+              Debattensystem
+            </h1>
+            <p className="text-xl text-muted-foreground mb-6">
+              Bitte melden Sie sich an, um an Debatten teilzunehmen.
+            </p>
+            <Link to="/auth">
+              <Button>
+                Jetzt anmelden
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentDebate) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center max-w-4xl mx-auto">
+            <h1 className="text-4xl font-bold mb-4">
+              Keine Debatten verfügbar
+            </h1>
+            <p className="text-xl text-muted-foreground mb-6">
+              Es gibt derzeit keine Debatten. Erstellen Sie die erste Debatte!
+            </p>
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              Neue Debatte erstellen
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center max-w-4xl mx-auto mb-8">
           <h1 className="text-4xl font-bold mb-4">
-            Debatte: Klimapolitik und Energiewende
+            Debatte: {currentDebate.titel}
           </h1>
-          <p className="text-xl text-muted-foreground mb-6">
-            Strukturierte Diskussion mit KI-gestützter Thread-Zusammenfassung
-          </p>
+          {currentDebate.beschreibung && (
+            <p className="text-xl text-muted-foreground mb-6">
+              {currentDebate.beschreibung}
+            </p>
+          )}
           <Button className="gap-2">
             <Plus className="h-4 w-4" />
             Neues Argument hinzufügen
@@ -77,13 +95,32 @@ const Debate = () => {
         </div>
 
         <div className="max-w-4xl mx-auto space-y-6">
-          {debateArguments.map((argument) => (
-            <ArgumentCard
-              key={argument.id}
-              {...argument}
-              onReply={handleReply}
-            />
-          ))}
+          {debateArguments.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">
+                Diese Debatte hat noch keine Argumente. Seien Sie der Erste, der ein Argument hinzufügt!
+              </p>
+            </div>
+          ) : (
+            debateArguments.map((argument) => (
+              <ArgumentCard
+                key={argument.id}
+                id={argument.id}
+                title={argument.argument_text.substring(0, 100) + (argument.argument_text.length > 100 ? '...' : '')}
+                content={argument.argument_text}
+                type={argument.argument_typ === 'These' ? 'neutral' : argument.argument_typ === 'Pro' ? 'pro' : 'contra'}
+                author={argument.autor_name || 'Unbekannter Autor'}
+                createdAt={argument.erstellt_am}
+                childArguments={argument.childArguments?.map(child => ({
+                  id: child.id,
+                  title: child.argument_text.substring(0, 50) + (child.argument_text.length > 50 ? '...' : ''),
+                  content: child.argument_text,
+                  type: child.argument_typ === 'These' ? 'neutral' : child.argument_typ === 'Pro' ? 'pro' : 'contra'
+                })) || []}
+                onReply={handleReply}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>

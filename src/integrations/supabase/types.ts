@@ -9,6 +9,84 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      argumente: {
+        Row: {
+          aktualisiert_am: string
+          argument_text: string
+          argument_typ: Database["public"]["Enums"]["argument_typ"]
+          autor_name: string | null
+          benutzer_id: string
+          debatten_id: string
+          eltern_id: string | null
+          erstellt_am: string
+          id: string
+        }
+        Insert: {
+          aktualisiert_am?: string
+          argument_text: string
+          argument_typ: Database["public"]["Enums"]["argument_typ"]
+          autor_name?: string | null
+          benutzer_id: string
+          debatten_id: string
+          eltern_id?: string | null
+          erstellt_am?: string
+          id?: string
+        }
+        Update: {
+          aktualisiert_am?: string
+          argument_text?: string
+          argument_typ?: Database["public"]["Enums"]["argument_typ"]
+          autor_name?: string | null
+          benutzer_id?: string
+          debatten_id?: string
+          eltern_id?: string | null
+          erstellt_am?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "argumente_debatten_id_fkey"
+            columns: ["debatten_id"]
+            isOneToOne: false
+            referencedRelation: "debatten"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "argumente_eltern_id_fkey"
+            columns: ["eltern_id"]
+            isOneToOne: false
+            referencedRelation: "argumente"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      debatten: {
+        Row: {
+          aktualisiert_am: string
+          beschreibung: string | null
+          erstellt_am: string
+          erstellt_von: string
+          id: string
+          titel: string
+        }
+        Insert: {
+          aktualisiert_am?: string
+          beschreibung?: string | null
+          erstellt_am?: string
+          erstellt_von: string
+          id?: string
+          titel: string
+        }
+        Update: {
+          aktualisiert_am?: string
+          beschreibung?: string | null
+          erstellt_am?: string
+          erstellt_von?: string
+          id?: string
+          titel?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -38,7 +116,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      argument_typ: "These" | "Pro" | "Contra"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -153,6 +231,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      argument_typ: ["These", "Pro", "Contra"],
+    },
   },
 } as const
