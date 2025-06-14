@@ -1,7 +1,7 @@
 
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { User, LogOut } from 'lucide-react';
+import { User, LogOut, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Navigation = () => {
@@ -14,24 +14,35 @@ export const Navigation = () => {
           Debattensystem
         </Link>
         
-        {user ? (
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <User className="h-4 w-4" />
-              <span>Angemeldet</span>
+        <div className="flex items-center gap-4">
+          {user && (
+            <Link to="/debate">
+              <Button variant="ghost" className="gap-2">
+                <MessageSquare className="h-4 w-4" />
+                Debatte
+              </Button>
+            </Link>
+          )}
+          
+          {user ? (
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <User className="h-4 w-4" />
+                <span>Angemeldet</span>
+              </div>
+              <Button onClick={signOut} variant="outline" size="sm">
+                <LogOut className="h-4 w-4 mr-2" />
+                Abmelden
+              </Button>
             </div>
-            <Button onClick={signOut} variant="outline" size="sm">
-              <LogOut className="h-4 w-4 mr-2" />
-              Abmelden
-            </Button>
-          </div>
-        ) : (
-          <Link to="/auth">
-            <Button variant="outline">
-              Anmelden
-            </Button>
-          </Link>
-        )}
+          ) : (
+            <Link to="/auth">
+              <Button variant="outline">
+                Anmelden
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
     </nav>
   );

@@ -8,6 +8,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { Navigation } from "@/components/Navigation";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import Debate from "./pages/Debate";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/debate" element={<Debate />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
