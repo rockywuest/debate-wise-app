@@ -107,6 +107,7 @@ const Debate = () => {
                 content={argument.argument_text}
                 type={argument.argument_typ === 'These' ? 'neutral' : argument.argument_typ === 'Pro' ? 'pro' : 'contra'}
                 author={argument.autor_name || 'Unbekannter Autor'}
+                authorUserId={argument.benutzer_id}
                 createdAt={argument.erstellt_am}
                 debateId={currentDebate.id}
                 childArguments={argument.childArguments?.map(child => ({

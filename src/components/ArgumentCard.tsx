@@ -6,6 +6,8 @@ import { SummaryDialog } from './SummaryDialog';
 import { FallacyAnalysis } from './FallacyAnalysis';
 import { SteelManDialog } from './SteelManDialog';
 import { CreateArgumentForm } from './CreateArgumentForm';
+import { ArgumentRatingButtons } from './ArgumentRatingButtons';
+import { ReputationDisplay } from './ReputationDisplay';
 import { MessageSquare, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 interface ArgumentCardProps {
@@ -14,6 +16,7 @@ interface ArgumentCardProps {
   content: string;
   type: 'pro' | 'contra' | 'neutral';
   author?: string;
+  authorUserId: string;
   createdAt: string;
   debateId: string;
   childArguments?: Array<{
@@ -31,6 +34,7 @@ export const ArgumentCard = ({
   content,
   type,
   author,
+  authorUserId,
   createdAt,
   debateId,
   childArguments = [],
@@ -72,11 +76,11 @@ export const ArgumentCard = ({
             {type === 'pro' ? 'Pro' : type === 'contra' ? 'Contra' : 'Neutral'}
           </Badge>
         </div>
-        {author && (
+        <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             von {author} • {new Date(createdAt).toLocaleDateString('de-DE')}
           </p>
-        )}
+        </div>
       </CardHeader>
       <CardContent>
         <p className="text-gray-700 mb-4">{content}</p>
@@ -113,6 +117,11 @@ export const ArgumentCard = ({
             </div>
           </div>
         )}
+
+        {/* Reputations-Bewertungsbuttons */}
+        <div className="mt-4 border-t pt-4">
+          <ArgumentRatingButtons argumentId={id} authorUserId={authorUserId} />
+        </div>
 
         <div className="flex flex-wrap gap-2 mt-4">
           <CreateArgumentForm 

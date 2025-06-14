@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { CreateDebateForm } from '@/components/CreateDebateForm';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { MessageSquare, Users, Clock } from 'lucide-react';
+import { MessageSquare, Users, Clock, Trophy } from 'lucide-react';
 
 const Index = () => {
   const { user, loading: authLoading } = useAuth();
@@ -35,7 +35,7 @@ const Index = () => {
               <p className="text-xl text-muted-foreground">
                 Hallo! Sie sind erfolgreich angemeldet.
               </p>
-              <div className="flex gap-4 justify-center">
+              <div className="flex gap-4 justify-center flex-wrap">
                 <CreateDebateForm />
                 {debates.length > 0 && (
                   <Link to="/debate">
@@ -45,6 +45,12 @@ const Index = () => {
                     </Button>
                   </Link>
                 )}
+                <Link to="/leaderboard">
+                  <Button variant="outline">
+                    <Trophy className="h-4 w-4 mr-2" />
+                    Rangliste ansehen
+                  </Button>
+                </Link>
               </div>
             </div>
           ) : (

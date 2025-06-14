@@ -9,6 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      argument_ratings: {
+        Row: {
+          argument_id: string
+          created_at: string
+          id: string
+          rated_by_user_id: string
+          rating_type: string
+        }
+        Insert: {
+          argument_id: string
+          created_at?: string
+          id?: string
+          rated_by_user_id: string
+          rating_type: string
+        }
+        Update: {
+          argument_id?: string
+          created_at?: string
+          id?: string
+          rated_by_user_id?: string
+          rating_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "argument_ratings_argument_id_fkey"
+            columns: ["argument_id"]
+            isOneToOne: false
+            referencedRelation: "argumente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "argument_ratings_rated_by_user_id_fkey"
+            columns: ["rated_by_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       argumente: {
         Row: {
           aktualisiert_am: string
@@ -91,29 +130,93 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          reputation_score: number
           updated_at: string
           username: string
         }
         Insert: {
           created_at?: string
           id: string
+          reputation_score?: number
           updated_at?: string
           username: string
         }
         Update: {
           created_at?: string
           id?: string
+          reputation_score?: number
           updated_at?: string
           username?: string
         }
         Relationships: []
+      }
+      reputation_transactions: {
+        Row: {
+          created_at: string
+          granted_by_user_id: string | null
+          id: string
+          points: number
+          reason: string
+          related_argument_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_by_user_id?: string | null
+          id?: string
+          points: number
+          reason: string
+          related_argument_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_by_user_id?: string | null
+          id?: string
+          points?: number
+          reason?: string
+          related_argument_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reputation_transactions_granted_by_user_id_fkey"
+            columns: ["granted_by_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reputation_transactions_related_argument_id_fkey"
+            columns: ["related_argument_id"]
+            isOneToOne: false
+            referencedRelation: "argumente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reputation_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_user_reputation: {
+        Args: {
+          target_user_id: string
+          points: number
+          reason: string
+          argument_id?: string
+          granted_by?: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       argument_typ: "These" | "Pro" | "Contra"
