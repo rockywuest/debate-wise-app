@@ -14,7 +14,7 @@ const Debate = () => {
   
   // Verwende die erste verfügbare Debatte oder erstelle eine Standard-Debatte
   const currentDebate = debates[0];
-  const { debateArguments, loading: argumentsLoading } = useArguments(currentDebate?.id);
+  const { arguments: debateArguments, loading: argumentsLoading } = useArguments(currentDebate?.id);
 
   const handleReply = (parentId: string) => {
     console.log('Replying to argument:', parentId);
@@ -92,7 +92,7 @@ const Debate = () => {
         </div>
 
         <div className="max-w-4xl mx-auto space-y-6">
-          {debateArguments.length === 0 ? (
+          {!debateArguments || debateArguments.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">
                 Diese Debatte hat noch keine Argumente. Seien Sie der Erste, der ein Argument hinzufügt!
