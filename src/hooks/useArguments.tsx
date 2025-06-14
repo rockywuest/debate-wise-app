@@ -23,6 +23,16 @@ export const useArguments = (debateId?: string) => {
   const { toast } = useToast();
   const { user } = useAuth();
 
+  const organizeArgumentsHierarchically = (data: any[]) => {
+    const topLevelArgs = data.filter(arg => !arg.eltern_id);
+    const childArgs = data.filter(arg => arg.eltern_id);
+
+    return topLevelArgs.map(parent => ({
+      ...parent,
+      childArguments: childArgs.filter(child => child.eltern_id === parent.id)
+    }));
+  };
+
   const fetchArguments = async () => {
     if (!debateId) {
       setLoading(false);
@@ -39,15 +49,7 @@ export const useArguments = (debateId?: string) => {
 
       if (error) throw error;
 
-      // Organisiere Argumente hierarchisch
-      const topLevelArgs = (data || []).filter(arg => !arg.eltern_id);
-      const childArgs = (data || []).filter(arg => arg.eltern_id);
-
-      const argumentsWithChildren = topLevelArgs.map(parent => ({
-        ...parent,
-        childArguments: childArgs.filter(child => child.eltern_id === parent.id)
-      }));
-
+      const argumentsWithChildren = organizeArgumentsHierarchically(data || []);
       setDebateArguments(argumentsWithChildren);
     } catch (error: any) {
       console.error('Error fetching arguments:', error);
@@ -97,7 +99,7 @@ export const useArguments = (debateId?: string) => {
         description: "Das neue Argument wurde erfolgreich erstellt."
       });
 
-      await fetchArguments();
+      // No need to manually refresh as real-time will handle it
       return data;
     } catch (error: any) {
       console.error('Error creating argument:', error);
@@ -112,6 +114,35 @@ export const useArguments = (debateId?: string) => {
 
   useEffect(() => {
     fetchArguments();
+  }, [debateId]);
+
+  useEffect(() => {
+    if (!debateId) return;
+
+    // Set up real-time subscription for arguments
+    const channel = supabase
+      .channel('arguments-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'argumente',
+          filter: `debatten_id=eq.${debateId}`
+        },
+        (payload) => {
+          console.log('Real-time argument change:', payload);
+          
+          // Re-fetch all arguments to maintain proper hierarchy
+          // This ensures we don't have race conditions with hierarchical data
+          fetchArguments();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [debateId]);
 
   return {

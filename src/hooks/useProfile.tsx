@@ -16,15 +16,6 @@ export const useProfile = (userId?: string) => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
-  useEffect(() => {
-    const targetUserId = userId || user?.id;
-    if (targetUserId) {
-      fetchProfile(targetUserId);
-    } else {
-      setLoading(false);
-    }
-  }, [userId, user?.id]);
-
   const fetchProfile = async (targetUserId: string) => {
     try {
       setLoading(true);
@@ -43,6 +34,44 @@ export const useProfile = (userId?: string) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const targetUserId = userId || user?.id;
+    if (targetUserId) {
+      fetchProfile(targetUserId);
+    } else {
+      setLoading(false);
+    }
+  }, [userId, user?.id]);
+
+  useEffect(() => {
+    const targetUserId = userId || user?.id;
+    if (!targetUserId) return;
+
+    // Set up real-time subscription for reputation score changes
+    const channel = supabase
+      .channel('profile-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+          filter: `id=eq.${targetUserId}`
+        },
+        (payload) => {
+          console.log('Real-time profile change:', payload);
+          if (payload.new) {
+            setProfile(payload.new as UserProfile);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId, user?.id]);
 
   return {
     profile,

@@ -26,11 +26,6 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
     concedePointCount: 0
   });
 
-  useEffect(() => {
-    if (!user) return;
-    fetchRatings();
-  }, [argumentId, user]);
-
   const fetchRatings = async () => {
     if (!user) return;
 
@@ -66,8 +61,39 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
 
   const handleRating = async (ratingType: 'insightful' | 'concede_point') => {
     await rateArgument(argumentId, ratingType);
-    await fetchRatings();
+    // Real-time will automatically update the ratings
   };
+
+  useEffect(() => {
+    if (!user) return;
+    fetchRatings();
+  }, [argumentId, user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    // Set up real-time subscription for rating changes
+    const channel = supabase
+      .channel('rating-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'argument_ratings',
+          filter: `argument_id=eq.${argumentId}`
+        },
+        (payload) => {
+          console.log('Real-time rating change:', payload);
+          fetchRatings();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [argumentId, user]);
 
   // Verstecke Buttons für eigene Argumente
   if (user?.id === authorUserId) {
