@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -119,32 +118,46 @@ export const useArguments = (debateId?: string) => {
   useEffect(() => {
     if (!debateId) return;
 
-    // Create a unique channel name to avoid conflicts
-    const channelName = `arguments-changes-${debateId}-${Date.now()}`;
-    
-    // Set up real-time subscription for arguments
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'argumente',
-          filter: `debatten_id=eq.${debateId}`
-        },
-        (payload) => {
-          console.log('Real-time argument change:', payload);
-          
-          // Re-fetch all arguments to maintain proper hierarchy
-          // This ensures we don't have race conditions with hierarchical data
-          fetchArguments();
-        }
-      )
-      .subscribe();
+    let channel: any = null;
+
+    const setupRealtimeSubscription = async () => {
+      try {
+        // Create a unique channel name to avoid conflicts
+        const channelName = `arguments-${debateId}-${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Set up real-time subscription for arguments
+        channel = supabase
+          .channel(channelName)
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'argumente',
+              filter: `debatten_id=eq.${debateId}`
+            },
+            (payload) => {
+              console.log('Real-time argument change:', payload);
+              
+              // Re-fetch all arguments to maintain proper hierarchy
+              // This ensures we don't have race conditions with hierarchical data
+              fetchArguments();
+            }
+          );
+
+        // Subscribe and wait for it to be ready
+        await channel.subscribe();
+      } catch (error) {
+        console.error('Error setting up realtime subscription:', error);
+      }
+    };
+
+    setupRealtimeSubscription();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [debateId]);
 

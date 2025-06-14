@@ -48,31 +48,45 @@ export const useProfile = (userId?: string) => {
     const targetUserId = userId || user?.id;
     if (!targetUserId) return;
 
-    // Create a unique channel name to avoid conflicts
-    const channelName = `profile-changes-${targetUserId}-${Date.now()}`;
-    
-    // Set up real-time subscription for reputation score changes
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'profiles',
-          filter: `id=eq.${targetUserId}`
-        },
-        (payload) => {
-          console.log('Real-time profile change:', payload);
-          if (payload.new) {
-            setProfile(payload.new as UserProfile);
-          }
-        }
-      )
-      .subscribe();
+    let channel: any = null;
+
+    const setupRealtimeSubscription = async () => {
+      try {
+        // Create a unique channel name to avoid conflicts
+        const channelName = `profile-${targetUserId}-${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Set up real-time subscription for reputation score changes
+        channel = supabase
+          .channel(channelName)
+          .on(
+            'postgres_changes',
+            {
+              event: 'UPDATE',
+              schema: 'public',
+              table: 'profiles',
+              filter: `id=eq.${targetUserId}`
+            },
+            (payload) => {
+              console.log('Real-time profile change:', payload);
+              if (payload.new) {
+                setProfile(payload.new as UserProfile);
+              }
+            }
+          );
+
+        // Subscribe and wait for it to be ready
+        await channel.subscribe();
+      } catch (error) {
+        console.error('Error setting up realtime subscription:', error);
+      }
+    };
+
+    setupRealtimeSubscription();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [userId, user?.id]);
 

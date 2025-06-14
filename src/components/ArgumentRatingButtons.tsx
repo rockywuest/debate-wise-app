@@ -72,29 +72,43 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
   useEffect(() => {
     if (!user) return;
 
-    // Create a unique channel name to avoid conflicts
-    const channelName = `rating-changes-${argumentId}-${Date.now()}`;
-    
-    // Set up real-time subscription for rating changes
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'argument_ratings',
-          filter: `argument_id=eq.${argumentId}`
-        },
-        (payload) => {
-          console.log('Real-time rating change:', payload);
-          fetchRatings();
-        }
-      )
-      .subscribe();
+    let channel: any = null;
+
+    const setupRealtimeSubscription = async () => {
+      try {
+        // Create a unique channel name to avoid conflicts
+        const channelName = `ratings-${argumentId}-${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Set up real-time subscription for rating changes
+        channel = supabase
+          .channel(channelName)
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'argument_ratings',
+              filter: `argument_id=eq.${argumentId}`
+            },
+            (payload) => {
+              console.log('Real-time rating change:', payload);
+              fetchRatings();
+            }
+          );
+
+        // Subscribe and wait for it to be ready
+        await channel.subscribe();
+      } catch (error) {
+        console.error('Error setting up realtime subscription:', error);
+      }
+    };
+
+    setupRealtimeSubscription();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [argumentId, user]);
 
