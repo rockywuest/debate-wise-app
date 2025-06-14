@@ -119,9 +119,12 @@ export const useArguments = (debateId?: string) => {
   useEffect(() => {
     if (!debateId) return;
 
+    // Create a unique channel name to avoid conflicts
+    const channelName = `arguments-changes-${debateId}-${Date.now()}`;
+    
     // Set up real-time subscription for arguments
     const channel = supabase
-      .channel('arguments-changes')
+      .channel(channelName)
       .on(
         'postgres_changes',
         {

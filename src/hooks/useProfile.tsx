@@ -48,9 +48,12 @@ export const useProfile = (userId?: string) => {
     const targetUserId = userId || user?.id;
     if (!targetUserId) return;
 
+    // Create a unique channel name to avoid conflicts
+    const channelName = `profile-changes-${targetUserId}-${Date.now()}`;
+    
     // Set up real-time subscription for reputation score changes
     const channel = supabase
-      .channel('profile-changes')
+      .channel(channelName)
       .on(
         'postgres_changes',
         {

@@ -72,9 +72,12 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
   useEffect(() => {
     if (!user) return;
 
+    // Create a unique channel name to avoid conflicts
+    const channelName = `rating-changes-${argumentId}-${Date.now()}`;
+    
     // Set up real-time subscription for rating changes
     const channel = supabase
-      .channel('rating-changes')
+      .channel(channelName)
       .on(
         'postgres_changes',
         {
