@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -99,7 +98,7 @@ const Debates = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <CreateDebateForm onSuccess={handleDebateCreated} />
+              <CreateDebateForm />
               <Button 
                 variant="outline" 
                 onClick={() => setShowCreateForm(false)}

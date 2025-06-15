@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { DesktopNavigation } from './DesktopNavigation';
 import { MobileNavigation } from './MobileNavigation';
@@ -8,6 +8,7 @@ import { useLanguageConsistency } from '@/components/LanguageConsistencyProvider
 export const Navigation = () => {
   const { user, signOut } = useAuth();
   const { language, setLanguage } = useLanguageConsistency();
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleLanguage = () => {
     setLanguage(language === 'de' ? 'en' : 'de');
@@ -35,6 +36,8 @@ export const Navigation = () => {
             signOut={signOut} 
             language={language}
             toggleLanguage={toggleLanguage}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
           />
         </div>
       </div>
