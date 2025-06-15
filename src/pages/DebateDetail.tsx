@@ -3,15 +3,16 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { EnhancedArgumentForm } from '@/components/EnhancedArgumentForm';
-import { DebateThread } from '@/components/DebateThread';
+import { ModernDebateThread } from '@/components/ModernDebateThread';
 import { PerformanceMonitor } from '@/components/PerformanceMonitor';
 import { useAdvancedCache } from '@/hooks/useAdvancedCache';
 import { useRealtimeSubscriptions } from '@/hooks/useRealtimeSubscriptions';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useTranslation } from '@/utils/i18n';
 import { supabase } from '@/integrations/supabase/client';
-import { Clock, Users, MessageSquare, TrendingUp } from 'lucide-react';
+import { Clock, Users, MessageSquare, TrendingUp, Plus } from 'lucide-react';
 
 interface Debate {
   id: string;
@@ -35,6 +36,7 @@ const DebateDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [argumentsList, setArgumentsList] = useState<Argument[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [showArgumentForm, setShowArgumentForm] = useState(false);
   const { trackPageView, trackInteraction } = useAnalytics();
   const { t, language } = useTranslation();
 
@@ -137,6 +139,7 @@ const DebateDetail = () => {
       if (data) setArgumentsList(data);
     });
     trackInteraction('argument_created', { debate_id: id });
+    setShowArgumentForm(false);
   };
 
   const organizeArguments = (args: Argument[]) => {
@@ -166,6 +169,7 @@ const DebateDetail = () => {
   const organizedArguments = organizeArguments(argumentsList);
   const proArguments = organizedArguments.filter(arg => arg.argument_typ === 'pro');
   const contraArguments = organizedArguments.filter(arg => arg.argument_typ === 'contra');
+  const neutralArguments = organizedArguments.filter(arg => arg.argument_typ === 'neutral');
 
   if (debateLoading) {
     return (
@@ -193,95 +197,132 @@ const DebateDetail = () => {
     <div className="min-h-screen bg-background">
       <PerformanceMonitor />
       
-      <div className="container mx-auto px-4 py-8">
-        {/* Debate Header */}
-        <Card className="mb-8">
-          <CardHeader>
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Modern Debate Header */}
+        <Card className="mb-8 border-0 shadow-sm bg-gradient-to-r from-background to-muted/20">
+          <CardHeader className="pb-4">
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <CardTitle className="text-2xl mb-2">{debate.titel}</CardTitle>
+                <CardTitle className="text-3xl font-bold mb-3 text-balance">{debate.titel}</CardTitle>
                 {debate.beschreibung && (
-                  <p className="text-muted-foreground">{debate.beschreibung}</p>
+                  <p className="text-muted-foreground text-lg leading-relaxed">{debate.beschreibung}</p>
                 )}
               </div>
-              <Badge variant="secondary" className="ml-4">
+              <Badge variant="secondary" className="ml-4 px-3 py-1">
                 <Clock className="h-3 w-3 mr-1" />
                 {new Date(debate.erstellt_am).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
               </Badge>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <MessageSquare className="h-4 w-4" />
-                <span>{argumentsList.length} {t('argument.add')}</span>
+          <CardContent className="pt-0">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4" />
+                  <span>{argumentsList.length} Argumente</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  <span>{new Set(argumentsList.map(a => a.benutzer_id)).size} Teilnehmer</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  <span>Aktiv</span>
+                </div>
               </div>
-              <div className="flex items-center gap-1">
-                <Users className="h-4 w-4" />
-                <span>{new Set(argumentsList.map(a => a.benutzer_id)).size} {language === 'de' ? 'Teilnehmer' : 'Participants'}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <TrendingUp className="h-4 w-4" />
-                <span>{language === 'de' ? 'Aktiv' : 'Active'}</span>
-              </div>
+              
+              <Button 
+                onClick={() => setShowArgumentForm(!showArgumentForm)}
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Argument hinzufügen
+              </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Add Argument Form */}
-        <div className="mb-8">
-          <EnhancedArgumentForm 
-            debateId={id!} 
-            onSuccess={handleArgumentSuccess}
-          />
-        </div>
+        {/* Collapsible Add Argument Form */}
+        {showArgumentForm && (
+          <Card className="mb-8">
+            <CardContent className="p-6">
+              <EnhancedArgumentForm 
+                debateId={id!} 
+                onSuccess={handleArgumentSuccess}
+              />
+            </CardContent>
+          </Card>
+        )}
 
         {argumentsLoading && argumentsList.length === 0 && (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-2 text-sm text-muted-foreground">{t('debate.loadingArguments')}</p>
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">{t('debate.loadingArguments')}</p>
           </div>
         )}
 
-        {/* Improved Arguments Layout with Visual Hierarchy */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Pro Arguments */}
-          <div>
-            <h2 className="text-xl font-semibold mb-4 text-green-700 flex items-center gap-2">
-              👍 {t('debate.proArguments')} ({proArguments.length})
-            </h2>
-            <div className="space-y-6">
-              <DebateThread arguments={proArguments} debateId={id!} />
-              {proArguments.length === 0 && (
-                <Card className="text-center py-8 border-dashed">
-                  <CardContent>
-                    <p className="text-muted-foreground">
-                      {t('debate.noProArguments')}
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          </div>
+        {/* Modern Single-Column Thread Layout */}
+        <div className="space-y-8">
+          {/* Pro Arguments Section */}
+          {proArguments.length > 0 && (
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-8 w-8 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
+                  <ThumbsUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <h2 className="text-xl font-semibold text-emerald-700 dark:text-emerald-400">
+                  Pro-Argumente ({proArguments.length})
+                </h2>
+              </div>
+              <ModernDebateThread arguments={proArguments} debateId={id!} />
+            </section>
+          )}
 
-          {/* Contra Arguments */}
-          <div>
-            <h2 className="text-xl font-semibold mb-4 text-red-700 flex items-center gap-2">
-              👎 {t('debate.contraArguments')} ({contraArguments.length})
-            </h2>
-            <div className="space-y-6">
-              <DebateThread arguments={contraArguments} debateId={id!} />
-              {contraArguments.length === 0 && (
-                <Card className="text-center py-8 border-dashed">
-                  <CardContent>
-                    <p className="text-muted-foreground">
-                      {t('debate.noContraArguments')}
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          </div>
+          {/* Contra Arguments Section */}
+          {contraArguments.length > 0 && (
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-8 w-8 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center">
+                  <ThumbsDown className="h-4 w-4 text-red-600 dark:text-red-400" />
+                </div>
+                <h2 className="text-xl font-semibold text-red-700 dark:text-red-400">
+                  Contra-Argumente ({contraArguments.length})
+                </h2>
+              </div>
+              <ModernDebateThread arguments={contraArguments} debateId={id!} />
+            </section>
+          )}
+
+          {/* Neutral Arguments Section */}
+          {neutralArguments.length > 0 && (
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                  <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h2 className="text-xl font-semibold text-blue-700 dark:text-blue-400">
+                  Neutrale Argumente ({neutralArguments.length})
+                </h2>
+              </div>
+              <ModernDebateThread arguments={neutralArguments} debateId={id!} />
+            </section>
+          )}
+
+          {/* Empty State */}
+          {argumentsList.length === 0 && !argumentsLoading && (
+            <Card className="text-center py-12 border-dashed">
+              <CardContent>
+                <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Noch keine Argumente</h3>
+                <p className="text-muted-foreground mb-6">
+                  Seien Sie der Erste, der zu dieser Debatte beiträgt.
+                </p>
+                <Button onClick={() => setShowArgumentForm(true)}>
+                  Erstes Argument hinzufügen
+                </Button>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>
