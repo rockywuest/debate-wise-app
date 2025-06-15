@@ -6,11 +6,12 @@ import { SummaryDialog } from './SummaryDialog';
 import { ArgumentQualityAnalysis } from './ArgumentQualityAnalysis';
 import { SteelManDialog } from './SteelManDialog';
 import { CreateArgumentForm } from './CreateArgumentForm';
-import { ArgumentRatingButtons } from './ArgumentRatingButtons';
+import { useOptimizedReputation } from '@/hooks/useOptimizedReputation';
 import { ReputationDisplay } from './ReputationDisplay';
-import { MessageSquare, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { MessageSquare, ThumbsUp, ThumbsDown, Award, Target } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-interface ArgumentCardProps {
+interface OptimizedArgumentCardProps {
   id: string;
   title: string;
   content: string;
@@ -19,16 +20,16 @@ interface ArgumentCardProps {
   authorUserId: string;
   createdAt: string;
   debateId: string;
+  authorReputation?: number;
   childArguments?: Array<{
     id: string;
     title: string;
     content: string;
     type: 'pro' | 'contra' | 'neutral';
   }>;
-  onReply?: (parentId: string) => void;
 }
 
-export const ArgumentCard = ({
+export const OptimizedArgumentCard = ({
   id,
   title,
   content,
@@ -37,9 +38,11 @@ export const ArgumentCard = ({
   authorUserId,
   createdAt,
   debateId,
-  childArguments = [],
-  onReply
-}: ArgumentCardProps) => {
+  authorReputation = 0,
+  childArguments = []
+}: OptimizedArgumentCardProps) => {
+  const { rateArgument, loading: ratingLoading } = useOptimizedReputation();
+
   const getTypeIcon = () => {
     switch (type) {
       case 'pro':
@@ -62,6 +65,10 @@ export const ArgumentCard = ({
     }
   };
 
+  const handleRating = async (ratingType: 'insightful' | 'concede_point') => {
+    await rateArgument(id, ratingType);
+  };
+
   const childArgumentTexts = childArguments.map(arg => `${arg.title}: ${arg.content}`);
 
   return (
@@ -72,20 +79,26 @@ export const ArgumentCard = ({
             {getTypeIcon()}
             <CardTitle className="text-lg">{title}</CardTitle>
           </div>
-          <Badge className={getTypeBadgeColor()}>
-            {type === 'pro' ? 'Pro' : type === 'contra' ? 'Contra' : 'Neutral'}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge className={getTypeBadgeColor()}>
+              {type === 'pro' ? 'Pro' : type === 'contra' ? 'Contra' : 'Neutral'}
+            </Badge>
+          </div>
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            von {author} • {new Date(createdAt).toLocaleDateString('de-DE')}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-muted-foreground">
+              von {author} • {new Date(createdAt).toLocaleDateString('de-DE')}
+            </p>
+            <ReputationDisplay score={authorReputation} size="sm" />
+          </div>
         </div>
       </CardHeader>
+      
       <CardContent>
         <p className="text-gray-700 mb-4">{content}</p>
         
-        {/* Enhanced KI-Analyse für Mehrdimensionalität */}
+        {/* Optimized KI-Analyse */}
         <ArgumentQualityAnalysis 
           argumentText={content} 
           debateTitle={title}
@@ -122,9 +135,30 @@ export const ArgumentCard = ({
           </div>
         )}
 
-        {/* Optimized Rating Buttons - now using enhanced security */}
+        {/* Optimized Rating Buttons */}
         <div className="mt-4 border-t pt-4">
-          <ArgumentRatingButtons argumentId={id} authorUserId={authorUserId} />
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleRating('insightful')}
+              disabled={ratingLoading}
+              className="flex items-center gap-1"
+            >
+              <Award className="h-3 w-3" />
+              Einsichtig (+5)
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleRating('concede_point')}
+              disabled={ratingLoading}
+              className="flex items-center gap-1"
+            >
+              <Target className="h-3 w-3" />
+              Punkt zugestehen (+20)
+            </Button>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2 mt-4">
@@ -135,7 +169,6 @@ export const ArgumentCard = ({
             buttonVariant="outline"
           />
           
-          {/* Steel-Manning Button nur für Contra-Argumente */}
           {type === 'contra' && (
             <SteelManDialog originalArgument={content} />
           )}

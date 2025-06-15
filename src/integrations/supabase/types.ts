@@ -46,6 +46,20 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_argument_ratings_argument_id"
+            columns: ["argument_id"]
+            isOneToOne: false
+            referencedRelation: "argumente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_argument_ratings_rated_by_user_id"
+            columns: ["rated_by_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       argumente: {
@@ -174,6 +188,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_rate_limits_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "rate_limits_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -211,6 +232,27 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_reputation_transactions_granted_by_user_id"
+            columns: ["granted_by_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_reputation_transactions_related_argument_id"
+            columns: ["related_argument_id"]
+            isOneToOne: false
+            referencedRelation: "argumente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_reputation_transactions_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "reputation_transactions_granted_by_user_id_fkey"
             columns: ["granted_by_user_id"]
@@ -285,6 +327,27 @@ export type Database = {
           p_window_minutes?: number
         }
         Returns: boolean
+      }
+      check_rate_limit_optimized: {
+        Args: {
+          p_user_id: string
+          p_action_type: string
+          p_max_count?: number
+          p_window_minutes?: number
+        }
+        Returns: boolean
+      }
+      cleanup_old_rate_limits: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      get_user_debate_arguments: {
+        Args: { p_user_id: string; p_debate_id: string }
+        Returns: number
+      }
+      get_user_recent_arguments: {
+        Args: { p_user_id: string; p_hours?: number }
+        Returns: number
       }
       secure_rate_argument: {
         Args: {
