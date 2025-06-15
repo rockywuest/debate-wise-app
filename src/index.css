@@ -6,68 +6,65 @@
 /* Import the custom brand styles */
 @import "./styles/brand.css";
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
+/* Updated design system with better accessibility */
 
 @layer base {
   :root {
-    --background: var(--fw-bg);
-    --foreground: var(--fw-text);
-    --card: var(--fw-panel);
-    --card-foreground: var(--fw-text);
-    --popover: var(--fw-panel);
-    --popover-foreground: var(--fw-text);
+    --background: #1A1A1A;
+    --foreground: #FFFFFF;
+    --card: #2A2A2A;
+    --card-foreground: #FFFFFF;
+    --popover: #2A2A2A;
+    --popover-foreground: #FFFFFF;
 
-    --primary: var(--fw-accent);
-    --primary-foreground: #fff;
+    --primary: #E91E63;
+    --primary-foreground: #FFFFFF;
 
-    --secondary: var(--fw-accent2);
-    --secondary-foreground: var(--fw-bg);
+    --secondary: #404040;
+    --secondary-foreground: #FFFFFF;
 
-    --muted: var(--fw-panel);
-    --muted-foreground: var(--fw-subtext);
+    --muted: #2A2A2A;
+    --muted-foreground: #B0B0B0;
 
-    --accent: var(--fw-accent3);
-    --accent-foreground: var(--fw-bg);
+    --accent: #2196F3;
+    --accent-foreground: #FFFFFF;
 
-    --destructive: #A41C46;
-    --destructive-foreground: #fff;
+    --destructive: #F44336;
+    --destructive-foreground: #FFFFFF;
 
-    --border: #353544;
-    --input: #353544;
-    --ring: var(--fw-accent);
+    --border: #404040;
+    --input: #404040;
+    --ring: #E91E63;
 
-    --radius: 1.25rem;
+    --radius: 12px;
   }
 
   .dark {
-    --background: var(--fw-bg);
-    --foreground: var(--fw-text);
-    --card: var(--fw-panel);
-    --card-foreground: var(--fw-text);
+    --background: #1A1A1A;
+    --foreground: #FFFFFF;
+    --card: #2A2A2A;
+    --card-foreground: #FFFFFF;
+    --popover: #2A2A2A;
+    --popover-foreground: #FFFFFF;
 
-    --popover: var(--fw-panel);
-    --popover-foreground: var(--fw-subtext);
+    --primary: #E91E63;
+    --primary-foreground: #FFFFFF;
 
-    --primary: var(--fw-accent);
-    --primary-foreground: #fff;
+    --secondary: #404040;
+    --secondary-foreground: #FFFFFF;
 
-    --secondary: var(--fw-accent2);
-    --secondary-foreground: var(--fw-bg);
+    --muted: #2A2A2A;
+    --muted-foreground: #B0B0B0;
 
-    --muted: var(--fw-panel);
-    --muted-foreground: var(--fw-subtext);
+    --accent: #2196F3;
+    --accent-foreground: #FFFFFF;
 
-    --accent: var(--fw-accent3);
-    --accent-foreground: var(--fw-bg);
+    --destructive: #F44336;
+    --destructive-foreground: #FFFFFF;
 
-    --destructive: #A41C46;
-    --destructive-foreground: #fff;
-
-    --border: #353544;
-    --input: #353544;
-    --ring: var(--fw-accent);
-
-    --radius: 1.25rem;
+    --border: #404040;
+    --input: #404040;
+    --ring: #E91E63;
   }
 }
 
@@ -77,10 +74,12 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* Add the missing border-border class so @apply border-border works */
+/* Updated utility classes with better contrast */
 @layer utilities {
   .border-border {
     border-color: var(--border);
@@ -92,6 +91,19 @@
     color: var(--foreground) !important;
   }
   .font-sans {
-    font-family: theme('fontFamily.sans');
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  }
+  
+  /* High contrast text utilities */
+  .text-high-contrast {
+    color: #FFFFFF;
+  }
+  
+  .text-medium-contrast {
+    color: #B0B0B0;
+  }
+  
+  .bg-panel {
+    background-color: var(--card);
   }
 }

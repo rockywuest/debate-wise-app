@@ -21,49 +21,47 @@ export default {
     extend: {
       fontFamily: {
         sans: [
-          "Inter",
-          "system-ui",
-          "Avenir",
-          "Helvetica",
+          "-apple-system",
+          "BlinkMacSystemFont", 
+          "Segoe UI",
+          "Roboto",
+          "Helvetica Neue",
           "Arial",
           "sans-serif",
         ],
         display: [
-          "Playfair Display",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
           "serif"
         ]
       },
       colors: {
         fw: {
-          bg: "#23232B", // dark with hint of blue for depth
-          panel: "#2C2C2C",
-          accent: "#B90096",    // vibrant magenta (logo top left)
-          accent2: "#FFA500",   // orange (logo top right)
-          accent3: "#27B1EA",   // bright blue (logo bottom left)
-          accent4: "#6CC24A",   // fresh green (logo bottom right)
-          petrol: "#108EA7",
-          text: "#F9F9F9",
-          subtext: "#CCCCCC"
+          bg: "#1A1A1A",
+          panel: "#2A2A2A",
+          accent: "#E91E63",
+          accent2: "#FF9800",
+          accent3: "#2196F3",
+          accent4: "#4CAF50",
+          petrol: "#00ACC1",
+          text: "#FFFFFF",
+          subtext: "#B0B0B0",
+          border: "#404040"
         },
-        // Fallbacks for context (for shaded gradients)
         accent: {
-          DEFAULT: "#B90096",
-          alt: "#FFA500"
+          DEFAULT: "#E91E63",
+          alt: "#FF9800"
         }
       },
       borderRadius: {
-        lg: "1.25rem",
-        md: "1rem",
-        sm: "0.5rem",
+        lg: "12px",
+        md: "10px",
+        sm: "6px",
       },
       boxShadow: {
-        card: "0 4px 36px 0 rgba(64, 24, 83, 0.15)"
-      },
-      keyframes: {
-        "pulse-brand": {
-          "0%,100%": { boxShadow: "0 0 0 0 rgba(185,0,150,.3)" },
-          "50%": { boxShadow: "0 0 0 6px rgba(255,165,0,0.2)" }
-        }
+        card: "0 4px 24px 0 rgba(0, 0, 0, 0.3)",
+        button: "0 2px 8px 0 rgba(233, 30, 99, 0.3)"
       },
       animation: {
         "pulse-brand": "pulse-brand 2s infinite"

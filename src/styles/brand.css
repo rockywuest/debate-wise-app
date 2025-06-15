@@ -1,33 +1,33 @@
 
 :root {
-  --fw-bg: #23232B;          /* slightly bluer dark for depth */
-  --fw-panel: #2C2C2C;
-  --fw-accent: #B90096;      /* vibrant magenta (logo top left) */
-  --fw-accent2: #FFA500;     /* orange (logo top right) */
-  --fw-accent3: #27B1EA;     /* bright blue (logo bottom left) */
-  --fw-accent4: #6CC24A;     /* fresh green (logo bottom right) */
-  --fw-petrol: #108EA7;
-  --fw-text: #F9F9F9;
-  --fw-subtext: #CCCCCC;
+  --fw-bg: #1A1A1A;          /* darker for better contrast */
+  --fw-panel: #2A2A2A;       /* slightly lighter than bg */
+  --fw-accent: #E91E63;      /* pink/magenta - high contrast */
+  --fw-accent2: #FF9800;     /* orange - warmer tone */
+  --fw-accent3: #2196F3;     /* blue - accessible blue */
+  --fw-accent4: #4CAF50;     /* green - accessible green */
+  --fw-petrol: #00ACC1;      /* cyan - better contrast */
+  --fw-text: #FFFFFF;        /* pure white for max contrast */
+  --fw-subtext: #B0B0B0;     /* lighter gray for secondary text */
+  --fw-border: #404040;      /* visible borders */
 }
 
-/* Brand gradient for header, buttons, and highlights */
+/* Brand gradient for highlights */
 .fw-gradient {
   background: linear-gradient(
-    90deg,
+    135deg,
     var(--fw-accent) 0%,
-    var(--fw-accent2) 40%,
-    var(--fw-accent3) 70%,
-    var(--fw-accent4) 100%
+    var(--fw-accent2) 50%,
+    var(--fw-accent3) 100%
   );
 }
+
 .fw-gradient-text {
   background: linear-gradient(
-    90deg,
+    135deg,
     var(--fw-accent) 0%,
-    var(--fw-accent2) 40%,
-    var(--fw-accent3) 70%,
-    var(--fw-accent4) 100%
+    var(--fw-accent2) 50%,
+    var(--fw-accent3) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -37,87 +37,117 @@
 
 /* Large brand shadow for active elements */
 .fw-shadow {
-  box-shadow: 0 6px 48px 0 rgba(185,0,150,0.13);
+  box-shadow: 0 8px 32px 0 rgba(233, 30, 99, 0.15);
 }
 
-/* Apple-like card style */
+/* Apple-like card style with better contrast */
 .fw-card {
   background: var(--fw-panel);
   color: var(--fw-text);
   border-radius: 1.25rem;
-  box-shadow: 0 4px 36px 0 rgba(64, 24, 83, 0.13);
+  border: 1px solid var(--fw-border);
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Avatar highlight on hover */
 .fw-avatar-frame {
   border: 3px solid var(--fw-accent2);
   border-radius: 16px;
-  transition: border-color 0.3s;
+  transition: border-color 0.3s ease;
 }
 .fw-avatar-frame:hover {
   border-color: var(--fw-accent);
-  animation: pulse-brand 2.5s infinite;
-}
-@keyframes pulse-brand {
-  0%,100% { box-shadow: 0 0 0 0 rgba(185,0,150,.29);}
-  50% { box-shadow: 0 0 0 8px rgba(255,165,0,0.15);}
+  box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.2);
 }
 
-/* Extra polish */
+/* Better body styling */
 body {
   background-color: var(--fw-bg);
   color: var(--fw-text);
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 17px;
-  letter-spacing: -0.02em;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
 }
 
-/* Buttons primary gradient, Apple-style radius */
+/* Primary button with proper contrast */
 .fw-button-gradient {
-  background: linear-gradient(90deg, var(--fw-accent), var(--fw-accent2), var(--fw-accent3), var(--fw-accent4));
-  color: #fff !important;
-  border-radius: 0.8em;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  transition: background 0.25s, box-shadow 0.15s;
-  box-shadow: 0 2px 12px 0 rgba(23, 19, 59, 0.09);
+  background: var(--fw-accent);
+  color: #FFFFFF !important;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px 0 rgba(233, 30, 99, 0.3);
+  padding: 12px 24px;
 }
 
-/* Button hover/focus */
-.fw-button-gradient:hover,
-.fw-button-gradient:focus {
-  filter: brightness(1.08) saturate(1.1);
-  box-shadow: 0 4px 24px 0 rgba(41, 47, 89, 0.17);
+/* Button hover states with proper contrast */
+.fw-button-gradient:hover {
+  background: #C2185B;
+  box-shadow: 0 4px 16px 0 rgba(233, 30, 99, 0.4);
+  transform: translateY(-1px);
 }
 
-/* Brand nav logo section */
-.fw-nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
+.fw-button-gradient:active {
+  background: #AD1457;
+  transform: translateY(0);
+  box-shadow: 0 2px 8px 0 rgba(233, 30, 99, 0.3);
 }
 
+/* Secondary button styling */
+.fw-button-secondary {
+  background: transparent;
+  color: var(--fw-text) !important;
+  border: 2px solid var(--fw-border);
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.fw-button-secondary:hover {
+  border-color: var(--fw-accent);
+  background: rgba(233, 30, 99, 0.1);
+  color: var(--fw-text) !important;
+}
+
+/* Header styling */
 .fw-header {
   background: var(--fw-panel);
-  box-shadow: 0 1px 12px rgba(41, 8, 61, 0.09);
+  border-bottom: 1px solid var(--fw-border);
+  backdrop-filter: blur(10px);
 }
 
-/* Animated underlines for main nav links */
+/* Navigation links with better contrast */
 .fw-nav-link {
   position: relative;
   color: var(--fw-text);
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.16s;
+  transition: color 0.2s ease;
+  padding: 8px 16px;
+  border-radius: 8px;
 }
+
+.fw-nav-link:hover {
+  color: var(--fw-accent);
+  background: rgba(233, 30, 99, 0.1);
+}
+
 .fw-nav-link:after {
   content: '';
-  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
   width: 0;
   height: 2px;
   background: var(--fw-accent);
-  transition: width .3s;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
 }
+
 .fw-nav-link:hover:after {
-  width: 100%;
+  width: 80%;
 }
