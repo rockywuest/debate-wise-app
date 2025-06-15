@@ -1,4 +1,4 @@
 
-import { MobileOptimizedNavigation } from './MobileOptimizedNavigation';
+import { GlobalNavigation } from './GlobalNavigation';
 
-export const Navigation = MobileOptimizedNavigation;
+export const Navigation = GlobalNavigation;
