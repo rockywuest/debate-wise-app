@@ -21,7 +21,7 @@ const Imprint = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-gray-600">
-                The legal information for this website is available on the Frech & Wüst website.
+                The legal information for this website is available on the FRECH & WUEST website 'debate wise' is a service of the FRECH & WUEST GmbH.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
