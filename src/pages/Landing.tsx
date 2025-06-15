@@ -1,3 +1,4 @@
+
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -428,8 +429,7 @@ const Landing = () => {
               {t.footer_privacy}
             </Link>
           </div>
-          <p className="mt-6 text-gray-500">© 2025 FRECH & WUEST GmbH. All rights reserved.</p>
-          <p className="text-xs mt-2 text-gray-600">{t.footer_disclaimer}</p>
+          <p className="mt-6 text-gray-500">{t.footer_copyright}</p>
         </div>
       </footer>
     </div>
