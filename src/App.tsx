@@ -12,6 +12,8 @@ import Debate from "./pages/Debate";
 import DebateDetail from "./pages/DebateDetail";
 import Auth from "./pages/Auth";
 import Leaderboard from "./pages/Leaderboard";
+import Imprint from "./pages/Imprint";
+import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +27,8 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/imprint" element={<Imprint />} />
+            <Route path="/privacy" element={<Privacy />} />
             <Route path="/dashboard" element={
               <>
                 <Navigation />

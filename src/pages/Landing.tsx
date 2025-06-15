@@ -48,7 +48,7 @@ const Landing = () => {
       solution_map_contra_refute: "↳ [Widerlegung] Langfristige Kosten des Nichtstuns...",
       footer_imprint: "Impressum",
       footer_privacy: "Datenschutz",
-      footer_copyright: "© 2025 debate wise. Alle Rechte vorbehalten.",
+      footer_copyright: "© 2025 FRECH & WUEST GmbH. All rights reserved.",
       footer_disclaimer: "Dieses Projekt ist eine konzeptionelle Demonstration.",
       app_access: "Zur App"
     },
@@ -90,7 +90,7 @@ const Landing = () => {
       solution_map_contra_refute: "↳ [Refutation] Long-term costs of inaction...",
       footer_imprint: "Imprint",
       footer_privacy: "Privacy Policy",
-      footer_copyright: "© 2025 debate wise. All rights reserved.",
+      footer_copyright: "© 2025 FRECH & WUEST GmbH. All rights reserved.",
       footer_disclaimer: "This project is a conceptual demonstration.",
       app_access: "Access App"
     }
@@ -423,14 +423,14 @@ const Landing = () => {
       <footer className="bg-gray-800 text-white py-12">
         <div className="container mx-auto px-6 text-center">
           <div className="flex justify-center space-x-6">
-            <a href="#impressum" className="text-gray-400 hover:text-white transition-colors duration-300">
+            <Link to="/imprint" className="text-gray-400 hover:text-white transition-colors duration-300">
               {t.footer_imprint}
-            </a>
-            <a href="#datenschutz" className="text-gray-400 hover:text-white transition-colors duration-300">
+            </Link>
+            <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors duration-300">
               {t.footer_privacy}
-            </a>
+            </Link>
           </div>
-          <p className="mt-6 text-gray-500">{t.footer_copyright}</p>
+          <p className="mt-6 text-gray-500">© 2025 FRECH & WUEST GmbH. All rights reserved.</p>
           <p className="text-xs mt-2 text-gray-600">{t.footer_disclaimer}</p>
         </div>
       </footer>
