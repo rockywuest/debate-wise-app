@@ -12,6 +12,7 @@ import Imprint from "../pages/Imprint";
 import Privacy from "../pages/Privacy";
 import NotFound from "../pages/NotFound";
 import Analytics from "../pages/Analytics";
+import Admin from "../pages/Admin";
 import { useAnalytics } from "../hooks/useAnalytics";
 
 export const AppContent = () => {
@@ -61,6 +62,12 @@ export const AppContent = () => {
         <>
           <Navigation />
           <Analytics />
+        </>
+      } />
+      <Route path="/admin" element={
+        <>
+          <Navigation />
+          <Admin />
         </>
       } />
       <Route path="*" element={

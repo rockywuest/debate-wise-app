@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -5,9 +6,7 @@ import { Button } from '@/components/ui/button';
 import { DebateCard } from './DebateCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from '@/utils/i18n';
-import { TrendingUp, Flame, Clock, Users, MessageSquare, Sparkles } from 'lucide-react';
-import { createDemoContent } from '@/utils/createDemoContent';
-import { useToast } from '@/components/ui/use-toast';
+import { TrendingUp, Flame, Clock, Users, MessageSquare } from 'lucide-react';
 
 interface TrendingDebate {
   id: string;
@@ -23,10 +22,8 @@ interface TrendingDebate {
 export const TrendingDebates = () => {
   const [trendingDebates, setTrendingDebates] = useState<TrendingDebate[]>([]);
   const [loading, setLoading] = useState(true);
-  const [creatingDemo, setCreatingDemo] = useState(false);
   const [activeTab, setActiveTab] = useState<'trending' | 'active' | 'recent'>('trending');
   const { t, language } = useTranslation();
-  const { toast } = useToast();
 
   useEffect(() => {
     fetchTrendingDebates();
@@ -110,42 +107,6 @@ export const TrendingDebates = () => {
     }
   };
 
-  const handleCreateDemoContent = async () => {
-    setCreatingDemo(true);
-    try {
-      const success = await createDemoContent();
-      if (success) {
-        toast({
-          title: language === 'de' ? 'Demo-Inhalte erstellt!' : 'Demo content created!',
-          description: language === 'de' 
-            ? 'Die Plattform wurde mit interessanten Debatten und Argumenten gefüllt.' 
-            : 'The platform has been populated with engaging debates and arguments.',
-        });
-        // Refresh the debates
-        await fetchTrendingDebates();
-      } else {
-        toast({
-          title: language === 'de' ? 'Fehler' : 'Error',
-          description: language === 'de' 
-            ? 'Demo-Inhalte konnten nicht erstellt werden.' 
-            : 'Failed to create demo content.',
-          variant: 'destructive'
-        });
-      }
-    } catch (error) {
-      console.error('Error creating demo content:', error);
-      toast({
-        title: language === 'de' ? 'Fehler' : 'Error',
-        description: language === 'de' 
-          ? 'Demo-Inhalte konnten nicht erstellt werden.' 
-          : 'Failed to create demo content.',
-        variant: 'destructive'
-      });
-    } finally {
-      setCreatingDemo(false);
-    }
-  };
-
   const getTabIcon = (tab: string) => {
     switch (tab) {
       case 'trending':
@@ -217,29 +178,6 @@ export const TrendingDebates = () => {
             ))}
           </div>
         </div>
-        
-        {trendingDebates.length === 0 && !loading && (
-          <div className="flex items-center gap-2 mt-2">
-            <Button 
-              onClick={handleCreateDemoContent}
-              disabled={creatingDemo}
-              className="gap-2"
-              variant="outline"
-            >
-              <Sparkles className="h-4 w-4" />
-              {creatingDemo 
-                ? (language === 'de' ? 'Erstelle Demo-Inhalte...' : 'Creating demo content...') 
-                : (language === 'de' ? 'Demo-Inhalte hinzufügen' : 'Add demo content')
-              }
-            </Button>
-            <span className="text-sm text-muted-foreground">
-              {language === 'de' 
-                ? 'Fülle die Plattform mit interessanten Debatten' 
-                : 'Populate the platform with engaging debates'
-              }
-            </span>
-          </div>
-        )}
       </CardHeader>
       
       <CardContent>
