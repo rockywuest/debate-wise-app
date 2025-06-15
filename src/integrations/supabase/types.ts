@@ -150,6 +150,38 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limits: {
+        Row: {
+          action_type: string
+          count: number
+          id: string
+          user_id: string | null
+          window_start: string
+        }
+        Insert: {
+          action_type: string
+          count?: number
+          id?: string
+          user_id?: string | null
+          window_start?: string
+        }
+        Update: {
+          action_type?: string
+          count?: number
+          id?: string
+          user_id?: string | null
+          window_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rate_limits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reputation_transactions: {
         Row: {
           created_at: string
@@ -202,11 +234,66 @@ export type Database = {
           },
         ]
       }
+      security_log: {
+        Row: {
+          created_at: string
+          details: Json | null
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "security_log_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      check_rate_limit: {
+        Args: {
+          p_user_id: string
+          p_action_type: string
+          p_max_count?: number
+          p_window_minutes?: number
+        }
+        Returns: boolean
+      }
+      secure_rate_argument: {
+        Args: {
+          p_argument_id: string
+          p_rating_type: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
       update_user_reputation: {
         Args: {
           target_user_id: string
@@ -216,6 +303,24 @@ export type Database = {
           granted_by?: string
         }
         Returns: undefined
+      }
+      update_user_reputation_secure: {
+        Args: {
+          target_user_id: string
+          points: number
+          reason: string
+          argument_id?: string
+          granted_by?: string
+        }
+        Returns: undefined
+      }
+      validate_argument_creation: {
+        Args: {
+          p_user_id: string
+          p_debate_id: string
+          p_argument_text: string
+        }
+        Returns: boolean
       }
     }
     Enums: {

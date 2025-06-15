@@ -34,7 +34,7 @@ export const useSecureReputation = () => {
       setLoading(true);
       
       // Use secure RPC function that includes additional validation
-      const { data, error } = await supabase.rpc('secure_rate_argument', {
+      const { data, error } = await supabase.rpc('secure_rate_argument' as any, {
         p_argument_id: argumentId,
         p_rating_type: ratingType,
         p_user_id: user.id
@@ -42,10 +42,10 @@ export const useSecureReputation = () => {
 
       if (error) throw error;
 
-      if (!data.success) {
+      if (!data || !data.success) {
         toast({
           title: "Bewertung nicht möglich",
-          description: data.message || "Die Bewertung konnte nicht abgegeben werden.",
+          description: data?.message || "Die Bewertung konnte nicht abgegeben werden.",
           variant: "destructive"
         });
         return;
@@ -53,7 +53,7 @@ export const useSecureReputation = () => {
 
       toast({
         title: "Bewertung erfolgreich",
-        description: `+${data.points_awarded} Reputationspunkte vergeben.`
+        description: `+${data.points_awarded || 0} Reputationspunkte vergeben.`
       });
 
     } catch (error: any) {

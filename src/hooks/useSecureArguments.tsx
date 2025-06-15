@@ -109,7 +109,7 @@ export const useSecureArguments = (debateId?: string) => {
 
       // Additional server-side validation through RPC
       const { data: validationResult, error: validationError } = await supabase
-        .rpc('validate_argument_creation', {
+        .rpc('validate_argument_creation' as any, {
           p_user_id: user.id,
           p_debate_id: debateId,
           p_argument_text: argumentValidation.sanitizedValue!
