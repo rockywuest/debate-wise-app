@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from '@/utils/i18n';
-import { MessageSquare, Trophy, LogOut, User } from 'lucide-react';
+import { MessageSquare, Trophy, LogOut, User, TrendingUp } from 'lucide-react';
 
 export const Navigation = () => {
   const { user, signOut } = useAuth();
@@ -44,6 +43,17 @@ export const Navigation = () => {
                 >
                   <Trophy className="h-4 w-4" />
                   {t('nav.leaderboard')}
+                </Button>
+              </Link>
+
+              <Link to="/analytics">
+                <Button 
+                  variant={isActive('/analytics') ? 'default' : 'ghost'} 
+                  size="sm"
+                  className="gap-2"
+                >
+                  <TrendingUp className="h-4 w-4" />
+                  Analytics
                 </Button>
               </Link>
 
