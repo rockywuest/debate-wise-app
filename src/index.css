@@ -92,7 +92,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
@@ -116,7 +116,7 @@
   }
   
   .argument-card {
-    @apply bg-card border border-border rounded-lg shadow-sm;
+    @apply bg-card border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm;
   }
   
   .argument-content {
@@ -124,7 +124,7 @@
   }
   
   .thread-line {
-    @apply border-l-2 border-border;
+    @apply border-l-2 border-slate-200 dark:border-slate-700;
   }
   
   .pro-accent {

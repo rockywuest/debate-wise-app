@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +11,7 @@ import { useRealtimeSubscriptions } from '@/hooks/useRealtimeSubscriptions';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useTranslation } from '@/utils/i18n';
 import { supabase } from '@/integrations/supabase/client';
-import { Clock, Users, MessageSquare, TrendingUp, Plus } from 'lucide-react';
+import { Clock, Users, MessageSquare, TrendingUp, Plus, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 interface Debate {
   id: string;
