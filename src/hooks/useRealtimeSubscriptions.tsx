@@ -38,26 +38,28 @@ export const useRealtimeSubscriptions = (configs: RealtimeConfig[]) => {
           (payload) => {
             console.log(`Realtime update for ${table}:`, payload);
             
-            // Handle different event types
-            switch (payload.eventType) {
-              case 'INSERT':
-                toast({
-                  title: "Neue Aktivität",
-                  description: `Neuer Eintrag in ${table}`,
-                });
-                break;
-              case 'UPDATE':
-                toast({
-                  title: "Aktualisierung",
-                  description: `Eintrag in ${table} wurde aktualisiert`,
-                });
-                break;
-              case 'DELETE':
-                toast({
-                  title: "Gelöscht",
-                  description: `Eintrag aus ${table} wurde entfernt`,
-                });
-                break;
+            // Handle different event types - check if payload has eventType property
+            if ('eventType' in payload) {
+              switch (payload.eventType) {
+                case 'INSERT':
+                  toast({
+                    title: "Neue Aktivität",
+                    description: `Neuer Eintrag in ${table}`,
+                  });
+                  break;
+                case 'UPDATE':
+                  toast({
+                    title: "Aktualisierung",
+                    description: `Eintrag in ${table} wurde aktualisiert`,
+                  });
+                  break;
+                case 'DELETE':
+                  toast({
+                    title: "Gelöscht",
+                    description: `Eintrag aus ${table} wurde entfernt`,
+                  });
+                  break;
+              }
             }
 
             onUpdate?.(payload);
