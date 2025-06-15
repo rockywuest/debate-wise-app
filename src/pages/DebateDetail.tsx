@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { PerformanceMonitor } from '@/components/PerformanceMonitor';
@@ -215,7 +214,10 @@ const DebateDetail = () => {
           <ArgumentsSection type="neutral" arguments={neutralArguments} debateId={id!} />
 
           {argumentsList.length === 0 && !argumentsLoading && (
-            <DebateEmptyState onAddArgument={() => setShowArgumentForm(true)} />
+            <DebateEmptyState 
+              onAddArgument={() => setShowArgumentForm(true)} 
+              language={language}
+            />
           )}
         </div>
       </div>
