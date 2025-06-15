@@ -18,7 +18,7 @@ const Landing = () => {
       nav_cta: "Beta-Zugang anfordern",
       hero_tagline: "Die Revolution des Online-Diskurses",
       hero_title: "Diskutieren statt spalten.",
-      hero_subtitle: "Agora ist die erste Plattform, die entwickelt wurde, um Klarheit statt Klicks zu fördern. Erleben Sie Debatten, die auf Logik, Fakten und gegenseitigem Verständnis basieren – moderiert von einer neutralen KI.",
+      hero_subtitle: "debate wise ist die erste Plattform, die entwickelt wurde, um Klarheit statt Klicks zu fördern. Erleben Sie Debatten, die auf Logik, Fakten und gegenseitigem Verständnis basieren – moderiert von einer neutralen KI.",
       hero_cta: "Jetzt exklusiven Beta-Zugang sichern",
       problem_title: "Warum Online-Debatten scheitern",
       problem_subtitle: "Das Problem liegt nicht an den Menschen. Es liegt in der Architektur der Plattformen.",
@@ -49,7 +49,7 @@ const Landing = () => {
       solution_map_contra_refute: "↳ [Widerlegung] Langfristige Kosten des Nichtstuns...",
       footer_imprint: "Impressum",
       footer_privacy: "Datenschutz",
-      footer_copyright: "© 2025 Agora Technologies. Alle Rechte vorbehalten.",
+      footer_copyright: "© 2025 FRECH & WUEST GmbH. Alle Rechte vorbehalten.",
       footer_disclaimer: "Dieses Projekt ist eine konzeptionelle Demonstration.",
       app_access: "Zur App"
     },
@@ -60,7 +60,7 @@ const Landing = () => {
       nav_cta: "Request Beta Access",
       hero_tagline: "The Revolution of Online Discourse",
       hero_title: "Debate, Don't Divide.",
-      hero_subtitle: "Agora is the first platform designed to promote clarity over clicks. Experience debates based on logic, facts, and mutual understanding – moderated by a neutral AI.",
+      hero_subtitle: "debate wise is the first platform designed to promote clarity over clicks. Experience debates based on logic, facts, and mutual understanding – moderated by a neutral AI.",
       hero_cta: "Secure Your Exclusive Beta Access Now",
       problem_title: "Why Online Debates Fail",
       problem_subtitle: "The problem isn't the people. It's the architecture of the platforms.",
@@ -91,7 +91,7 @@ const Landing = () => {
       solution_map_contra_refute: "↳ [Refutation] Long-term costs of inaction...",
       footer_imprint: "Imprint",
       footer_privacy: "Privacy Policy",
-      footer_copyright: "© 2025 Agora Technologies. All rights reserved.",
+      footer_copyright: "© 2025 FRECH & WUEST GmbH. All rights reserved.",
       footer_disclaimer: "This project is a conceptual demonstration.",
       app_access: "Access App"
     }
