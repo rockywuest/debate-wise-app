@@ -4,6 +4,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 
+// Define the expected response type from the RPC function
+interface RateArgumentResponse {
+  success: boolean;
+  message?: string;
+  points_awarded?: number;
+}
+
 export const useOptimizedReputation = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -48,10 +55,13 @@ export const useOptimizedReputation = () => {
 
       if (error) throw error;
 
-      if (!data || !data.success) {
+      // Type guard to ensure data is the expected object type
+      const result = data as RateArgumentResponse;
+
+      if (!result || !result.success) {
         toast({
           title: "Bewertung nicht möglich",
-          description: data?.message || "Die Bewertung konnte nicht abgegeben werden.",
+          description: result?.message || "Die Bewertung konnte nicht abgegeben werden.",
           variant: "destructive"
         });
         return;
@@ -59,7 +69,7 @@ export const useOptimizedReputation = () => {
 
       toast({
         title: "Bewertung erfolgreich",
-        description: `+${data.points_awarded || 0} Reputationspunkte vergeben.`
+        description: `+${result.points_awarded || 0} Reputationspunkte vergeben.`
       });
 
     } catch (error: any) {
