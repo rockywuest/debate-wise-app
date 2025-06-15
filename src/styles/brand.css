@@ -1,0 +1,123 @@
+
+:root {
+  --fw-bg: #23232B;          /* slightly bluer dark */
+  --fw-panel: #2C2C2C;
+  --fw-accent: #B90096;      /* vibrant magenta */
+  --fw-accent2: #FFA500;     /* orange */
+  --fw-accent3: #27B1EA;     /* blue */
+  --fw-accent4: #6CC24A;     /* green */
+  --fw-text: #F9F9F9;
+  --fw-subtext: #CCCCCC;
+}
+
+/* Brand gradient for header, buttons, and highlights */
+.fw-gradient {
+  background: linear-gradient(
+    90deg,
+    var(--fw-accent) 0%,
+    var(--fw-accent2) 40%,
+    var(--fw-accent3) 70%,
+    var(--fw-accent4) 100%
+  );
+}
+.fw-gradient-text {
+  background: linear-gradient(
+    90deg,
+    var(--fw-accent) 0%,
+    var(--fw-accent2) 40%,
+    var(--fw-accent3) 70%,
+    var(--fw-accent4) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+/* Large brand shadow for active elements */
+.fw-shadow {
+  box-shadow: 0 6px 48px 0 rgba(185,0,150,0.13);
+}
+
+/* Apple-like card style */
+.fw-card {
+  background: var(--fw-panel);
+  color: var(--fw-text);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 36px 0 rgba(64, 24, 83, 0.13);
+}
+
+/* Avatar highlight on hover */
+.fw-avatar-frame {
+  border: 3px solid var(--fw-accent2);
+  border-radius: 16px;
+  transition: border-color 0.3s;
+}
+.fw-avatar-frame:hover {
+  border-color: var(--fw-accent);
+  animation: pulse-brand 2.5s infinite;
+}
+@keyframes pulse-brand {
+  0%,100% { box-shadow: 0 0 0 0 rgba(185,0,150,.29);}
+  50% { box-shadow: 0 0 0 8px rgba(255,165,0,0.15);}
+}
+
+/* Extra polish */
+body {
+  background-color: var(--fw-bg);
+  color: var(--fw-text);
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+
+/* Buttons primary gradient, Apple-style radius */
+.fw-button-gradient {
+  background: linear-gradient(90deg, var(--fw-accent), var(--fw-accent2), var(--fw-accent3), var(--fw-accent4));
+  color: #fff !important;
+  border-radius: 0.8em;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: background 0.25s, box-shadow 0.15s;
+  box-shadow: 0 2px 12px 0 rgba(23, 19, 59, 0.09);
+}
+
+/* Button hover/focus */
+.fw-button-gradient:hover,
+.fw-button-gradient:focus {
+  filter: brightness(1.08) saturate(1.1);
+  box-shadow: 0 4px 24px 0 rgba(41, 47, 89, 0.17);
+}
+
+/* Brand nav logo section */
+.fw-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.fw-header {
+  background: var(--fw-panel);
+  box-shadow: 0 1px 12px rgba(41, 8, 61, 0.09);
+}
+
+/* Animated underlines for main nav links */
+.fw-nav-link {
+  position: relative;
+  color: var(--fw-text);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.16s;
+}
+.fw-nav-link:after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: var(--fw-accent);
+  transition: width .3s;
+}
+.fw-nav-link:hover:after {
+  width: 100%;
+}
+
