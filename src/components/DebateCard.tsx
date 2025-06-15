@@ -83,21 +83,21 @@ export const DebateCard = ({
       setLoading(true);
       
       // Get argument statistics
-      const { data: arguments, error: argError } = await supabase
+      const { data: argumentsData, error: argError } = await supabase
         .from('argumente')
         .select('benutzer_id, argument_typ, erstellt_am')
         .eq('debatten_id', id);
 
       if (argError) throw argError;
 
-      const argumentCount = arguments?.length || 0;
-      const participantCount = new Set(arguments?.map(arg => arg.benutzer_id)).size;
-      const lastActivity = arguments?.length > 0 
-        ? Math.max(...arguments.map(arg => new Date(arg.erstellt_am).getTime()))
+      const argumentCount = argumentsData?.length || 0;
+      const participantCount = new Set(argumentsData?.map(arg => arg.benutzer_id)).size;
+      const lastActivity = argumentsData?.length > 0 
+        ? Math.max(...argumentsData.map(arg => new Date(arg.erstellt_am).getTime()))
         : new Date(createdAt).getTime();
       
-      const proCount = arguments?.filter(arg => arg.argument_typ === 'Pro').length || 0;
-      const contraCount = arguments?.filter(arg => arg.argument_typ === 'Contra').length || 0;
+      const proCount = argumentsData?.filter(arg => arg.argument_typ === 'Pro').length || 0;
+      const contraCount = argumentsData?.filter(arg => arg.argument_typ === 'Contra').length || 0;
       
       // Consider active if there was activity in the last 7 days
       const isActive = Date.now() - lastActivity < 7 * 24 * 60 * 60 * 1000;

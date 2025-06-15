@@ -10,12 +10,23 @@ export const translations = {
   'nav.leaderboard': { en: 'Leaderboard', de: 'Rangliste' },
   'nav.logout': { en: 'Logout', de: 'Abmelden' },
   'nav.login': { en: 'Login', de: 'Anmelden' },
+  'nav.analytics': { en: 'Analytics', de: 'Analytics' },
 
   // Debate page
   'debates.title': { en: 'Active Debates', de: 'Aktive Debatten' },
   'debates.subtitle': { en: 'Join the discourse, elevate the debate', de: 'Diskutieren Sie mit, verbessern Sie die Debatte' },
   'debates.create': { en: 'Create New Debate', de: 'Neue Debatte erstellen' },
   'debates.empty': { en: 'No debates yet. Be the first to start an intelligent discussion!', de: 'Noch keine Debatten. Seien Sie der Erste, der eine intelligente Diskussion startet!' },
+
+  // Debate detail
+  'debate.proArguments': { en: 'Pro Arguments', de: 'Pro-Argumente' },
+  'debate.contraArguments': { en: 'Contra Arguments', de: 'Contra-Argumente' },
+  'debate.noProArguments': { en: 'No pro arguments yet. Be the first!', de: 'Noch keine Pro-Argumente vorhanden. Sei der Erste!' },
+  'debate.noContraArguments': { en: 'No contra arguments yet. Start the discussion!', de: 'Noch keine Contra-Argumente vorhanden. Starte die Diskussion!' },
+  'debate.notFound': { en: 'Debate not found', de: 'Debatte nicht gefunden' },
+  'debate.notFoundDescription': { en: 'The requested debate does not exist or has been removed.', de: 'Die angeforderte Debatte existiert nicht oder wurde entfernt.' },
+  'debate.loadingDebate': { en: 'Loading debate...', de: 'Lade Debatte...' },
+  'debate.loadingArguments': { en: 'Loading arguments...', de: 'Lade Argumente...' },
 
   // Argument form
   'argument.add': { en: 'Add Argument', de: 'Argument hinzufügen' },
@@ -27,6 +38,23 @@ export const translations = {
   'argument.cancel': { en: 'Cancel', de: 'Abbrechen' },
   'argument.chars': { en: 'characters', de: 'Zeichen' },
   'argument.min': { en: 'min.', de: 'min.' },
+
+  // Index page
+  'index.welcome': { en: 'Welcome to the Debate System', de: 'Willkommen zum Debattensystem' },
+  'index.hello': { en: 'Hello! You are successfully logged in.', de: 'Hallo! Sie sind erfolgreich angemeldet.' },
+  'index.createDebate': { en: 'Create Debate', de: 'Debatte erstellen' },
+  'index.viewAllDebates': { en: 'View All Debates', de: 'Alle Debatten ansehen' },
+  'index.viewLeaderboard': { en: 'View Leaderboard', de: 'Rangliste ansehen' },
+  'index.structuredDiscussion': { en: 'Structured discussions with visual argument maps', de: 'Strukturierte Diskussionen mit visuellen Argumentkarten' },
+  'index.getStarted': { en: 'Get Started', de: 'Jetzt starten' },
+  'index.latestDebates': { en: 'Latest Debates', de: 'Neueste Debatten' },
+  'index.viewAll': { en: 'View All', de: 'Alle ansehen' },
+  'index.debatesLoading': { en: 'Loading debates...', de: 'Debatten werden geladen...' },
+  'index.noDebatesYet': { en: 'No debates available yet. Create the first debate!', de: 'Noch keine Debatten vorhanden. Erstellen Sie die erste Debatte!' },
+  'index.participate': { en: 'Participate', de: 'Teilnehmen' },
+
+  // Auth page
+  'auth.loading': { en: 'Loading...', de: 'Wird geladen...' },
 
   // Quality analysis
   'quality.title': { en: 'AI Quality Analysis', de: 'KI-Qualitätsanalyse' },
@@ -79,9 +107,11 @@ export const translations = {
 export type TranslationKeys = keyof typeof translations;
 
 export const useTranslation = () => {
-  // For now, we'll detect language from browser or use a default
-  // Later this can be expanded to user preferences
+  // Get language from localStorage with fallback to browser language
   const getLanguage = (): 'en' | 'de' => {
+    const savedLanguage = localStorage.getItem('debate-wise-language') as 'en' | 'de';
+    if (savedLanguage) return savedLanguage;
+    
     const browserLang = navigator.language.toLowerCase();
     return browserLang.startsWith('de') ? 'de' : 'en';
   };
@@ -92,5 +122,10 @@ export const useTranslation = () => {
     return translations[key][language];
   };
 
-  return { t, language };
+  const setLanguage = (newLanguage: 'en' | 'de') => {
+    localStorage.setItem('debate-wise-language', newLanguage);
+    window.location.reload(); // Simple refresh to apply language change
+  };
+
+  return { t, language, setLanguage };
 };

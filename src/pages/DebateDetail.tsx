@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +9,7 @@ import { PerformanceMonitor } from '@/components/PerformanceMonitor';
 import { useAdvancedCache } from '@/hooks/useAdvancedCache';
 import { useRealtimeSubscriptions } from '@/hooks/useRealtimeSubscriptions';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { useTranslation } from '@/utils/i18n';
 import { supabase } from '@/integrations/supabase/client';
 import { Clock, Users, MessageSquare, TrendingUp } from 'lucide-react';
 
@@ -34,6 +36,7 @@ const DebateDetail = () => {
   const [argumentsList, setArgumentsList] = useState<Argument[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const { trackPageView, trackInteraction } = useAnalytics();
+  const { t, language } = useTranslation();
 
   // Advanced caching for debate data
   const { 
@@ -106,7 +109,6 @@ const DebateDetail = () => {
       table: 'argument_ratings',
       onUpdate: (payload) => {
         console.log('Ratings updated:', payload);
-        // Optionally refresh arguments to show updated ratings
         setRefreshKey(prev => prev + 1);
         trackInteraction('realtime_rating_update', { debate_id: id });
       }
@@ -170,7 +172,7 @@ const DebateDetail = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Lade Debatte...</p>
+          <p className="mt-2 text-muted-foreground">{t('debate.loadingDebate')}</p>
         </div>
       </div>
     );
@@ -180,8 +182,8 @@ const DebateDetail = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Debatte nicht gefunden</h1>
-          <p className="text-muted-foreground">Die angeforderte Debatte existiert nicht oder wurde entfernt.</p>
+          <h1 className="text-2xl font-bold mb-4">{t('debate.notFound')}</h1>
+          <p className="text-muted-foreground">{t('debate.notFoundDescription')}</p>
         </div>
       </div>
     );
@@ -204,7 +206,7 @@ const DebateDetail = () => {
               </div>
               <Badge variant="secondary" className="ml-4">
                 <Clock className="h-3 w-3 mr-1" />
-                {new Date(debate.erstellt_am).toLocaleDateString('de-DE')}
+                {new Date(debate.erstellt_am).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
               </Badge>
             </div>
           </CardHeader>
@@ -212,15 +214,15 @@ const DebateDetail = () => {
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <MessageSquare className="h-4 w-4" />
-                <span>{argumentsList.length} Argumente</span>
+                <span>{argumentsList.length} {t('argument.add')}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Users className="h-4 w-4" />
-                <span>{new Set(argumentsList.map(a => a.benutzer_id)).size} Teilnehmer</span>
+                <span>{new Set(argumentsList.map(a => a.benutzer_id)).size} {language === 'de' ? 'Teilnehmer' : 'Participants'}</span>
               </div>
               <div className="flex items-center gap-1">
                 <TrendingUp className="h-4 w-4" />
-                <span>Aktiv</span>
+                <span>{language === 'de' ? 'Aktiv' : 'Active'}</span>
               </div>
             </div>
           </CardContent>
@@ -237,7 +239,7 @@ const DebateDetail = () => {
         {argumentsLoading && argumentsList.length === 0 && (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-2 text-sm text-muted-foreground">Lade Argumente...</p>
+            <p className="mt-2 text-sm text-muted-foreground">{t('debate.loadingArguments')}</p>
           </div>
         )}
 
@@ -246,7 +248,7 @@ const DebateDetail = () => {
           {/* Pro Arguments */}
           <div>
             <h2 className="text-xl font-semibold mb-4 text-green-700 flex items-center gap-2">
-              👍 Pro-Argumente ({proArguments.length})
+              👍 {t('debate.proArguments')} ({proArguments.length})
             </h2>
             <div className="space-y-6">
               <DebateThread arguments={proArguments} debateId={id!} />
@@ -254,7 +256,7 @@ const DebateDetail = () => {
                 <Card className="text-center py-8 border-dashed">
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Noch keine Pro-Argumente vorhanden. Sei der Erste!
+                      {t('debate.noProArguments')}
                     </p>
                   </CardContent>
                 </Card>
@@ -265,7 +267,7 @@ const DebateDetail = () => {
           {/* Contra Arguments */}
           <div>
             <h2 className="text-xl font-semibold mb-4 text-red-700 flex items-center gap-2">
-              👎 Contra-Argumente ({contraArguments.length})
+              👎 {t('debate.contraArguments')} ({contraArguments.length})
             </h2>
             <div className="space-y-6">
               <DebateThread arguments={contraArguments} debateId={id!} />
@@ -273,7 +275,7 @@ const DebateDetail = () => {
                 <Card className="text-center py-8 border-dashed">
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Noch keine Contra-Argumente vorhanden. Starte die Diskussion!
+                      {t('debate.noContraArguments')}
                     </p>
                   </CardContent>
                 </Card>
