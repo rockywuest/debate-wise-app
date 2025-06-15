@@ -1,11 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { EnhancedArgumentCard } from '@/components/EnhancedArgumentCard';
 import { EnhancedArgumentForm } from '@/components/EnhancedArgumentForm';
+import { DebateThread } from '@/components/DebateThread';
 import { PerformanceMonitor } from '@/components/PerformanceMonitor';
 import { useAdvancedCache } from '@/hooks/useAdvancedCache';
 import { useRealtimeSubscriptions } from '@/hooks/useRealtimeSubscriptions';
@@ -243,33 +241,15 @@ const DebateDetail = () => {
           </div>
         )}
 
-        {/* Arguments Grid */}
+        {/* Improved Arguments Layout with Visual Hierarchy */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Pro Arguments */}
           <div>
             <h2 className="text-xl font-semibold mb-4 text-green-700 flex items-center gap-2">
               👍 Pro-Argumente ({proArguments.length})
             </h2>
-            <div className="space-y-4">
-              {proArguments.map((argument) => (
-                <EnhancedArgumentCard
-                  key={`${argument.id}-${refreshKey}`}
-                  id={argument.id}
-                  title={argument.argument_text.substring(0, 50) + (argument.argument_text.length > 50 ? '...' : '')}
-                  content={argument.argument_text}
-                  type={argument.argument_typ}
-                  author={argument.autor_name || 'Anonym'}
-                  authorUserId={argument.benutzer_id}
-                  createdAt={argument.erstellt_am}
-                  debateId={id!}
-                  childArguments={argument.children?.map((child: any) => ({
-                    id: child.id,
-                    title: child.argument_text.substring(0, 30) + '...',
-                    content: child.argument_text,
-                    type: child.argument_typ
-                  })) || []}
-                />
-              ))}
+            <div className="space-y-6">
+              <DebateThread arguments={proArguments} debateId={id!} />
               {proArguments.length === 0 && (
                 <Card className="text-center py-8 border-dashed">
                   <CardContent>
@@ -287,26 +267,8 @@ const DebateDetail = () => {
             <h2 className="text-xl font-semibold mb-4 text-red-700 flex items-center gap-2">
               👎 Contra-Argumente ({contraArguments.length})
             </h2>
-            <div className="space-y-4">
-              {contraArguments.map((argument) => (
-                <EnhancedArgumentCard
-                  key={`${argument.id}-${refreshKey}`}
-                  id={argument.id}
-                  title={argument.argument_text.substring(0, 50) + (argument.argument_text.length > 50 ? '...' : '')}
-                  content={argument.argument_text}
-                  type={argument.argument_typ}
-                  author={argument.autor_name || 'Anonym'}
-                  authorUserId={argument.benutzer_id}
-                  createdAt={argument.erstellt_am}
-                  debateId={id!}
-                  childArguments={argument.children?.map((child: any) => ({
-                    id: child.id,
-                    title: child.argument_text.substring(0, 30) + '...',
-                    content: child.argument_text,
-                    type: child.argument_typ
-                  })) || []}
-                />
-              ))}
+            <div className="space-y-6">
+              <DebateThread arguments={contraArguments} debateId={id!} />
               {contraArguments.length === 0 && (
                 <Card className="text-center py-8 border-dashed">
                   <CardContent>

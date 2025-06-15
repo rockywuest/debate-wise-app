@@ -3,8 +3,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { CreateDebateForm } from '@/components/CreateDebateForm';
+import { DebateCard } from '@/components/DebateCard';
 import { OnboardingTour } from '@/components/OnboardingTour';
 import { useDebates } from '@/hooks/useDebates';
 import { useAuth } from '@/hooks/useAuth';
@@ -16,7 +16,7 @@ const Debate = () => {
   const { debates, loading } = useDebates();
   const { user } = useAuth();
   const { showOnboarding, completeOnboarding } = useOnboarding();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   if (loading) {
     return (
@@ -85,43 +85,14 @@ const Debate = () => {
           ) : (
             <div className="grid gap-6">
               {debates.map((debate) => (
-                <Card key={debate.id} className="fw-card hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <CardTitle className="text-xl mb-2">{debate.titel}</CardTitle>
-                        {debate.beschreibung && (
-                          <CardDescription className="text-base">
-                            {debate.beschreibung}
-                          </CardDescription>
-                        )}
-                      </div>
-                      <Badge variant="secondary" className="ml-4">
-                        <Clock className="h-3 w-3 mr-1" />
-                        {new Date(debate.erstellt_am).toLocaleDateString()}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Users className="h-4 w-4" />
-                          <span>Active</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <TrendingUp className="h-4 w-4" />
-                          <span>Growing</span>
-                        </div>
-                      </div>
-                      <Link to={`/debate/${debate.id}`}>
-                        <Button className="fw-button-gradient">
-                          {t('nav.debates')}
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
+                <DebateCard
+                  key={debate.id}
+                  id={debate.id}
+                  title={debate.titel}
+                  description={debate.beschreibung}
+                  createdAt={debate.erstellt_am}
+                  language={language}
+                />
               ))}
             </div>
           )}
