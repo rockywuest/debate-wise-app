@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { DebateCard } from './DebateCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from '@/utils/i18n';
-import { TrendingUp, Fire, Clock, Users, MessageSquare } from 'lucide-react';
+import { TrendingUp, Flame, Clock, Users, MessageSquare } from 'lucide-react';
 
 interface TrendingDebate {
   id: string;
@@ -110,7 +110,7 @@ export const TrendingDebates = () => {
   const getTabIcon = (tab: string) => {
     switch (tab) {
       case 'trending':
-        return <Fire className="h-4 w-4" />;
+        return <Flame className="h-4 w-4" />;
       case 'active':
         return <TrendingUp className="h-4 w-4" />;
       case 'recent':
@@ -146,7 +146,7 @@ export const TrendingDebates = () => {
         </div>
         {debate.activity_score > 0 && (
           <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-800">
-            <Fire className="h-3 w-3 mr-1" />
+            <Flame className="h-3 w-3 mr-1" />
             Hot
           </Badge>
         )}
