@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import { Navigation } from "./components/Navigation";
+import Landing from "./pages/Landing";
 import Index from "./pages/Index";
 import Debate from "./pages/Debate";
 import DebateDetail from "./pages/DebateDetail";
@@ -22,14 +23,44 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Navigation />
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/debates" element={<Debate />} />
-            <Route path="/debate/:id" element={<DebateDetail />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="/" element={<Landing />} />
+            <Route path="/app" element={
+              <>
+                <Navigation />
+                <Index />
+              </>
+            } />
+            <Route path="/debates" element={
+              <>
+                <Navigation />
+                <Debate />
+              </>
+            } />
+            <Route path="/debate/:id" element={
+              <>
+                <Navigation />
+                <DebateDetail />
+              </>
+            } />
+            <Route path="/auth" element={
+              <>
+                <Navigation />
+                <Auth />
+              </>
+            } />
+            <Route path="/leaderboard" element={
+              <>
+                <Navigation />
+                <Leaderboard />
+              </>
+            } />
+            <Route path="*" element={
+              <>
+                <Navigation />
+                <NotFound />
+              </>
+            } />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

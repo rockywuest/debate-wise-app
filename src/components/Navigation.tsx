@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { Button } from '@/components/ui/button';
 import { ReputationDisplay } from './ReputationDisplay';
-import { User, LogOut, MessageSquare, Trophy } from 'lucide-react';
+import { User, LogOut, MessageSquare, Trophy, Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Navigation = () => {
@@ -14,7 +14,7 @@ export const Navigation = () => {
     <nav className="fw-header border-b">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo and App Title */}
-        <Link to="/" className="fw-nav-logo">
+        <Link to="/app" className="fw-nav-logo">
           <img
             src="/lovable-uploads/ff526cc9-9c59-471f-9937-ff92eadbc73e.png"
             alt="FRECH & WUEST Logo"
@@ -27,6 +27,12 @@ export const Navigation = () => {
         </Link>
 
         <div className="flex items-center gap-4">
+          <Link to="/" className="fw-nav-link">
+            <Button variant="ghost" className="gap-2">
+              <Home className="h-4 w-4" />
+              <span className="hidden md:inline">Landing</span>
+            </Button>
+          </Link>
           {user && (
             <>
               <Link to="/debates" className="fw-nav-link">
