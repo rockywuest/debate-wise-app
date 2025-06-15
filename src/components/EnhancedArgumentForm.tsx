@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useSecureArguments } from '@/hooks/useSecureArguments';
+import { useTranslation } from '@/utils/i18n';
 import { Badge } from '@/components/ui/badge';
 import { Target, Search, MessageSquare, CheckCircle } from 'lucide-react';
 
@@ -22,14 +23,15 @@ export const EnhancedArgumentForm = ({ debateId, parentId, onSuccess }: Enhanced
   const { user } = useAuth();
   const { createArgument, creating } = useSecureArguments(debateId);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!argumentText.trim()) {
       toast({
-        title: "Fehler",
-        description: "Bitte geben Sie ein Argument ein.",
+        title: t('common.error'),
+        description: "Please enter an argument.",
         variant: "destructive"
       });
       return;
@@ -37,8 +39,8 @@ export const EnhancedArgumentForm = ({ debateId, parentId, onSuccess }: Enhanced
 
     if (argumentText.length < 20) {
       toast({
-        title: "Argument zu kurz",
-        description: "Bitte formulieren Sie Ihr Argument ausführlicher (mindestens 20 Zeichen).",
+        title: "Argument too short",
+        description: "Please formulate your argument in more detail (at least 20 characters).",
         variant: "destructive"
       });
       return;
@@ -52,8 +54,8 @@ export const EnhancedArgumentForm = ({ debateId, parentId, onSuccess }: Enhanced
       onSuccess?.();
       
       toast({
-        title: "Argument hinzugefügt",
-        description: "Ihr Argument wird jetzt von der KI analysiert.",
+        title: "Argument added",
+        description: "Your argument is now being analyzed by AI.",
       });
     }
   };
@@ -61,23 +63,23 @@ export const EnhancedArgumentForm = ({ debateId, parentId, onSuccess }: Enhanced
   const qualityGuidelines = [
     {
       icon: <Target className="h-4 w-4 text-blue-600" />,
-      title: "Relevant",
-      description: "Bleiben Sie beim Thema der Debatte"
+      title: t('quality.relevance'),
+      description: "Stay on topic of the debate"
     },
     {
       icon: <Search className="h-4 w-4 text-green-600" />,
-      title: "Belegt",
-      description: "Unterstützen Sie Behauptungen mit Quellen oder Beispielen"
+      title: t('quality.evidence'),
+      description: "Support claims with sources or examples"
     },
     {
       icon: <MessageSquare className="h-4 w-4 text-orange-600" />,
-      title: "Spezifisch",
-      description: "Seien Sie konkret statt vage"
+      title: t('quality.specificity'),
+      description: "Be concrete rather than vague"
     },
     {
       icon: <CheckCircle className="h-4 w-4 text-purple-600" />,
-      title: "Logisch",
-      description: "Vermeiden Sie Fehlschlüsse und emotionale Rhetorik"
+      title: t('quality.logic'),
+      description: "Avoid fallacies and emotional rhetoric"
     }
   ];
 
@@ -86,7 +88,7 @@ export const EnhancedArgumentForm = ({ debateId, parentId, onSuccess }: Enhanced
       <Card>
         <CardContent className="p-4 text-center">
           <p className="text-muted-foreground">
-            Melden Sie sich an, um an der Debatte teilzunehmen.
+            Sign in to participate in the debate.
           </p>
         </CardContent>
       </Card>
@@ -97,19 +99,19 @@ export const EnhancedArgumentForm = ({ debateId, parentId, onSuccess }: Enhanced
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>Neues Argument hinzufügen</span>
+          <span>{t('argument.add')}</span>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setShowGuidelines(!showGuidelines)}
           >
-            💡 Qualitäts-Tipps
+            💡 Quality Tips
           </Button>
         </CardTitle>
         {showGuidelines && (
           <div className="mt-3 p-3 bg-blue-50 rounded-lg">
             <h4 className="font-semibold text-sm mb-2 text-blue-900">
-              So erstellen Sie ein starkes Argument:
+              How to create a strong argument:
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {qualityGuidelines.map((guideline, index) => (
@@ -135,7 +137,7 @@ export const EnhancedArgumentForm = ({ debateId, parentId, onSuccess }: Enhanced
               onClick={() => setArgumentType('Pro')}
               className="flex-1"
             >
-              👍 Pro-Argument
+              👍 {t('argument.type.pro')}
             </Button>
             <Button
               type="button"
@@ -144,28 +146,28 @@ export const EnhancedArgumentForm = ({ debateId, parentId, onSuccess }: Enhanced
               onClick={() => setArgumentType('Contra')}
               className="flex-1"
             >
-              👎 Contra-Argument
+              👎 {t('argument.type.contra')}
             </Button>
           </div>
           
           <Textarea
             value={argumentText}
             onChange={(e) => setArgumentText(e.target.value)}
-            placeholder="Formulieren Sie hier Ihr Argument. Denken Sie an Relevanz, Belege, Spezifität und logische Klarheit..."
+            placeholder={t('argument.placeholder')}
             className="min-h-[120px]"
             maxLength={2000}
           />
           
           <div className="flex justify-between items-center">
             <span className="text-xs text-muted-foreground">
-              {argumentText.length}/2000 Zeichen (min. 20)
+              {argumentText.length}/2000 {t('argument.chars')} ({t('argument.min')} 20)
             </span>
             <Button 
               type="submit" 
               disabled={creating || argumentText.length < 20}
               className="min-w-[120px]"
             >
-              {creating ? 'Wird erstellt...' : 'Argument hinzufügen'}
+              {creating ? t('common.loading') : t('argument.submit')}
             </Button>
           </div>
         </form>

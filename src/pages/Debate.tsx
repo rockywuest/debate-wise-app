@@ -1,23 +1,29 @@
 
 import React from 'react';
-import { useDebates } from '@/hooks/useDebates';
-import { useAuth } from '@/hooks/useAuth';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { CreateDebateForm } from '@/components/CreateDebateForm';
-import { MessageSquare, Clock, Users } from 'lucide-react';
+import { OnboardingTour } from '@/components/OnboardingTour';
+import { useDebates } from '@/hooks/useDebates';
+import { useAuth } from '@/hooks/useAuth';
+import { useOnboarding } from '@/hooks/useOnboarding';
+import { useTranslation } from '@/utils/i18n';
+import { MessageSquare, Users, Clock, TrendingUp } from 'lucide-react';
 
 const Debate = () => {
+  const { debates, loading } = useDebates();
   const { user } = useAuth();
-  const { debates, loading: debatesLoading } = useDebates();
+  const { showOnboarding, completeOnboarding } = useOnboarding();
+  const { t } = useTranslation();
 
-  if (debatesLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Debatten werden geladen...</p>
+          <p className="mt-2 text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -29,14 +35,14 @@ const Debate = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl font-bold mb-4 fw-gradient-text">
-              Debatten
+              debate wise
             </h1>
             <p className="text-xl text-muted-foreground mb-6">
-              Bitte melden Sie sich an, um an Debatten teilzunehmen.
+              {t('debates.subtitle')}
             </p>
             <Link to="/auth">
               <Button className="fw-button-gradient">
-                Jetzt anmelden
+                {t('nav.login')}
               </Button>
             </Link>
           </div>
@@ -47,32 +53,39 @@ const Debate = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <OnboardingTour 
+        isOpen={showOnboarding} 
+        onComplete={completeOnboarding}
+      />
+      
       <div className="container mx-auto px-4 py-8">
         <div className="text-center max-w-4xl mx-auto mb-8">
           <h1 className="text-4xl font-bold mb-4 fw-gradient-text">
-            Alle Debatten
+            {t('debates.title')}
           </h1>
           <p className="text-xl text-muted-foreground mb-6">
-            Wählen Sie eine Debatte aus oder erstellen Sie eine neue
+            {t('debates.subtitle')}
           </p>
-          <CreateDebateForm />
+          <div className="bg-fw-panel rounded-xl p-6 shadow-card">
+            <CreateDebateForm />
+          </div>
         </div>
 
         <div className="max-w-4xl mx-auto">
-          {debates.length === 0 ? (
-            <Card>
-              <CardContent className="text-center py-12">
+          {!debates || debates.length === 0 ? (
+            <Card className="fw-card text-center py-12">
+              <CardContent>
                 <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Noch keine Debatten</h3>
-                <p className="text-muted-foreground">
-                  Erstellen Sie die erste Debatte und beginnen Sie die Diskussion!
+                <p className="text-muted-foreground mb-6">
+                  {t('debates.empty')}
                 </p>
+                <CreateDebateForm />
               </CardContent>
             </Card>
           ) : (
             <div className="grid gap-6">
               {debates.map((debate) => (
-                <Card key={debate.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+                <Card key={debate.id} className="fw-card hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
@@ -83,24 +96,29 @@ const Debate = () => {
                           </CardDescription>
                         )}
                       </div>
-                      <Link to={`/debate/${debate.id}`}>
-                        <Button className="fw-button-gradient ml-4">
-                          <MessageSquare className="h-4 w-4 mr-2" />
-                          Teilnehmen
-                        </Button>
-                      </Link>
+                      <Badge variant="secondary" className="ml-4">
+                        <Clock className="h-3 w-3 mr-1" />
+                        {new Date(debate.erstellt_am).toLocaleDateString()}
+                      </Badge>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        Erstellt am {new Date(debate.erstellt_am).toLocaleDateString('de-DE')}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Users className="h-4 w-4" />
+                          <span>Active</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <TrendingUp className="h-4 w-4" />
+                          <span>Growing</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="h-4 w-4" />
-                        ID: {debate.id.substring(0, 8)}...
-                      </div>
+                      <Link to={`/debate/${debate.id}`}>
+                        <Button className="fw-button-gradient">
+                          {t('nav.debates')}
+                        </Button>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>
