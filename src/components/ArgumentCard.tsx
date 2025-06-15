@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { SummaryDialog } from './SummaryDialog';
-import { FallacyAnalysis } from './FallacyAnalysis';
+import { ArgumentQualityAnalysis } from './ArgumentQualityAnalysis';
 import { SteelManDialog } from './SteelManDialog';
 import { CreateArgumentForm } from './CreateArgumentForm';
 import { ArgumentRatingButtons } from './ArgumentRatingButtons';
@@ -63,10 +63,6 @@ export const ArgumentCard = ({
 
   const childArgumentTexts = childArguments.map(arg => `${arg.title}: ${arg.content}`);
 
-  // NEW: We need the Debate-Kontext (title + description) for the analysis.
-  // To keep it simple, we'll pass the title and leave description blank for now.
-  // (Für noch bessere Ergebnisse später refactoren wir und reichen auch die Beschreibung durch.)
-
   return (
     <Card className="w-full">
       <CardHeader className="pb-3">
@@ -88,8 +84,12 @@ export const ArgumentCard = ({
       <CardContent>
         <p className="text-gray-700 mb-4">{content}</p>
         
-        {/* NEU: KI-Analyse für Mehrdimensionalität */}
-        <ArgumentQualityAnalysis argumentText={content} debateTitle={title} />
+        {/* Enhanced KI-Analyse für Mehrdimensionalität */}
+        <ArgumentQualityAnalysis 
+          argumentText={content} 
+          debateTitle={title}
+          debateDescription=""
+        />
         
         {childArguments.length > 0 && (
           <div className="mt-4 p-3 bg-muted rounded-lg">
