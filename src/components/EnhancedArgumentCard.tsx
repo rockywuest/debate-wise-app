@@ -7,6 +7,7 @@ import { ArgumentQualityAnalysis } from './ArgumentQualityAnalysis';
 import { SteelManDialog } from './SteelManDialog';
 import { CreateArgumentForm } from './CreateArgumentForm';
 import { ArgumentRatingButtons } from './ArgumentRatingButtons';
+import { ChildArgumentsPreview } from './ChildArgumentsPreview';
 import { ReputationDisplay } from './ReputationDisplay';
 import { useEnhancedReputation } from '@/hooks/useEnhancedReputation';
 import { MessageSquare, ThumbsUp, ThumbsDown, Award, TrendingUp } from 'lucide-react';
@@ -93,10 +94,9 @@ export const EnhancedArgumentCard = ({
   };
 
   const qualityBadge = getQualityBadge(qualityScore);
-  const childArgumentTexts = childArguments.map(arg => `${arg.title}: ${arg.content}`);
 
   return (
-    <Card className="w-full">
+    <Card className="w-full shadow-sm hover:shadow-md transition-shadow">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
@@ -122,7 +122,7 @@ export const EnhancedArgumentCard = ({
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-gray-700 mb-4">{content}</p>
+        <p className="text-gray-700 mb-4 leading-relaxed">{content}</p>
         
         {/* Mehrdimensionale KI-Analyse mit Reputations-Integration */}
         <ArgumentQualityAnalysis 
@@ -132,35 +132,14 @@ export const EnhancedArgumentCard = ({
           onAnalysisComplete={handleQualityAnalysis}
         />
         
-        {childArguments.length > 0 && (
-          <div className="mt-4 p-3 bg-muted rounded-lg">
-            <h4 className="font-semibold text-sm mb-2">
-              Antworten ({childArguments.length})
-            </h4>
-            <div className="space-y-2">
-              {childArguments.slice(0, 2).map((child) => (
-                <div key={child.id} className="text-sm p-2 bg-background rounded border-l-2 border-gray-300">
-                  <div className="flex items-center gap-1 mb-1">
-                    {child.type === 'pro' ? (
-                      <ThumbsUp className="h-3 w-3 text-green-600" />
-                    ) : child.type === 'contra' ? (
-                      <ThumbsDown className="h-3 w-3 text-red-600" />
-                    ) : (
-                      <MessageSquare className="h-3 w-3 text-blue-600" />
-                    )}
-                    <span className="font-medium">{child.title}</span>
-                  </div>
-                  <p className="text-muted-foreground">{child.content}</p>
-                </div>
-              ))}
-              {childArguments.length > 2 && (
-                <p className="text-xs text-muted-foreground">
-                  ... und {childArguments.length - 2} weitere Antworten
-                </p>
-              )}
-            </div>
-          </div>
-        )}
+        {/* Improved child arguments preview */}
+        <ChildArgumentsPreview 
+          childArguments={childArguments}
+          onViewAll={() => {
+            // This would scroll to or expand all child arguments
+            console.log('Show all child arguments for:', id);
+          }}
+        />
 
         {/* Verbessertes Rating-System */}
         <div className="mt-4 border-t pt-4">
