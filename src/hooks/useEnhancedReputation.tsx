@@ -1,52 +1,54 @@
 
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from './useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/hooks/useAuth';
 
-export interface ReputationAction {
-  type: 'argument_created' | 'argument_rated_insightful' | 'argument_rated_concede' | 'source_provided' | 'quality_feedback';
-  basePoints: number;
-  multiplier?: number;
-  context?: string;
+interface ReputationAction {
+  type: 'high_quality_argument' | 'source_provided' | 'steel_manning' | 'intellectual_honesty' | 'upvote_received' | 'fallacy_penalty';
+  points: number;
+  description: string;
 }
 
 const REPUTATION_ACTIONS: Record<string, ReputationAction> = {
-  'argument_created': { type: 'argument_created', basePoints: 2 },
-  'argument_rated_insightful': { type: 'argument_rated_insightful', basePoints: 5 },
-  'argument_rated_concede': { type: 'argument_rated_concede', basePoints: 20 },
-  'source_provided': { type: 'source_provided', basePoints: 3 },
-  'quality_feedback': { type: 'quality_feedback', basePoints: 1 }
+  high_quality_argument: {
+    type: 'high_quality_argument',
+    points: 10,
+    description: 'Argument mit hoher KI-Qualitätsbewertung eingereicht'
+  },
+  source_provided: {
+    type: 'source_provided',
+    points: 10,
+    description: 'Relevante Quelle für eine Behauptung geliefert'
+  },
+  steel_manning: {
+    type: 'steel_manning',
+    points: 25,
+    description: 'Faire Steel-Manning-Darstellung eines Gegenarguments'
+  },
+  intellectual_honesty: {
+    type: 'intellectual_honesty',
+    points: 50,
+    description: 'Eigenes Argument zurückgezogen oder Gegenargument anerkannt'
+  },
+  upvote_received: {
+    type: 'upvote_received',
+    points: 1,
+    description: 'Upvote von einem anderen Nutzer erhalten'
+  },
+  fallacy_penalty: {
+    type: 'fallacy_penalty',
+    points: -5,
+    description: 'Logischer Fehlschluss in Argument erkannt'
+  }
 };
 
 export const useEnhancedReputation = () => {
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
 
-  const calculateReputationPoints = (action: ReputationAction, qualityScore?: number): number => {
-    let points = action.basePoints;
-    
-    // Apply quality multiplier for high-quality arguments
-    if (qualityScore && qualityScore >= 4) {
-      points *= 1.5; // 50% bonus for high-quality arguments
-    }
-    
-    // Apply context multiplier if provided
-    if (action.multiplier) {
-      points *= action.multiplier;
-    }
-    
-    return Math.round(points);
-  };
-
-  const awardReputation = async (
-    targetUserId: string,
-    actionType: string,
-    reason: string,
-    argumentId?: string,
-    qualityScore?: number
-  ) => {
+  const awardReputation = async (userId: string, actionType: string, contextId?: string) => {
     if (!user) return;
 
     const action = REPUTATION_ACTIONS[actionType];
@@ -55,40 +57,109 @@ export const useEnhancedReputation = () => {
       return;
     }
 
+    setLoading(true);
     try {
-      setLoading(true);
-      const points = calculateReputationPoints(action, qualityScore);
-      
-      const { error } = await supabase.rpc('update_user_reputation', {
-        target_user_id: targetUserId,
-        points,
-        reason: `${reason} (${actionType})`,
-        argument_id: argumentId,
-        granted_by: user.id
+      // Check if this specific action was already awarded for this context
+      if (contextId) {
+        const { data: existingAward } = await supabase
+          .from('reputation_log')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('action_type', actionType)
+          .eq('context_id', contextId)
+          .single();
+
+        if (existingAward) {
+          console.log('Reputation already awarded for this action');
+          return;
+        }
+      }
+
+      // Award reputation points
+      const { error: logError } = await supabase
+        .from('reputation_log')
+        .insert({
+          user_id: userId,
+          action_type: actionType,
+          points_awarded: action.points,
+          description: action.description,
+          context_id: contextId
+        });
+
+      if (logError) throw logError;
+
+      // Update user's total reputation
+      const { error: updateError } = await supabase.rpc('update_user_reputation', {
+        target_user_id: userId,
+        points_change: action.points
       });
 
-      if (error) throw error;
+      if (updateError) throw updateError;
 
-      toast({
-        title: "Reputation aktualisiert",
-        description: `+${points} Punkte für: ${reason}`
-      });
-    } catch (error: any) {
+      if (action.points > 0) {
+        toast({
+          title: "Reputation erhalten!",
+          description: `+${action.points} Punkte: ${action.description}`,
+        });
+      }
+    } catch (error) {
       console.error('Error awarding reputation:', error);
-      toast({
-        title: "Fehler bei Reputation-Update",
-        description: error.message,
-        variant: "destructive"
-      });
     } finally {
       setLoading(false);
     }
   };
 
+  const getReputationHistory = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('reputation_log')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error fetching reputation history:', error);
+      return [];
+    }
+  };
+
+  const calculateQualityScore = (analysis: any) => {
+    if (!analysis) return 0;
+    
+    let score = 0;
+    
+    // Relevanz (1-5) -> 0-20 Punkte
+    if (analysis.relevanz?.score) {
+      score += analysis.relevanz.score * 4;
+    }
+    
+    // Substantiierung -> 0-25 Punkte
+    if (analysis.substantiierung?.status === 'Vorhanden') {
+      score += 25;
+    }
+    
+    // Spezifität -> 0-25 Punkte
+    if (analysis.spezifitaet?.status === 'Konkret') {
+      score += 25;
+    }
+    
+    // Logik -> 0-30 Punkte, Abzug bei Fehlschluss
+    if (analysis.fehlschluss?.status === 'Keiner') {
+      score += 30;
+    } else {
+      score -= 10; // Penalty für Fehlschluss
+    }
+    
+    return Math.max(0, Math.min(100, score)); // Begrenzen auf 0-100
+  };
+
   return {
     awardReputation,
-    calculateReputationPoints,
-    REPUTATION_ACTIONS,
-    loading
+    getReputationHistory,
+    calculateQualityScore,
+    loading,
+    REPUTATION_ACTIONS
   };
 };

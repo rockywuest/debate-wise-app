@@ -1,222 +1,197 @@
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ThumbsUp, ThumbsDown, Target, Search, MessageSquare, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
-import { useToast } from '@/hooks/use-toast';
-
-type AnalysisResult = {
-  relevanz?: { score: number, begruendung: string },
-  substantiierung?: { status: string, begruendung: string },
-  spezifitaet?: { status: string, begruendung: string },
-  fehlschluss?: { status: string, begruendung: string },
-  error?: string;
-};
+import { Brain, ThumbsUp, ThumbsDown, AlertCircle, CheckCircle, XCircle, Star } from 'lucide-react';
 
 interface ArgumentQualityAnalysisProps {
   argumentText: string;
   debateTitle: string;
-  debateDescription?: string;
+  debateDescription: string;
+  onAnalysisComplete?: (analysis: any) => void;
 }
 
-export const ArgumentQualityAnalysis = ({
-  argumentText,
-  debateTitle,
-  debateDescription
+interface AnalysisResult {
+  relevanz: { score: number; begruendung: string };
+  substantiierung: { status: string; begruendung: string };
+  spezifitaet: { status: string; begruendung: string };
+  fehlschluss: { status: string; begruendung: string };
+}
+
+export const ArgumentQualityAnalysis = ({ 
+  argumentText, 
+  debateTitle, 
+  debateDescription,
+  onAnalysisComplete 
 }: ArgumentQualityAnalysisProps) => {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [feedbackGiven, setFeedbackGiven] = useState<Record<string, boolean>>({});
-  const { user } = useAuth();
-  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [userFeedback, setUserFeedback] = useState<'helpful' | 'not_helpful' | null>(null);
 
-  useEffect(() => {
-    const callAnalyze = async () => {
-      setLoading(true);
-      setAnalysis(null);
-      try {
-        const debateContext = debateDescription
-          ? `${debateTitle}: ${debateDescription}`
-          : debateTitle;
-
-        const { data, error } = await supabase.functions.invoke('analyze-fallacies', {
-          body: {
-            argumentText,
-            debateContext
-          }
-        });
-
-        if (error) throw error;
-        setAnalysis(data.analysis);
-      } catch (err) {
-        setAnalysis({ error: "Analyse fehlgeschlagen." });
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (argumentText && debateTitle) {
-      callAnalyze();
-    }
-  }, [argumentText, debateTitle, debateDescription]);
-
-  const handleFeedback = async (dimension: string, isPositive: boolean) => {
-    if (!user) {
-      toast({
-        title: "Anmeldung erforderlich",
-        description: "Sie müssen angemeldet sein, um Feedback zu geben.",
-        variant: "destructive"
-      });
-      return;
-    }
-
+  const analyzeArgument = async () => {
+    setLoading(true);
     try {
-      // For now, just show toast - we'll implement database storage later
-      toast({
-        title: "Feedback gespeichert",
-        description: `Vielen Dank für Ihr Feedback zur ${dimension}-Bewertung!`
+      const { data, error } = await supabase.functions.invoke('analyze-fallacies', {
+        body: {
+          argumentText,
+          debateContext: `${debateTitle}: ${debateDescription}`
+        }
       });
-      
-      setFeedbackGiven(prev => ({ ...prev, [dimension]: true }));
+
+      if (error) throw error;
+
+      if (data?.analysis) {
+        setAnalysis(data.analysis);
+        onAnalysisComplete?.(data.analysis);
+      }
     } catch (error) {
-      console.error('Error saving feedback:', error);
-      toast({
-        title: "Fehler",
-        description: "Feedback konnte nicht gespeichert werden.",
-        variant: "destructive"
-      });
+      console.error('Error analyzing argument:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <Card className="mt-2 border-blue-200">
-        <CardContent className="p-3 flex items-center gap-2">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
-          <span className="text-sm text-muted-foreground">Analysiere Argumentqualität...</span>
-        </CardContent>
-      </Card>
-    );
-  }
+  const submitFeedback = async (feedback: 'helpful' | 'not_helpful') => {
+    setUserFeedback(feedback);
+    
+    // Hier könnten wir das Feedback in einer Datenbank speichern
+    console.log('User feedback:', feedback, 'for analysis:', analysis);
+  };
 
-  if (!analysis) return null;
-  
-  if (analysis.error) {
-    return (
-      <Card className="mt-2 border-red-200 bg-red-50">
-        <CardContent className="p-3 text-sm text-destructive">
-          {analysis.error}
-        </CardContent>
-      </Card>
-    );
-  }
+  const getRelevanzColor = (score: number) => {
+    if (score >= 4) return 'bg-green-100 text-green-800';
+    if (score >= 3) return 'bg-yellow-100 text-yellow-800';
+    return 'bg-red-100 text-red-800';
+  };
 
-  const AnalysisDimension = ({ 
-    icon, 
-    name, 
-    value, 
-    explanation, 
-    colorClass, 
-    dimensionKey 
-  }: {
-    icon: React.ReactNode,
-    name: string,
-    value: string,
-    explanation: string,
-    colorClass: string,
-    dimensionKey: string
-  }) => (
-    <div className="border-b border-gray-100 pb-2 mb-2 last:border-b-0 last:pb-0 last:mb-0">
-      <div className="flex items-center justify-between mb-1">
-        <div className="flex items-center gap-2">
-          {icon}
-          <span className={`font-semibold text-sm ${colorClass}`}>{name}: {value}</span>
-        </div>
-        {user && !feedbackGiven[dimensionKey] && (
-          <div className="flex gap-1">
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-6 w-6 p-0 hover:bg-green-100"
-              onClick={() => handleFeedback(dimensionKey, true)}
-            >
-              <ThumbsUp className="h-3 w-3 text-green-600" />
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-6 w-6 p-0 hover:bg-red-100"
-              onClick={() => handleFeedback(dimensionKey, false)}
-            >
-              <ThumbsDown className="h-3 w-3 text-red-600" />
-            </Button>
-          </div>
-        )}
-      </div>
-      <p className="text-xs text-muted-foreground ml-6">{explanation}</p>
-    </div>
-  );
+  const getStatusColor = (status: string, isPositive: boolean = true) => {
+    if (isPositive) {
+      return status === 'Vorhanden' || status === 'Konkret' || status === 'Keiner' 
+        ? 'bg-green-100 text-green-800' 
+        : 'bg-red-100 text-red-800';
+    } else {
+      return status === 'Keiner' 
+        ? 'bg-green-100 text-green-800' 
+        : 'bg-red-100 text-red-800';
+    }
+  };
+
+  const getStatusIcon = (status: string, isLogic: boolean = false) => {
+    if (isLogic) {
+      return status === 'Keiner' ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />;
+    }
+    return status === 'Vorhanden' || status === 'Konkret' 
+      ? <CheckCircle className="h-3 w-3" /> 
+      : <XCircle className="h-3 w-3" />;
+  };
 
   return (
-    <Card className="mt-2 border-blue-200 bg-blue-50">
-      <CardContent className="p-4">
-        <div className="mb-3 font-bold text-blue-900 flex items-center gap-2">
-          <Search className="h-4 w-4" />
-          KI-Argumentqualitäts-Analyse
-        </div>
-        <div className="space-y-0">
-          {analysis.relevanz && (
-            <AnalysisDimension
-              icon={<Target className="h-4 w-4" />}
-              name="Relevanz"
-              value={`${analysis.relevanz.score}/5`}
-              explanation={analysis.relevanz.begruendung}
-              colorClass={analysis.relevanz.score >= 4 ? 'text-green-600' : analysis.relevanz.score >= 2 ? 'text-orange-600' : 'text-red-600'}
-              dimensionKey="relevanz"
-            />
-          )}
-          {analysis.substantiierung && (
-            <AnalysisDimension
-              icon={<Search className="h-4 w-4" />}
-              name="Beweislast"
-              value={analysis.substantiierung.status}
-              explanation={analysis.substantiierung.begruendung}
-              colorClass={analysis.substantiierung.status === "Vorhanden" ? "text-green-600" : "text-red-600"}
-              dimensionKey="substantiierung"
-            />
-          )}
-          {analysis.spezifitaet && (
-            <AnalysisDimension
-              icon={<MessageSquare className="h-4 w-4" />}
-              name="Spezifität"
-              value={analysis.spezifitaet.status}
-              explanation={analysis.spezifitaet.begruendung}
-              colorClass={analysis.spezifitaet.status === "Konkret" ? "text-green-600" : "text-orange-600"}
-              dimensionKey="spezifitaet"
-            />
-          )}
-          {analysis.fehlschluss && (
-            <AnalysisDimension
-              icon={<Check className="h-4 w-4" />}
-              name="Logik"
-              value={analysis.fehlschluss.status}
-              explanation={analysis.fehlschluss.begruendung}
-              colorClass={analysis.fehlschluss.status === "Keiner" ? "text-green-600" : "text-red-600"}
-              dimensionKey="fehlschluss"
-            />
-          )}
-        </div>
-        {user && (
-          <div className="mt-3 pt-2 border-t border-gray-200">
-            <p className="text-xs text-muted-foreground">
-              💡 Hilft diese Analyse? Bewerten Sie jede Dimension mit 👍 oder 👎
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+    <div className="space-y-3">
+      {!analysis && (
+        <Button 
+          onClick={analyzeArgument} 
+          disabled={loading}
+          variant="outline" 
+          size="sm"
+          className="gap-2"
+        >
+          <Brain className="h-4 w-4" />
+          {loading ? 'Analysiere...' : 'KI-Qualitätsanalyse starten'}
+        </Button>
+      )}
+
+      {analysis && (
+        <Card className="border-blue-200 bg-blue-50/50">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="font-semibold text-sm flex items-center gap-2">
+                <Brain className="h-4 w-4 text-blue-600" />
+                Mehrdimensionale Argument-Analyse
+              </h4>
+              <div className="flex items-center gap-2">
+                <Star className="h-3 w-3 text-yellow-500" />
+                <span className="text-xs text-muted-foreground">KI-bewertet</span>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {/* Relevanz */}
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium">Relevanz:</span>
+                  <Badge className={`${getRelevanzColor(analysis.relevanz.score)} text-xs flex items-center gap-1`}>
+                    {analysis.relevanz.score}/5
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">{analysis.relevanz.begruendung}</p>
+              </div>
+
+              {/* Substantiierung */}
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium">Substantiierung:</span>
+                  <Badge className={`${getStatusColor(analysis.substantiierung.status)} text-xs flex items-center gap-1`}>
+                    {getStatusIcon(analysis.substantiierung.status)}
+                    {analysis.substantiierung.status}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">{analysis.substantiierung.begruendung}</p>
+              </div>
+
+              {/* Spezifität */}
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium">Spezifität:</span>
+                  <Badge className={`${getStatusColor(analysis.spezifitaet.status)} text-xs flex items-center gap-1`}>
+                    {getStatusIcon(analysis.spezifitaet.status)}
+                    {analysis.spezifitaet.status}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">{analysis.spezifitaet.begruendung}</p>
+              </div>
+
+              {/* Logik */}
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium">Logik:</span>
+                  <Badge className={`${getStatusColor(analysis.fehlschluss.status, false)} text-xs flex items-center gap-1`}>
+                    {getStatusIcon(analysis.fehlschluss.status, true)}
+                    {analysis.fehlschluss.status}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">{analysis.fehlschluss.begruendung}</p>
+              </div>
+            </div>
+
+            {/* Feedback-Mechanismus */}
+            <div className="mt-4 pt-3 border-t border-blue-200">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">War diese Analyse hilfreich?</span>
+                <div className="flex gap-1">
+                  <Button
+                    variant={userFeedback === 'helpful' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => submitFeedback('helpful')}
+                    className="h-6 w-6 p-0"
+                  >
+                    <ThumbsUp className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant={userFeedback === 'not_helpful' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => submitFeedback('not_helpful')}
+                    className="h-6 w-6 p-0"
+                  >
+                    <ThumbsDown className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
 };

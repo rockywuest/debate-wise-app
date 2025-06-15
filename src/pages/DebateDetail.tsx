@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArgumentCard } from '@/components/ArgumentCard';
+import { EnhancedArgumentCard } from '@/components/EnhancedArgumentCard';
 import { CreateArgumentForm } from '@/components/CreateArgumentForm';
 import { useDebates } from '@/hooks/useDebates';
 import { useArguments } from '@/hooks/useArguments';
@@ -112,7 +112,7 @@ const DebateDetail = () => {
             </div>
           ) : (
             debateArguments.map((argument) => (
-              <ArgumentCard
+              <EnhancedArgumentCard
                 key={argument.id}
                 id={argument.id}
                 title={argument.argument_text.substring(0, 100) + (argument.argument_text.length > 100 ? '...' : '')}
