@@ -156,7 +156,6 @@ export const Leaderboard = () => {
                             <ReputationDisplay 
                               score={leader.reputation_score} 
                               size="sm"
-                              showLabel={false}
                             />
                           </div>
                         </div>
