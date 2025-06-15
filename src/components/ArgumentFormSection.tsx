@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { EnhancedArgumentForm } from './EnhancedArgumentForm';
+import { IntelligentArgumentForm } from './IntelligentArgumentForm';
 
 interface ArgumentFormSectionProps {
   debateId: string;
@@ -10,16 +9,11 @@ interface ArgumentFormSectionProps {
 
 export const ArgumentFormSection = ({ debateId, onSuccess }: ArgumentFormSectionProps) => {
   return (
-    <Card className="mb-8 subtle-shadow">
-      <CardHeader>
-        <CardTitle className="text-xl">Neues Argument hinzufügen</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <EnhancedArgumentForm 
-          debateId={debateId} 
-          onSuccess={onSuccess}
-        />
-      </CardContent>
-    </Card>
+    <div className="mb-8">
+      <IntelligentArgumentForm 
+        debateId={debateId} 
+        onSuccess={onSuccess}
+      />
+    </div>
   );
 };
