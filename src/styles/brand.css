@@ -1,11 +1,12 @@
 
 :root {
-  --fw-bg: #23232B;          /* slightly bluer dark */
+  --fw-bg: #23232B;          /* slightly bluer dark for depth */
   --fw-panel: #2C2C2C;
-  --fw-accent: #B90096;      /* vibrant magenta */
-  --fw-accent2: #FFA500;     /* orange */
-  --fw-accent3: #27B1EA;     /* blue */
-  --fw-accent4: #6CC24A;     /* green */
+  --fw-accent: #B90096;      /* vibrant magenta (logo top left) */
+  --fw-accent2: #FFA500;     /* orange (logo top right) */
+  --fw-accent3: #27B1EA;     /* bright blue (logo bottom left) */
+  --fw-accent4: #6CC24A;     /* fresh green (logo bottom right) */
+  --fw-petrol: #108EA7;
   --fw-text: #F9F9F9;
   --fw-subtext: #CCCCCC;
 }
@@ -120,4 +121,3 @@ body {
 .fw-nav-link:hover:after {
   width: 100%;
 }
-

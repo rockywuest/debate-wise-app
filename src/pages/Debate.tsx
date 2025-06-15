@@ -37,14 +37,14 @@ const Debate = () => {
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold mb-4">
+            <h1 className="text-4xl font-bold mb-4 fw-gradient-text">
               Debattensystem
             </h1>
             <p className="text-xl text-muted-foreground mb-6">
               Bitte melden Sie sich an, um an Debatten teilzunehmen.
             </p>
             <Link to="/auth">
-              <Button>
+              <Button className="fw-button-gradient">
                 Jetzt anmelden
               </Button>
             </Link>
@@ -59,14 +59,14 @@ const Debate = () => {
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold mb-4">
+            <h1 className="text-4xl font-bold mb-4 fw-gradient-text">
               Keine Debatten verfügbar
             </h1>
             <p className="text-xl text-muted-foreground mb-6">
               Es gibt derzeit keine Debatten. Erstellen Sie die erste Debatte!
             </p>
             <Link to="/">
-              <Button>
+              <Button className="fw-button-gradient">
                 Zur Startseite
               </Button>
             </Link>
@@ -80,7 +80,7 @@ const Debate = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center max-w-4xl mx-auto mb-8">
-          <h1 className="text-4xl font-bold mb-4">
+          <h1 className="text-4xl font-bold mb-4 fw-gradient-text">
             Debatte: {currentDebate.titel}
           </h1>
           {currentDebate.beschreibung && (
@@ -88,12 +88,14 @@ const Debate = () => {
               {currentDebate.beschreibung}
             </p>
           )}
-          <CreateArgumentForm debateId={currentDebate.id} />
+          <div className="bg-fw-panel rounded-xl p-6 shadow-card">
+            <CreateArgumentForm debateId={currentDebate.id} />
+          </div>
         </div>
 
         <div className="max-w-4xl mx-auto space-y-6">
           {!debateArguments || debateArguments.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-center py-12 fw-card">
               <p className="text-muted-foreground">
                 Diese Debatte hat noch keine Argumente. Seien Sie der Erste, der ein Argument hinzufügt!
               </p>
