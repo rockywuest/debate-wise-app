@@ -109,9 +109,8 @@ export const SecureArgumentForm = ({
         const hasSource = sourceUrl && sourceDescription;
         
         if (hasSource) {
-          await awardReputation(user.id, 'source_provided', 'Quelle bereitgestellt', result.id);
+          await awardReputation(user.id, 'source_provided', result.id);
         }
-        await awardReputation(user.id, 'argument_created', 'Argument erstellt', result.id);
       }
 
       // Reset form
@@ -200,7 +199,7 @@ export const SecureArgumentForm = ({
               <div className="space-y-3 border-t pt-3">
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary" className="text-xs">Optional</Badge>
-                  <Label className="text-sm font-medium">Quelle hinzufügen (+3 Reputation)</Label>
+                  <Label className="text-sm font-medium">Quelle hinzufügen (+10 Reputation)</Label>
                 </div>
                 
                 <div>

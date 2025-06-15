@@ -11,9 +11,10 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface SteelManDialogProps {
   originalArgument: string;
+  onSuccess?: () => void;
 }
 
-export const SteelManDialog = ({ originalArgument }: SteelManDialogProps) => {
+export const SteelManDialog = ({ originalArgument, onSuccess }: SteelManDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [reformulation, setReformulation] = useState('');
   const [validation, setValidation] = useState<string | null>(null);
@@ -33,6 +34,11 @@ export const SteelManDialog = ({ originalArgument }: SteelManDialogProps) => {
 
       if (error) throw error;
       setValidation(data.validation);
+      
+      // Call onSuccess if validation is positive
+      if (data.validation && data.validation.toLowerCase().includes('ja') && !data.validation.toLowerCase().includes('nein')) {
+        onSuccess?.();
+      }
     } catch (error) {
       console.error('Error validating steel-man:', error);
     } finally {

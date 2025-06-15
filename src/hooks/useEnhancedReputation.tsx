@@ -62,11 +62,11 @@ export const useEnhancedReputation = () => {
       // Check if this specific action was already awarded for this context
       if (contextId) {
         const { data: existingAward } = await supabase
-          .from('reputation_log')
+          .from('reputation_transactions')
           .select('id')
           .eq('user_id', userId)
-          .eq('action_type', actionType)
-          .eq('context_id', contextId)
+          .eq('reason', action.description)
+          .eq('related_argument_id', contextId)
           .single();
 
         if (existingAward) {
@@ -75,23 +75,12 @@ export const useEnhancedReputation = () => {
         }
       }
 
-      // Award reputation points
-      const { error: logError } = await supabase
-        .from('reputation_log')
-        .insert({
-          user_id: userId,
-          action_type: actionType,
-          points_awarded: action.points,
-          description: action.description,
-          context_id: contextId
-        });
-
-      if (logError) throw logError;
-
-      // Update user's total reputation
+      // Award reputation points using the existing function
       const { error: updateError } = await supabase.rpc('update_user_reputation', {
         target_user_id: userId,
-        points_change: action.points
+        points: action.points,
+        reason: action.description,
+        argument_id: contextId
       });
 
       if (updateError) throw updateError;
@@ -112,7 +101,7 @@ export const useEnhancedReputation = () => {
   const getReputationHistory = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('reputation_log')
+        .from('reputation_transactions')
         .select('*')
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
