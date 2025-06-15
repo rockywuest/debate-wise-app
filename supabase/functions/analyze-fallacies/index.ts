@@ -15,7 +15,35 @@ serve(async (req) => {
   }
 
   try {
-    const { argumentText } = await req.json();
+    const { argumentText, debateContext } = await req.json();
+
+    const prompt = `
+Du bist ein Experte für Logik, Rhetorik und kritische Analyse. Deine Aufgabe ist es, die Qualität eines Arguments im Kontext einer übergeordneten Debatte zu bewerten. Gib deine Analyse in einem strukturierten Format aus.
+
+**Debatten-Kontext:** "${debateContext}"
+
+**Zu analysierendes Argument:** "${argumentText}"
+
+**Führe die folgende Analyse in vier Schritten durch:**
+
+1. Relevanz-Bewertung.
+   - Bewerte auf einer Skala von 1-5, wie relevant das Argument für den Debatten-Kontext ist. Begründe kurz.
+2. Substantiierungs-Bewertung.
+   - Prüfe, ob das Argument eine reine Behauptung ist oder ob es Beweise, Daten oder konkrete Beispiele enthält. Gib an, ob eine Substantiierung vorhanden ist oder fehlt.
+3. Spezifitäts-Bewertung.
+   - Bewerte, ob das Argument spezifisch und konkret oder vage und allgemein formuliert ist. Begründe kurz.
+4. Fehlschluss-Prüfung.
+   - Prüfe, ob das Argument einen der bekannten logischen Fehlschlüsse enthält. Wenn ja, benenne ihn. Wenn nein, bestätige dies.
+
+Gib deine Gesamtanalyse als kompaktes JSON-Objekt aus:
+{
+  "relevanz": { "score": [1-5], "begruendung": "..." },
+  "substantiierung": { "status": "[Vorhanden|Fehlend]", "begruendung": "..." },
+  "spezifitaet": { "status": "[Konkret|Vage]", "begruendung": "..." },
+  "fehlschluss": { "status": "[Name des Fehlschlusses|Keiner]", "begruendung": "..." }
+}
+Wenn irgendein Teil der Analyse fehlt, KEINE Erklärungen, sondern trotzdem das JSON-Schema ausgeben.
+`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -26,17 +54,17 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
-          { 
-            role: 'system', 
-            content: 'Du bist ein Experte für logische Argumentation. Analysiere Texte auf häufige logische Fehlschlüsse wie Ad-hominem-Angriffe, Strohmannargumente, falsche Dilemmata, Zirkelschlüsse, oder hastige Verallgemeinerungen. Antworte auf Deutsch.' 
+          {
+            role: 'system',
+            content: "Du bist ein hochpräziser Qualitätsprüfer für Argumente. Deine Antworten sollen stets JSON im genannten Format sein."
           },
-          { 
-            role: 'user', 
-            content: `Analysiere den folgenden Text auf häufige logische Fehlschlüsse wie Ad-hominem-Angriffe, Strohmannargumente oder falsche Dilemmata. Wenn ein wahrscheinlicher Fehlschluss erkannt wird, identifiziere ihn und gib eine kurze, neutrale Erklärung. Wenn kein Fehlschluss erkannt wird, antworte mit "Kein Fehlschluss erkannt". Text: "${argumentText}"` 
+          {
+            role: 'user',
+            content: prompt
           }
         ],
-        temperature: 0.3,
-        max_tokens: 300
+        temperature: 0.2,
+        max_tokens: 350
       }),
     });
 
@@ -45,7 +73,13 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const analysis = data.choices[0].message.content;
+    // Parse the JSON from AI output; fallback to string if fails
+    let analysis = null;
+    try {
+      analysis = JSON.parse(data.choices[0].message.content);
+    } catch (err) {
+      analysis = { error: "KI-Antwort konnte nicht geparst werden.", raw: data.choices[0].message.content };
+    }
 
     return new Response(JSON.stringify({ analysis }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

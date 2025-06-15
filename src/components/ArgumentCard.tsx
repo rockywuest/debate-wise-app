@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -64,6 +63,10 @@ export const ArgumentCard = ({
 
   const childArgumentTexts = childArguments.map(arg => `${arg.title}: ${arg.content}`);
 
+  // NEW: We need the Debate-Kontext (title + description) for the analysis.
+  // To keep it simple, we'll pass the title and leave description blank for now.
+  // (Für noch bessere Ergebnisse später refactoren wir und reichen auch die Beschreibung durch.)
+
   return (
     <Card className="w-full">
       <CardHeader className="pb-3">
@@ -85,8 +88,8 @@ export const ArgumentCard = ({
       <CardContent>
         <p className="text-gray-700 mb-4">{content}</p>
         
-        {/* KI-Analyse für logische Fehlschlüsse */}
-        <FallacyAnalysis argumentText={content} />
+        {/* NEU: KI-Analyse für Mehrdimensionalität */}
+        <ArgumentQualityAnalysis argumentText={content} debateTitle={title} />
         
         {childArguments.length > 0 && (
           <div className="mt-4 p-3 bg-muted rounded-lg">
