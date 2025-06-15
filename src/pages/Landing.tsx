@@ -49,7 +49,6 @@ const Landing = () => {
       footer_imprint: "Impressum",
       footer_privacy: "Datenschutz",
       footer_copyright: "© 2025 FRECH & WUEST GmbH. All rights reserved.",
-      footer_disclaimer: "Dieses Projekt ist eine konzeptionelle Demonstration.",
       app_access: "Zur App"
     },
     en: {
