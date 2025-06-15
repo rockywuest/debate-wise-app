@@ -38,7 +38,7 @@ const DebateDetail = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl font-bold mb-4 fw-gradient-text">
-              Debattensystem
+              debate wise
             </h1>
             <p className="text-xl text-muted-foreground mb-6">
               Bitte melden Sie sich an, um an Debatten teilzunehmen.
