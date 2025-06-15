@@ -51,9 +51,9 @@ export const PerformanceMonitor = () => {
         return;
       }
 
-      // Simple connection test
+      // Simple connection test using a basic fetch
       const start = performance.now();
-      fetch('/api/ping', { method: 'HEAD' })
+      fetch('/', { method: 'HEAD' })
         .then(() => {
           const latency = performance.now() - start;
           const quality = latency < 100 ? 'excellent' : latency < 300 ? 'good' : 'poor';
@@ -70,7 +70,7 @@ export const PerformanceMonitor = () => {
     // Show monitor in development or when performance is poor
     const shouldShow = process.env.NODE_ENV === 'development' || 
                      loadTime > 3000 || 
-                     renderTime > 100;
+                     metrics.renderTime > 100;
     setIsVisible(shouldShow);
 
     return () => clearInterval(interval);

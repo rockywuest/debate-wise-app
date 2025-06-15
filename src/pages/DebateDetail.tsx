@@ -33,7 +33,7 @@ interface Argument {
 
 const DebateDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [arguments, setArguments] = useState<Argument[]>([]);
+  const [argumentsList, setArgumentsList] = useState<Argument[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const { trackPageView, trackInteraction } = useAnalytics();
 
@@ -82,7 +82,12 @@ const DebateDetail = () => {
         .order('erstellt_am', { ascending: true });
       
       if (error) throw error;
-      return data || [];
+      return data?.map(item => ({
+        ...item,
+        argument_typ: item.argument_typ === 'Pro' ? 'pro' as const : 
+                     item.argument_typ === 'Contra' ? 'contra' as const : 
+                     'neutral' as const
+      })) || [];
     },
     { ttl: 2 * 60 * 1000 } // 2 minutes cache for arguments
   );
@@ -114,7 +119,7 @@ const DebateDetail = () => {
     if (id) {
       getDebate();
       getArguments().then(data => {
-        if (data) setArguments(data);
+        if (data) setArgumentsList(data);
       });
       trackPageView(`debate_detail_${id}`);
     }
@@ -122,14 +127,14 @@ const DebateDetail = () => {
 
   useEffect(() => {
     if (cachedArguments) {
-      setArguments(cachedArguments);
+      setArgumentsList(cachedArguments);
     }
   }, [cachedArguments]);
 
   const handleArgumentSuccess = () => {
     invalidateArgumentsCache();
     getArguments().then(data => {
-      if (data) setArguments(data);
+      if (data) setArgumentsList(data);
     });
     trackInteraction('argument_created', { debate_id: id });
   };
@@ -158,7 +163,7 @@ const DebateDetail = () => {
     return rootArguments;
   };
 
-  const organizedArguments = organizeArguments(arguments);
+  const organizedArguments = organizeArguments(argumentsList);
   const proArguments = organizedArguments.filter(arg => arg.argument_typ === 'pro');
   const contraArguments = organizedArguments.filter(arg => arg.argument_typ === 'contra');
 
@@ -209,11 +214,11 @@ const DebateDetail = () => {
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <MessageSquare className="h-4 w-4" />
-                <span>{arguments.length} Argumente</span>
+                <span>{argumentsList.length} Argumente</span>
               </div>
               <div className="flex items-center gap-1">
                 <Users className="h-4 w-4" />
-                <span>{new Set(arguments.map(a => a.benutzer_id)).size} Teilnehmer</span>
+                <span>{new Set(argumentsList.map(a => a.benutzer_id)).size} Teilnehmer</span>
               </div>
               <div className="flex items-center gap-1">
                 <TrendingUp className="h-4 w-4" />
@@ -231,7 +236,7 @@ const DebateDetail = () => {
           />
         </div>
 
-        {argumentsLoading && arguments.length === 0 && (
+        {argumentsLoading && argumentsList.length === 0 && (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
             <p className="mt-2 text-sm text-muted-foreground">Lade Argumente...</p>
