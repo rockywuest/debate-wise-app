@@ -1,14 +1,22 @@
 
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 
 const Landing = () => {
   const { user } = useAuth();
-  const [language, setLanguage] = useState<'de' | 'en'>('de');
+  const navigate = useNavigate();
+  const [language, setLanguage] = useState<'de' | 'en'>('en');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Redirect logged-in users to dashboard
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const translations = {
     de: {
@@ -110,6 +118,11 @@ const Landing = () => {
     setMobileMenuOpen(false);
   };
 
+  // Don't render if user is logged in (will redirect)
+  if (user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-[#F8F7F4] text-gray-900 font-sans antialiased">
       {/* Header / Navigation */}
@@ -137,20 +150,11 @@ const Landing = () => {
               {t.nav_features}
             </button>
             
-            {user ? (
-              <Link to="/debates">
-                <Button className="bg-[#2563EB] hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg shadow-lg transition-colors duration-300">
-                  {t.app_access}
-                </Button>
-              </Link>
-            ) : (
-              <button 
-                onClick={() => scrollToSection('cta')} 
-                className="bg-[#2563EB] text-white font-bold py-2 px-5 rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300"
-              >
+            <Link to="/auth">
+              <Button className="bg-[#2563EB] hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg shadow-lg transition-colors duration-300">
                 {t.nav_cta}
-              </button>
-            )}
+              </Button>
+            </Link>
             
             <div className="flex space-x-2 text-sm font-semibold text-gray-500">
               <button 
@@ -198,20 +202,11 @@ const Landing = () => {
               {t.nav_features}
             </button>
             
-            {user ? (
-              <Link to="/debates" className="block mt-4">
-                <Button className="w-full text-center bg-[#2563EB] text-white font-bold py-2 px-5 rounded-lg shadow-lg">
-                  {t.app_access}
-                </Button>
-              </Link>
-            ) : (
-              <button 
-                onClick={() => scrollToSection('cta')} 
-                className="block mt-4 w-full text-center bg-[#2563EB] text-white font-bold py-2 px-5 rounded-lg shadow-lg"
-              >
+            <Link to="/auth" className="block mt-4">
+              <Button className="w-full text-center bg-[#2563EB] text-white font-bold py-2 px-5 rounded-lg shadow-lg">
                 {t.nav_cta}
-              </button>
-            )}
+              </Button>
+            </Link>
             
             <div className="flex justify-center space-x-2 text-sm font-semibold text-gray-500 mt-4">
               <button 
@@ -248,20 +243,11 @@ const Landing = () => {
               {t.hero_subtitle}
             </p>
             <div className="mt-10">
-              {user ? (
-                <Link to="/debates">
-                  <Button className="bg-[#2563EB] text-white font-bold text-lg py-4 px-8 rounded-lg shadow-xl hover:bg-blue-700 transition-all transform hover:scale-105 duration-300">
-                    {t.app_access}
-                  </Button>
-                </Link>
-              ) : (
-                <button 
-                  onClick={() => scrollToSection('cta')}
-                  className="bg-[#2563EB] text-white font-bold text-lg py-4 px-8 rounded-lg shadow-xl hover:bg-blue-700 transition-all transform hover:scale-105 duration-300"
-                >
+              <Link to="/auth">
+                <Button className="bg-[#2563EB] text-white font-bold text-lg py-4 px-8 rounded-lg shadow-xl hover:bg-blue-700 transition-all transform hover:scale-105 duration-300">
                   {t.hero_cta}
-                </button>
-              )}
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
@@ -401,21 +387,13 @@ const Landing = () => {
         <section id="cta" className="py-20 bg-[#2563EB] text-white">
           <div className="container mx-auto px-6 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-8">
-              {user ? t.app_access : t.hero_cta}
+              {t.hero_cta}
             </h2>
-            {user ? (
-              <Link to="/debates">
-                <Button className="bg-white text-[#2563EB] font-bold text-lg py-4 px-8 rounded-lg shadow-xl hover:bg-gray-100 transition-all transform hover:scale-105 duration-300">
-                  {t.app_access}
-                </Button>
-              </Link>
-            ) : (
-              <Link to="/auth">
-                <Button className="bg-white text-[#2563EB] font-bold text-lg py-4 px-8 rounded-lg shadow-xl hover:bg-gray-100 transition-all transform hover:scale-105 duration-300">
-                  {t.nav_cta}
-                </Button>
-              </Link>
-            )}
+            <Link to="/auth">
+              <Button className="bg-white text-[#2563EB] font-bold text-lg py-4 px-8 rounded-lg shadow-xl hover:bg-gray-100 transition-all transform hover:scale-105 duration-300">
+                {t.nav_cta}
+              </Button>
+            </Link>
           </div>
         </section>
       </main>
