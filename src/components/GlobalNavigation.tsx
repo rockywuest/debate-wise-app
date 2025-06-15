@@ -45,6 +45,11 @@ export const GlobalNavigation = () => {
       path: '/analytics',
       label: 'Analytik',
       icon: TrendingUp
+    },
+    {
+      path: '/admin',
+      label: 'Admin',
+      icon: Settings
     }
   ];
 
