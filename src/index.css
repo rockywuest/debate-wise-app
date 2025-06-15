@@ -80,3 +80,10 @@
   }
 }
 
+/* Add the missing border-border class so @apply border-border works */
+@layer utilities {
+  .border-border {
+    border-color: var(--border);
+  }
+}
+
