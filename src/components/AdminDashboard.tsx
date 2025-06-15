@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
 import { createDemoContent } from '@/utils/createDemoContent';
 import { useTranslation } from '@/utils/i18n';
+import { PromoteUserForm } from './PromoteUserForm';
 import { 
   Settings, 
   Database, 
@@ -69,6 +70,11 @@ export const AdminDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* User Management */}
+        <div className="md:col-span-2 lg:col-span-1">
+          <PromoteUserForm />
+        </div>
+
         {/* Content Management */}
         <Card>
           <CardHeader>
@@ -102,28 +108,7 @@ export const AdminDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* User Management */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              {language === 'de' ? 'Benutzer verwalten' : 'User Management'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              {language === 'de' 
-                ? 'Benutzerkonten, Rollen und Reputationen verwalten.'
-                : 'Manage user accounts, roles, and reputations.'
-              }
-            </p>
-            <Button variant="outline" className="w-full mt-4" disabled>
-              {language === 'de' ? 'Bald verfügbar' : 'Coming soon'}
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Analytics */}
+        {/* Platform Analytics */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -202,11 +187,19 @@ export const AdminDashboard = () => {
               }
             </p>
           </div>
+          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+            <p className="text-sm">
+              {language === 'de' 
+                ? '👤 Benutzer befördern: Verwenden Sie das Formular oben, um andere Benutzer zu Administratoren zu befördern. Sie finden Benutzer-IDs in der Supabase Auth Users Tabelle.'
+                : '👤 Promote Users: Use the form above to promote other users to administrators. You can find user IDs in the Supabase Auth Users table.'
+              }
+            </p>
+          </div>
           <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
             <p className="text-sm">
               {language === 'de' 
-                ? '⚠️ Diese Funktionen sind nur für Plattform-Administratoren verfügbar. Der Zugriff sollte durch ein ordnungsgemäßes Rollensystem geschützt werden.'
-                : '⚠️ These features are only available to platform administrators. Access should be protected by a proper role system.'
+                ? '⚠️ Diese Funktionen sind nur für Plattform-Administratoren verfügbar. Der Zugriff ist durch ein ordnungsgemäßes Rollensystem geschützt.'
+                : '⚠️ These features are only available to platform administrators. Access is protected by a proper role system.'
               }
             </p>
           </div>

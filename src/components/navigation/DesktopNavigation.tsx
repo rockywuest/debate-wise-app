@@ -3,8 +3,9 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Globe } from 'lucide-react';
-import { navItems } from './NavigationItems';
+import { getNavItems } from './NavigationItems';
 import { UserMenu } from './UserMenu';
+import { useUserRole } from '@/hooks/useUserRole';
 
 interface DesktopNavigationProps {
   user: any;
@@ -15,6 +16,9 @@ interface DesktopNavigationProps {
 
 export const DesktopNavigation = ({ user, signOut, language, toggleLanguage }: DesktopNavigationProps) => {
   const location = useLocation();
+  const { isAdmin } = useUserRole();
+  const navItems = getNavItems(isAdmin());
+  
   const isActive = (path: string) => location.pathname === path;
 
   return (

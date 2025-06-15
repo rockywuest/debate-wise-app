@@ -4,27 +4,41 @@ import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { AdminDashboard } from '@/components/AdminDashboard';
 import { useTranslation } from '@/utils/i18n';
+import { useUserRole } from '@/hooks/useUserRole';
+import { useToast } from '@/components/ui/use-toast';
 
 const Admin = () => {
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const { role, loading: roleLoading, isAdmin } = useUserRole();
   const navigate = useNavigate();
   const { language } = useTranslation();
+  const { toast } = useToast();
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    if (!loading) {
+    if (!authLoading && !roleLoading) {
       if (!user) {
         navigate('/auth');
-      } else {
-        // TODO: Add proper admin role check here
-        // For now, allow any authenticated user to access admin
-        // In production, check user roles/permissions
-        setChecking(false);
+        return;
       }
-    }
-  }, [user, loading, navigate]);
 
-  if (loading || checking) {
+      if (!isAdmin()) {
+        toast({
+          title: language === 'de' ? 'Zugriff verweigert' : 'Access denied',
+          description: language === 'de' 
+            ? 'Sie haben keine Berechtigung für diesen Bereich.' 
+            : 'You do not have permission to access this area.',
+          variant: 'destructive'
+        });
+        navigate('/debates');
+        return;
+      }
+
+      setChecking(false);
+    }
+  }, [user, role, authLoading, roleLoading, isAdmin, navigate, toast, language]);
+
+  if (authLoading || roleLoading || checking) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

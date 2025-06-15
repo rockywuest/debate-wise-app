@@ -4,7 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { MessageSquare, LogOut, User, Globe, Menu } from 'lucide-react';
-import { navItems } from './NavigationItems';
+import { getNavItems } from './NavigationItems';
+import { useUserRole } from '@/hooks/useUserRole';
 
 interface MobileNavigationProps {
   user: any;
@@ -24,6 +25,9 @@ export const MobileNavigation = ({
   setIsOpen 
 }: MobileNavigationProps) => {
   const location = useLocation();
+  const { isAdmin } = useUserRole();
+  const navItems = getNavItems(isAdmin());
+  
   const isActive = (path: string) => location.pathname === path;
   const closeSheet = () => setIsOpen(false);
 
