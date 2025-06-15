@@ -52,14 +52,8 @@ export const Navigation = () => {
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo and App Title */}
         <Link to={user ? "/dashboard" : "/"} className="fw-nav-logo">
-          <img
-            src="/lovable-uploads/ff526cc9-9c59-471f-9937-ff92eadbc73e.png"
-            alt="FRECH & WUEST Logo"
-            className="h-9 w-9 rounded-xl shadow"
-            style={{ background: 'white', padding: 2 }}
-          />
           <span className="app-title fw-gradient-text text-2xl font-display font-bold tracking-tight select-none">
-            Agora
+            debate wise
           </span>
         </Link>
 

@@ -1,4 +1,3 @@
-
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -39,9 +38,9 @@ const Landing = () => {
       problem_box2_li3_strong: "KI-Moderation:",
       problem_box2_li3_text: "Ein neutraler Schiedsrichter sorgt für Fairness und Fakten.",
       solution_title: "Die Lösung aus ersten Prinzipien: debate wise",
-      solution_subtitle: "Wir ändern nicht die Menschen. Wir ändern die Architektur des Raumes, in dem sie interagieren. Agora ist keine Social-Media-Plattform. Es ist eine Debatten-Engine.",
+      solution_subtitle: "Wir ändern nicht die Menschen. Wir ändern die Architektur des Raumes, in dem sie interagieren. debate wise ist keine Social-Media-Plattform. Es ist eine Debatten-Engine.",
       solution_box_title: "Ein Raum für tiefgründiges Denken",
-      solution_box_p: "Stellen Sie sich einen Ort vor, an dem jede Stimme gehört wird, aber jede Behauptung belegt werden muss. Wo das Ziel nicht ist, zu \"gewinnen\", sondern gemeinsam zu verstehen. Das ist Agora. Unsere Plattform zerlegt komplexe Themen in ihre logischen Bestandteile und macht den Gedankengang jeder Seite transparent und nachvollziehbar.",
+      solution_box_p: "Stellen Sie sich einen Ort vor, an dem jede Stimme gehört wird, aber jede Behauptung belegt werden muss. Wo das Ziel nicht ist, zu \"gewinnen\", sondern gemeinsam zu verstehen. Das ist debate wise. Unsere Plattform zerlegt komplexe Themen in ihre logischen Bestandteile und macht den Gedankengang jeder Seite transparent und nachvollziehbar.",
       solution_map_thesis: "[These] Klimawandel ist die größte Herausforderung...",
       solution_map_pro: "[Pro] Anstieg der globalen Temperaturen...",
       solution_map_pro_proof: "↳ [Beweis] NASA-Daten...",
@@ -49,7 +48,7 @@ const Landing = () => {
       solution_map_contra_refute: "↳ [Widerlegung] Langfristige Kosten des Nichtstuns...",
       footer_imprint: "Impressum",
       footer_privacy: "Datenschutz",
-      footer_copyright: "© 2025 FRECH & WUEST GmbH. Alle Rechte vorbehalten.",
+      footer_copyright: "© 2025 debate wise. Alle Rechte vorbehalten.",
       footer_disclaimer: "Dieses Projekt ist eine konzeptionelle Demonstration.",
       app_access: "Zur App"
     },
@@ -72,18 +71,18 @@ const Landing = () => {
       problem_box1_li2_text: "\"Likes\" and retweets encourage division instead of understanding.",
       problem_box1_li3_strong: "Lack of Structure:",
       problem_box1_li3_text: "Emotional outbursts dominate over structured thoughts.",
-      problem_box2_title: "Agora: Built for Clarity",
-      problem_box2_p: "We rethought the platform from the ground up. Agora rewards intellectual honesty, understanding the opposing side, and evidence-based argumentation.",
+      problem_box2_title: "debate wise: Built for Clarity",
+      problem_box2_p: "We rethought the platform from the ground up. debate wise rewards intellectual honesty, understanding the opposing side, and evidence-based argumentation.",
       problem_box2_li1_strong: "Argument Maps:",
       problem_box2_li1_text: "Visualize the entire debate at a glance.",
       problem_box2_li2_strong: "Constructive Incentives:",
       problem_box2_li2_text: "Points for logic, not for loudness.",
       problem_box2_li3_strong: "AI Moderation:",
       problem_box2_li3_text: "A neutral referee ensures fairness and facts.",
-      solution_title: "The Solution from First Principles: Agora",
-      solution_subtitle: "We don't change the people. We change the architecture of the space where they interact. Agora is not a social media platform. It's a debate engine.",
+      solution_title: "The Solution from First Principles: debate wise",
+      solution_subtitle: "We don't change the people. We change the architecture of the space where they interact. debate wise is not a social media platform. It's a debate engine.",
       solution_box_title: "A Space for Deep Thinking",
-      solution_box_p: "Imagine a place where every voice is heard, but every claim must be substantiated. Where the goal isn't to \"win,\" but to understand together. That's Agora. Our platform breaks down complex topics into their logical components, making each side's line of thought transparent and traceable.",
+      solution_box_p: "Imagine a place where every voice is heard, but every claim must be substantiated. Where the goal isn't to \"win,\" but to understand together. That's debate wise. Our platform breaks down complex topics into their logical components, making each side's line of thought transparent and traceable.",
       solution_map_thesis: "[Thesis] Climate change is the greatest challenge...",
       solution_map_pro: "[Pro] Rise in global temperatures...",
       solution_map_pro_proof: "↳ [Proof] NASA data...",
@@ -91,7 +90,7 @@ const Landing = () => {
       solution_map_contra_refute: "↳ [Refutation] Long-term costs of inaction...",
       footer_imprint: "Imprint",
       footer_privacy: "Privacy Policy",
-      footer_copyright: "© 2025 FRECH & WUEST GmbH. All rights reserved.",
+      footer_copyright: "© 2025 debate wise. All rights reserved.",
       footer_disclaimer: "This project is a conceptual demonstration.",
       app_access: "Access App"
     }
@@ -115,7 +114,7 @@ const Landing = () => {
       {/* Header / Navigation */}
       <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200/80">
         <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <Link to="/" className="text-2xl font-bold text-gray-800">Agora</Link>
+          <Link to="/" className="text-2xl font-bold text-gray-800">debate wise</Link>
           
           <div className="hidden md:flex items-center space-x-8">
             <button 
