@@ -349,6 +349,10 @@ export type Database = {
         Args: { p_user_id: string; p_hours?: number }
         Returns: number
       }
+      log_security_event: {
+        Args: { event_type: string; user_id: string; details?: Json }
+        Returns: undefined
+      }
       secure_rate_argument: {
         Args: {
           p_argument_id: string

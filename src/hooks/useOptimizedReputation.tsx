@@ -11,6 +11,16 @@ interface RateArgumentResponse {
   points_awarded?: number;
 }
 
+// Type guard function to safely check if the response has the expected structure
+const isRateArgumentResponse = (data: unknown): data is RateArgumentResponse => {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'success' in data &&
+    typeof (data as any).success === 'boolean'
+  );
+};
+
 export const useOptimizedReputation = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -55,13 +65,20 @@ export const useOptimizedReputation = () => {
 
       if (error) throw error;
 
-      // Type guard to ensure data is the expected object type
-      const result = data as RateArgumentResponse;
-
-      if (!result || !result.success) {
+      // Safe type checking instead of direct casting
+      if (!isRateArgumentResponse(data)) {
         toast({
           title: "Bewertung nicht möglich",
-          description: result?.message || "Die Bewertung konnte nicht abgegeben werden.",
+          description: "Unerwartete Antwort vom Server.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!data.success) {
+        toast({
+          title: "Bewertung nicht möglich",
+          description: data.message || "Die Bewertung konnte nicht abgegeben werden.",
           variant: "destructive"
         });
         return;
@@ -69,7 +86,7 @@ export const useOptimizedReputation = () => {
 
       toast({
         title: "Bewertung erfolgreich",
-        description: `+${result.points_awarded || 0} Reputationspunkte vergeben.`
+        description: `+${data.points_awarded || 0} Reputationspunkte vergeben.`
       });
 
     } catch (error: any) {
