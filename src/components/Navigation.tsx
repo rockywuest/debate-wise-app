@@ -29,10 +29,10 @@ export const Navigation = () => {
         <div className="flex items-center gap-4">
           {user && (
             <>
-              <Link to="/debate" className="fw-nav-link">
+              <Link to="/debates" className="fw-nav-link">
                 <Button variant="ghost" className="gap-2">
                   <MessageSquare className="h-4 w-4" />
-                  <span className="hidden md:inline">Debatte</span>
+                  <span className="hidden md:inline">Debatten</span>
                 </Button>
               </Link>
               <Link to="/leaderboard" className="fw-nav-link">

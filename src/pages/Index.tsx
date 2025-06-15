@@ -37,14 +37,12 @@ const Index = () => {
               </p>
               <div className="flex gap-4 justify-center flex-wrap">
                 <CreateDebateForm />
-                {debates.length > 0 && (
-                  <Link to="/debate">
-                    <Button variant="outline">
-                      <MessageSquare className="h-4 w-4 mr-2" />
-                      Zu den Debatten
-                    </Button>
-                  </Link>
-                )}
+                <Link to="/debates">
+                  <Button variant="outline">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Alle Debatten ansehen
+                  </Button>
+                </Link>
                 <Link to="/leaderboard">
                   <Button variant="outline">
                     <Trophy className="h-4 w-4 mr-2" />
@@ -71,7 +69,14 @@ const Index = () => {
 
         {user && (
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Aktuelle Debatten</h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Neueste Debatten</h2>
+              <Link to="/debates">
+                <Button variant="outline" size="sm">
+                  Alle ansehen
+                </Button>
+              </Link>
+            </div>
             {debatesLoading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
@@ -88,7 +93,7 @@ const Index = () => {
               </Card>
             ) : (
               <div className="grid gap-4">
-                {debates.map((debate) => (
+                {debates.slice(0, 3).map((debate) => (
                   <Card key={debate.id} className="hover:shadow-md transition-shadow">
                     <CardHeader>
                       <div className="flex justify-between items-start">
@@ -100,7 +105,7 @@ const Index = () => {
                             </CardDescription>
                           )}
                         </div>
-                        <Link to="/debate">
+                        <Link to={`/debate/${debate.id}`}>
                           <Button variant="outline" size="sm">
                             Teilnehmen
                           </Button>

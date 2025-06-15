@@ -8,6 +8,7 @@ import { AuthProvider } from "./hooks/useAuth";
 import { Navigation } from "./components/Navigation";
 import Index from "./pages/Index";
 import Debate from "./pages/Debate";
+import DebateDetail from "./pages/DebateDetail";
 import Auth from "./pages/Auth";
 import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
@@ -24,7 +25,8 @@ const App = () => (
           <Navigation />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/debate" element={<Debate />} />
+            <Route path="/debates" element={<Debate />} />
+            <Route path="/debate/:id" element={<DebateDetail />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="*" element={<NotFound />} />
