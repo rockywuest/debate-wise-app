@@ -121,7 +121,7 @@ npm run build
 ## Market Readiness Snapshot (Feb 22, 2026)
 
 - Build pipeline: green (`lint`, `check:i18n`, `typecheck`, `test`, `build`, `smoke:routes`, `audit:prod`)
-- Test baseline: unit coverage plus initial UI integration tests for `AuthForm`, `Index`, and `Debates`
+- Test baseline: unit coverage plus integration tests for `AuthForm`, `Index`, `Debates`, `useAuth`, and `useDebates`
 - i18n guardrail: consistency check in local/CI quality gates (`check:i18n`)
 - Security baseline: no production dependency vulnerabilities in current lockfile
 - Security automation: Dependabot + CodeQL + Scorecard workflows configured
