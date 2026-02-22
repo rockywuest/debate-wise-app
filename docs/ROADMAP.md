@@ -18,7 +18,7 @@ Build the best open-source platform for constructive, evidence-based public disc
 
 - [ ] Expand test coverage (integration + e2e smoke paths)
 - [x] Add production route smoke checks for critical paths
-- [x] Add initial page-level integration tests for core discovery flows
+- [x] Add initial integration tests for core auth and discovery flows
 - [ ] Publish regular release notes and monthly roadmap updates
 - [ ] First-contribution pipeline: curated issues + fast review SLA
 - [ ] Contributor analytics dashboard (response times, merge times)
