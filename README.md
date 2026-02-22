@@ -212,9 +212,11 @@ Architecture and roadmap:
 - Maintainers: see `MAINTAINERS.md`
 - Support: see `SUPPORT.md`
 - Changelog: see `CHANGELOG.md`
+- Contributors: see `CONTRIBUTORS.md`
 - Community operations: see `docs/COMMUNITY_PLAYBOOK.md`
 - Maintainer runbook: see `docs/MAINTAINER_RUNBOOK.md`
 - Security reporting: see `SECURITY.md`
+- Security code-scanning status: see `docs/SECURITY_CODE_SCANNING_STATUS.md`
 
 ## License
 
