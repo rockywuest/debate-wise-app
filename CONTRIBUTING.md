@@ -13,7 +13,7 @@ Thanks for contributing.
 1. Fork and clone the repository.
 2. Install dependencies:
    ```bash
-   npm ci
+   npm run bootstrap
    ```
 3. Create `.env` from `.env.example` and set Supabase credentials.
 4. Start the app:
@@ -26,9 +26,7 @@ Thanks for contributing.
 Run:
 
 ```bash
-npm run typecheck
-npm run build
-npm run lint
+npm run check
 ```
 
 If lint fails due existing baseline issues, include only changes relevant to your scope and mention remaining unrelated lint findings in the PR description.

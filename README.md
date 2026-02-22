@@ -65,7 +65,7 @@ This repository now documents both directions so contributors can build features
 ### 2. Install
 
 ```bash
-npm ci
+npm run bootstrap
 ```
 
 ### 3. Configure Environment
@@ -105,6 +105,8 @@ npm run build
 ## Scripts
 
 - `npm run dev` - start local dev server
+- `npm run bootstrap` - install dependencies and initialize local environment
+- `npm run check` - run full local quality gate (lint, typecheck, test, build, audit)
 - `npm run build` - production build
 - `npm run build:dev` - development-mode build
 - `npm run typecheck` - TypeScript check
@@ -146,6 +148,7 @@ Detailed launch checklist: see `docs/MARKET_READINESS.md`.
 - Governance: see `GOVERNANCE.md`
 - Maintainers: see `MAINTAINERS.md`
 - Support: see `SUPPORT.md`
+- Community operations: see `docs/COMMUNITY_PLAYBOOK.md`
 - Security reporting: see `SECURITY.md`
 
 ## License
