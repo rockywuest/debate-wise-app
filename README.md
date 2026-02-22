@@ -31,7 +31,8 @@ This repository now documents both directions so contributors can build features
   - argument/fallacy analysis
   - steel-man validation
   - thread summarization
-- Localization: EN + DE available (ongoing migration from legacy hard-coded German strings)
+- Localization: EN + DE available with English-first defaults
+- CI quality gates enabled (`lint`, `typecheck`, `test`, `build`, production `audit`)
 
 ## Open-Source Readiness Changes Included
 
@@ -106,15 +107,28 @@ npm run build
 - `npm run build:dev` - development-mode build
 - `npm run typecheck` - TypeScript check
 - `npm run lint` - ESLint
+- `npm run test` - run unit tests (Vitest)
+- `npm run test:watch` - run tests in watch mode
+- `npm run audit:prod` - production dependency vulnerability scan
 - `npm run preview` - preview production build
+
+## Market Readiness Snapshot (Feb 22, 2026)
+
+- Build pipeline: green (`lint`, `typecheck`, `test`, `build`, `audit:prod`)
+- Security baseline: no production dependency vulnerabilities in current lockfile
+- Performance baseline: route and vendor chunk splitting enabled in Vite build
+- Open-source baseline: contribution docs, issue/PR templates, and security policy in place
+- Localization baseline: core debate/auth/admin/rating flows support EN/DE with English-first behavior
+
+Detailed launch checklist: see `docs/MARKET_READINESS.md`.
 
 ## Known Gaps (Good First Contributions)
 
-- unify duplicated i18n implementations
-- complete EN/DE translation coverage for all hard-coded strings
-- reduce lint error count and strict type gaps (`any` usage)
-- split large frontend chunks for better performance
-- clean up legacy/unused route components
+- complete EN/DE translation coverage in less-used legacy component variants
+- consolidate remaining duplicated logic across legacy and optimized hooks/components
+- expand automated tests beyond current validation coverage (integration/e2e)
+- document and implement multi-space tenancy (`space_id`) for public + private deployments
+- add observability dashboards and runtime SLO alerts for production deployment
 
 ## Repository Conventions
 
