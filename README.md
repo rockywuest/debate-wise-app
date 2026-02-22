@@ -140,6 +140,9 @@ Detailed launch checklist: see `docs/MARKET_READINESS.md`.
 
 - Code of Conduct: see `CODE_OF_CONDUCT.md`
 - Contributing: see `CONTRIBUTING.md`
+- Governance: see `GOVERNANCE.md`
+- Maintainers: see `MAINTAINERS.md`
+- Support: see `SUPPORT.md`
 - Security reporting: see `SECURITY.md`
 
 ## License
