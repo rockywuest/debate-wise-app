@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Star, TrendingUp } from 'lucide-react';
+import { Star } from 'lucide-react';
+import { useTranslation } from '@/utils/i18n';
 
 interface ReputationDisplayProps {
   score: number;
@@ -16,6 +17,9 @@ export const ReputationDisplay = ({
   size = 'md', 
   showIcon = true 
 }: ReputationDisplayProps) => {
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
+
   const getScoreColor = (score: number) => {
     if (score >= 100) return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200';
     if (score >= 50) return 'bg-green-100 text-green-800 hover:bg-green-200';
@@ -25,11 +29,11 @@ export const ReputationDisplay = ({
   };
 
   const getTitle = (score: number) => {
-    if (score >= 100) return 'Meisterdebattierer';
-    if (score >= 50) return 'Erfahrener Debattierer';
-    if (score >= 20) return 'Aktiver Teilnehmer';
-    if (score >= 0) return 'Debattierender';
-    return 'Anfänger';
+    if (score >= 100) return text('Master debater', 'Meisterdebattierer');
+    if (score >= 50) return text('Experienced debater', 'Erfahrener Debattierer');
+    if (score >= 20) return text('Active participant', 'Aktiver Teilnehmer');
+    if (score >= 0) return text('Debater', 'Debattierender');
+    return text('Beginner', 'Anfanger');
   };
 
   const sizeClasses = {

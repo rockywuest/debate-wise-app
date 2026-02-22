@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { Brain, ThumbsUp, ThumbsDown, AlertCircle, CheckCircle, XCircle, Star } from 'lucide-react';
+import { useTranslation } from '@/utils/i18n';
 import type { ArgumentAnalysis } from '@/types/analysis';
 
 interface ArgumentQualityAnalysisProps {
@@ -23,6 +24,21 @@ export const ArgumentQualityAnalysis = ({
   const [analysis, setAnalysis] = useState<ArgumentAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
   const [userFeedback, setUserFeedback] = useState<'helpful' | 'not_helpful' | null>(null);
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
+
+  const isPresent = (status: string) => status === 'Vorhanden' || status === 'Present';
+  const isConcrete = (status: string) => status === 'Konkret' || status === 'Concrete';
+  const isNoFallacy = (status: string) => status === 'Keiner' || status === 'None';
+
+  const formatStatus = (status: string) => {
+    if (isPresent(status)) return text('Present', 'Vorhanden');
+    if (status === 'Nicht vorhanden' || status === 'Absent') return text('Absent', 'Nicht vorhanden');
+    if (isConcrete(status)) return text('Concrete', 'Konkret');
+    if (status === 'Vage' || status === 'Vague') return text('Vague', 'Vage');
+    if (isNoFallacy(status)) return text('None', 'Keiner');
+    return status;
+  };
 
   const analyzeArgument = async () => {
     setLoading(true);
@@ -50,7 +66,7 @@ export const ArgumentQualityAnalysis = ({
   const submitFeedback = async (feedback: 'helpful' | 'not_helpful') => {
     setUserFeedback(feedback);
     
-    // Hier könnten wir das Feedback in einer Datenbank speichern
+    // TODO: Persist analysis feedback.
     console.log('User feedback:', feedback, 'for analysis:', analysis);
   };
 
@@ -62,11 +78,11 @@ export const ArgumentQualityAnalysis = ({
 
   const getStatusColor = (status: string, isPositive: boolean = true) => {
     if (isPositive) {
-      return status === 'Vorhanden' || status === 'Konkret' || status === 'Keiner' 
+      return isPresent(status) || isConcrete(status) || isNoFallacy(status)
         ? 'bg-green-100 text-green-800' 
         : 'bg-red-100 text-red-800';
     } else {
-      return status === 'Keiner' 
+      return isNoFallacy(status)
         ? 'bg-green-100 text-green-800' 
         : 'bg-red-100 text-red-800';
     }
@@ -74,9 +90,9 @@ export const ArgumentQualityAnalysis = ({
 
   const getStatusIcon = (status: string, isLogic: boolean = false) => {
     if (isLogic) {
-      return status === 'Keiner' ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />;
+      return isNoFallacy(status) ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />;
     }
-    return status === 'Vorhanden' || status === 'Konkret' 
+    return isPresent(status) || isConcrete(status)
       ? <CheckCircle className="h-3 w-3" /> 
       : <XCircle className="h-3 w-3" />;
   };
@@ -92,7 +108,7 @@ export const ArgumentQualityAnalysis = ({
           className="gap-2"
         >
           <Brain className="h-4 w-4" />
-          {loading ? 'Analysiere...' : 'KI-Qualitätsanalyse starten'}
+          {loading ? text('Analyzing...', 'Analysiere...') : text('Start AI quality analysis', 'KI-Qualitatsanalyse starten')}
         </Button>
       )}
 
@@ -102,11 +118,11 @@ export const ArgumentQualityAnalysis = ({
             <div className="flex items-center justify-between mb-3">
               <h4 className="font-semibold text-sm flex items-center gap-2">
                 <Brain className="h-4 w-4 text-blue-600" />
-                Mehrdimensionale Argument-Analyse
+                {text('Multidimensional argument analysis', 'Mehrdimensionale Argument-Analyse')}
               </h4>
               <div className="flex items-center gap-2">
                 <Star className="h-3 w-3 text-yellow-500" />
-                <span className="text-xs text-muted-foreground">KI-bewertet</span>
+                <span className="text-xs text-muted-foreground">{text('AI evaluated', 'KI-bewertet')}</span>
               </div>
             </div>
             
@@ -114,7 +130,7 @@ export const ArgumentQualityAnalysis = ({
               {/* Relevanz */}
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium">Relevanz:</span>
+                  <span className="text-xs font-medium">{text('Relevance', 'Relevanz')}:</span>
                   <Badge className={`${getRelevanzColor(analysis.relevanz.score)} text-xs flex items-center gap-1`}>
                     {analysis.relevanz.score}/5
                   </Badge>
@@ -125,10 +141,10 @@ export const ArgumentQualityAnalysis = ({
               {/* Substantiierung */}
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium">Substantiierung:</span>
+                  <span className="text-xs font-medium">{text('Evidence', 'Substantiierung')}:</span>
                   <Badge className={`${getStatusColor(analysis.substantiierung.status)} text-xs flex items-center gap-1`}>
                     {getStatusIcon(analysis.substantiierung.status)}
-                    {analysis.substantiierung.status}
+                    {formatStatus(analysis.substantiierung.status)}
                   </Badge>
                 </div>
                 <p className="text-xs text-muted-foreground">{analysis.substantiierung.begruendung}</p>
@@ -137,10 +153,10 @@ export const ArgumentQualityAnalysis = ({
               {/* Spezifität */}
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium">Spezifität:</span>
+                  <span className="text-xs font-medium">{text('Specificity', 'Spezifitat')}:</span>
                   <Badge className={`${getStatusColor(analysis.spezifitaet.status)} text-xs flex items-center gap-1`}>
                     {getStatusIcon(analysis.spezifitaet.status)}
-                    {analysis.spezifitaet.status}
+                    {formatStatus(analysis.spezifitaet.status)}
                   </Badge>
                 </div>
                 <p className="text-xs text-muted-foreground">{analysis.spezifitaet.begruendung}</p>
@@ -149,10 +165,10 @@ export const ArgumentQualityAnalysis = ({
               {/* Logik */}
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium">Logik:</span>
+                  <span className="text-xs font-medium">{text('Logic', 'Logik')}:</span>
                   <Badge className={`${getStatusColor(analysis.fehlschluss.status, false)} text-xs flex items-center gap-1`}>
                     {getStatusIcon(analysis.fehlschluss.status, true)}
-                    {analysis.fehlschluss.status}
+                    {formatStatus(analysis.fehlschluss.status)}
                   </Badge>
                 </div>
                 <p className="text-xs text-muted-foreground">{analysis.fehlschluss.begruendung}</p>
@@ -162,7 +178,7 @@ export const ArgumentQualityAnalysis = ({
             {/* Feedback-Mechanismus */}
             <div className="mt-4 pt-3 border-t border-blue-200">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">War diese Analyse hilfreich?</span>
+                <span className="text-xs text-muted-foreground">{text('Was this analysis helpful?', 'War diese Analyse hilfreich?')}</span>
                 <div className="flex gap-1">
                   <Button
                     variant={userFeedback === 'helpful' ? 'default' : 'outline'}

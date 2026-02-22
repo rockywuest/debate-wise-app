@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { FileText, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from '@/utils/i18n';
 
 interface SummaryDialogProps {
   parentArgument: string;
@@ -24,12 +25,14 @@ export const SummaryDialog = ({ parentArgument, childArguments, disabled }: Summ
   const [summary, setSummary] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   const handleSummarize = async () => {
     if (childArguments.length === 0) {
       toast({
-        title: "Keine Unterargumente",
-        description: "Es gibt keine Unterargumente zu diesem Thema zum Zusammenfassen.",
+        title: text('No sub-arguments', 'Keine Unterargumente'),
+        description: text('There are no sub-arguments to summarize for this topic.', 'Es gibt keine Unterargumente zu diesem Thema zum Zusammenfassen.'),
         variant: "destructive"
       });
       return;
@@ -53,8 +56,8 @@ export const SummaryDialog = ({ parentArgument, childArguments, disabled }: Summ
     } catch (error: unknown) {
       console.error('Error summarizing thread:', error);
       toast({
-        title: "Fehler bei der Zusammenfassung",
-        description: "Die KI-Zusammenfassung konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
+        title: text('Summary failed', 'Fehler bei der Zusammenfassung'),
+        description: text('The AI summary could not be created. Please try again.', 'Die KI-Zusammenfassung konnte nicht erstellt werden. Bitte versuchen Sie es erneut.'),
         variant: "destructive"
       });
     } finally {
@@ -77,22 +80,22 @@ export const SummaryDialog = ({ parentArgument, childArguments, disabled }: Summ
           ) : (
             <FileText className="h-4 w-4" />
           )}
-          Thread zusammenfassen
+          {text('Summarize thread', 'Thread zusammenfassen')}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>KI-Zusammenfassung des Argument-Threads</DialogTitle>
+          <DialogTitle>{text('AI summary of the argument thread', 'KI-Zusammenfassung des Argument-Threads')}</DialogTitle>
           <DialogDescription>
-            Eine neutrale Zusammenfassung der verschiedenen Argumente zu diesem Thema.
+            {text('A neutral summary of the different arguments for this topic.', 'Eine neutrale Zusammenfassung der verschiedenen Argumente zu diesem Thema.')}
           </DialogDescription>
         </DialogHeader>
         <div className="mt-4">
           <div className="bg-muted p-4 rounded-lg">
-            <h4 className="font-semibold mb-2">Hauptargument:</h4>
+            <h4 className="font-semibold mb-2">{text('Main argument:', 'Hauptargument:')}</h4>
             <p className="text-sm text-muted-foreground mb-4">{parentArgument}</p>
             
-            <h4 className="font-semibold mb-2">KI-Zusammenfassung:</h4>
+            <h4 className="font-semibold mb-2">{text('AI summary:', 'KI-Zusammenfassung:')}</h4>
             <div className="prose prose-sm max-w-none">
               <p className="whitespace-pre-wrap">{summary}</p>
             </div>
@@ -100,7 +103,7 @@ export const SummaryDialog = ({ parentArgument, childArguments, disabled }: Summ
         </div>
         <div className="flex justify-end mt-4">
           <Button onClick={() => setIsOpen(false)}>
-            Schließen
+            {text('Close', 'Schliessen')}
           </Button>
         </div>
       </DialogContent>

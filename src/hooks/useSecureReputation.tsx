@@ -4,24 +4,27 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { InputValidator } from '@/utils/inputValidation';
+import { useTranslation } from '@/utils/i18n';
 
 export const useSecureReputation = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   const getErrorMessage = (error: unknown) => {
     if (error instanceof Error) {
       return error.message;
     }
-    return "Die Bewertung konnte nicht verarbeitet werden.";
+    return text('Could not process rating.', 'Die Bewertung konnte nicht verarbeitet werden.');
   };
 
   const rateArgumentSecurely = async (argumentId: string, ratingType: 'insightful' | 'concede_point') => {
     if (!user) {
       toast({
-        title: "Anmeldung erforderlich",
-        description: "Sie müssen angemeldet sein, um zu bewerten.",
+        title: text('Sign-in required', 'Anmeldung erforderlich'),
+        description: text('You must be signed in to rate.', 'Sie mussen angemeldet sein, um zu bewerten.'),
         variant: "destructive"
       });
       return;
@@ -30,8 +33,8 @@ export const useSecureReputation = () => {
     // Rate limiting for ratings
     if (!InputValidator.checkRateLimit(user.id, 'rate_argument', 10, 300000)) { // 10 ratings per 5 minutes
       toast({
-        title: "Zu viele Bewertungen",
-        description: "Bitte warten Sie, bevor Sie weitere Bewertungen abgeben.",
+        title: text('Too many ratings', 'Zu viele Bewertungen'),
+        description: text('Please wait before submitting more ratings.', 'Bitte warten Sie, bevor Sie weitere Bewertungen abgeben.'),
         variant: "destructive"
       });
       return;
@@ -55,22 +58,25 @@ export const useSecureReputation = () => {
 
       if (!result?.success) {
         toast({
-          title: "Bewertung nicht möglich",
-          description: result?.message || "Die Bewertung konnte nicht abgegeben werden.",
+          title: text('Rating not possible', 'Bewertung nicht moglich'),
+          description: result?.message || text('The rating could not be submitted.', 'Die Bewertung konnte nicht abgegeben werden.'),
           variant: "destructive"
         });
         return;
       }
 
       toast({
-        title: "Bewertung erfolgreich",
-        description: `+${result.points_awarded || 0} Reputationspunkte vergeben.`
+        title: text('Rating submitted', 'Bewertung erfolgreich'),
+        description: text(
+          `+${result.points_awarded || 0} reputation points awarded.`,
+          `+${result.points_awarded || 0} Reputationspunkte vergeben.`
+        )
       });
 
     } catch (error: unknown) {
       console.error('Error rating argument:', error);
       toast({
-        title: "Fehler beim Bewerten",
+        title: text('Failed to submit rating', 'Fehler beim Bewerten'),
         description: getErrorMessage(error),
         variant: "destructive"
       });

@@ -187,6 +187,12 @@ const getStoredLanguage = (): SupportedLanguage => {
   return 'en';
 };
 
+export const getPreferredLanguage = (): SupportedLanguage => getStoredLanguage();
+
+export const localizeText = (language: SupportedLanguage, en: string, de: string): string => {
+  return language === 'de' ? de : en;
+};
+
 const persistLanguage = (newLanguage: SupportedLanguage) => {
   if (typeof window === 'undefined') {
     return;

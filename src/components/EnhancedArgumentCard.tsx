@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ import { ArgumentRatingButtons } from './ArgumentRatingButtons';
 import { ChildArgumentsPreview } from './ChildArgumentsPreview';
 import { ReputationDisplay } from './ReputationDisplay';
 import { useEnhancedReputation } from '@/hooks/useEnhancedReputation';
+import { useTranslation } from '@/utils/i18n';
 import { MessageSquare, ThumbsUp, ThumbsDown, Award, TrendingUp } from 'lucide-react';
 import type { ArgumentAnalysis } from '@/types/analysis';
 
@@ -44,7 +45,9 @@ export const EnhancedArgumentCard = ({
   onReply
 }: EnhancedArgumentCardProps) => {
   const { awardReputation, calculateQualityScore } = useEnhancedReputation();
+  const { language } = useTranslation();
   const [qualityScore, setQualityScore] = React.useState<number>(0);
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   const getTypeIcon = () => {
     switch (type) {
@@ -69,10 +72,10 @@ export const EnhancedArgumentCard = ({
   };
 
   const getQualityBadge = (score: number) => {
-    if (score >= 80) return { color: 'bg-green-100 text-green-800', label: 'Exzellent', icon: <Award className="h-3 w-3" /> };
-    if (score >= 60) return { color: 'bg-blue-100 text-blue-800', label: 'Gut', icon: <TrendingUp className="h-3 w-3" /> };
-    if (score >= 40) return { color: 'bg-yellow-100 text-yellow-800', label: 'Durchschnittlich', icon: null };
-    return { color: 'bg-red-100 text-red-800', label: 'Verbesserungsbedarf', icon: null };
+    if (score >= 80) return { color: 'bg-green-100 text-green-800', label: text('Excellent', 'Exzellent'), icon: <Award className="h-3 w-3" /> };
+    if (score >= 60) return { color: 'bg-blue-100 text-blue-800', label: text('Good', 'Gut'), icon: <TrendingUp className="h-3 w-3" /> };
+    if (score >= 40) return { color: 'bg-yellow-100 text-yellow-800', label: text('Average', 'Durchschnittlich'), icon: null };
+    return { color: 'bg-red-100 text-red-800', label: text('Needs improvement', 'Verbesserungsbedarf'), icon: null };
   };
 
   const handleQualityAnalysis = (analysis: ArgumentAnalysis) => {
@@ -85,7 +88,7 @@ export const EnhancedArgumentCard = ({
     }
 
     // Apply penalty for fallacies
-    if (analysis?.fehlschluss?.status !== 'Keiner') {
+    if (analysis?.fehlschluss?.status !== 'Keiner' && analysis?.fehlschluss?.status !== 'None') {
       awardReputation(authorUserId, 'fallacy_penalty', id);
     }
   };
@@ -118,14 +121,14 @@ export const EnhancedArgumentCard = ({
         </div>
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            von {author} • {new Date(createdAt).toLocaleDateString('de-DE')}
+            {text('by', 'von')} {author} • {new Date(createdAt).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
           </p>
         </div>
       </CardHeader>
       <CardContent>
         <p className="text-gray-700 mb-4 leading-relaxed">{content}</p>
         
-        {/* Mehrdimensionale KI-Analyse mit Reputations-Integration */}
+        {/* Multidimensional AI analysis with reputation integration */}
         <ArgumentQualityAnalysis 
           argumentText={content} 
           debateTitle={title}
@@ -142,7 +145,7 @@ export const EnhancedArgumentCard = ({
           }}
         />
 
-        {/* Verbessertes Rating-System */}
+        {/* Enhanced rating system */}
         <div className="mt-4 border-t pt-4">
           <ArgumentRatingButtons argumentId={id} authorUserId={authorUserId} />
         </div>
@@ -151,11 +154,11 @@ export const EnhancedArgumentCard = ({
           <CreateArgumentForm 
             debateId={debateId}
             parentId={id}
-            buttonText="Antworten"
+            buttonText={text('Reply', 'Antworten')}
             buttonVariant="outline"
           />
           
-          {/* Steel-Manning mit Reputations-Belohnung */}
+          {/* Steel-manning with reputation reward */}
           {type === 'contra' && (
             <SteelManDialog 
               originalArgument={content} 

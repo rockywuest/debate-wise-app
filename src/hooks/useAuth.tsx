@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AuthError, Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { getPreferredLanguage, localizeText } from '@/utils/i18n';
 
 interface AuthContextType {
   user: User | null;
@@ -28,6 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const getText = (en: string, de: string) => localizeText(getPreferredLanguage(), en, de);
 
   useEffect(() => {
     // Auth state listener
@@ -66,14 +68,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (error) {
         toast({
-          title: "Registrierung fehlgeschlagen",
+          title: getText('Sign-up failed', 'Registrierung fehlgeschlagen'),
           description: error.message,
           variant: "destructive"
         });
       } else {
         toast({
-          title: "Registrierung erfolgreich",
-          description: "Bitte überprüfen Sie Ihre E-Mail zur Bestätigung"
+          title: getText('Sign-up successful', 'Registrierung erfolgreich'),
+          description: getText('Please check your email to confirm your account.', 'Bitte uberprufen Sie Ihre E-Mail zur Bestatigung.')
         });
       }
       
@@ -81,9 +83,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error: unknown) {
       const description = error instanceof Error
         ? error.message
-        : "Ein unerwarteter Fehler ist aufgetreten";
+        : getText('An unexpected error occurred.', 'Ein unerwarteter Fehler ist aufgetreten');
       toast({
-        title: "Fehler",
+        title: getText('Error', 'Fehler'),
         description,
         variant: "destructive"
       });
@@ -100,7 +102,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (error) {
         toast({
-          title: "Anmeldung fehlgeschlagen",
+          title: getText('Sign-in failed', 'Anmeldung fehlgeschlagen'),
           description: error.message,
           variant: "destructive"
         });
@@ -110,9 +112,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error: unknown) {
       const description = error instanceof Error
         ? error.message
-        : "Ein unerwarteter Fehler ist aufgetreten";
+        : getText('An unexpected error occurred.', 'Ein unerwarteter Fehler ist aufgetreten');
       toast({
-        title: "Fehler",
+        title: getText('Error', 'Fehler'),
         description,
         variant: "destructive"
       });
@@ -123,8 +125,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = async () => {
     await supabase.auth.signOut();
     toast({
-      title: "Abgemeldet",
-      description: "Sie wurden erfolgreich abgemeldet"
+      title: getText('Signed out', 'Abgemeldet'),
+      description: getText('You have been signed out successfully.', 'Sie wurden erfolgreich abgemeldet')
     });
   };
 

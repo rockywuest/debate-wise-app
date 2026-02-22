@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useSecureReputation } from '@/hooks/useSecureReputation';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from '@/utils/i18n';
 import { Heart, Award, CheckCircle, Shield } from 'lucide-react';
 
 interface SecureArgumentRatingButtonsProps {
@@ -15,6 +16,8 @@ interface SecureArgumentRatingButtonsProps {
 export const SecureArgumentRatingButtons = ({ argumentId, authorUserId }: SecureArgumentRatingButtonsProps) => {
   const { rateArgument, loading } = useSecureReputation();
   const { user } = useAuth();
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
   const [ratings, setRatings] = useState<{
     hasRatedInsightful: boolean;
     hasConcedePoint: boolean;
@@ -120,7 +123,7 @@ export const SecureArgumentRatingButtons = ({ argumentId, authorUserId }: Secure
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-1 mr-2">
         <Shield className="h-3 w-3 text-green-600" />
-        <span className="text-xs text-muted-foreground">Sicher validiert</span>
+        <span className="text-xs text-muted-foreground">{text('Securely validated', 'Sicher validiert')}</span>
       </div>
       
       <Button
@@ -131,7 +134,7 @@ export const SecureArgumentRatingButtons = ({ argumentId, authorUserId }: Secure
         className="gap-1"
       >
         {ratings.hasRatedInsightful ? <CheckCircle className="h-3 w-3" /> : <Heart className="h-3 w-3" />}
-        Einsichtig ({ratings.insightfulCount})
+        {text('Insightful', 'Einsichtig')} ({ratings.insightfulCount})
       </Button>
       
       <Button
@@ -142,7 +145,7 @@ export const SecureArgumentRatingButtons = ({ argumentId, authorUserId }: Secure
         className="gap-1"
       >
         {ratings.hasConcedePoint ? <CheckCircle className="h-3 w-3" /> : <Award className="h-3 w-3" />}
-        Punkt zugestehen ({ratings.concedePointCount})
+        {text('Concede point', 'Punkt zugestehen')} ({ratings.concedePointCount})
       </Button>
     </div>
   );

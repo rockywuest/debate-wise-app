@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from '@/utils/i18n';
 
 // Define the expected response type from the RPC function
 interface RateArgumentResponse {
@@ -26,12 +27,14 @@ export const useOptimizedReputation = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   const rateArgumentOptimized = async (argumentId: string, ratingType: 'insightful' | 'concede_point') => {
     if (!user) {
       toast({
-        title: "Anmeldung erforderlich",
-        description: "Sie müssen angemeldet sein, um zu bewerten.",
+        title: text('Sign-in required', 'Anmeldung erforderlich'),
+        description: text('You must be signed in to rate.', 'Sie mussen angemeldet sein, um zu bewerten.'),
         variant: "destructive"
       });
       return;
@@ -47,8 +50,8 @@ export const useOptimizedReputation = () => {
 
     if (!rateLimitCheck) {
       toast({
-        title: "Zu viele Bewertungen",
-        description: "Bitte warten Sie, bevor Sie weitere Bewertungen abgeben.",
+        title: text('Too many ratings', 'Zu viele Bewertungen'),
+        description: text('Please wait before submitting more ratings.', 'Bitte warten Sie, bevor Sie weitere Bewertungen abgeben.'),
         variant: "destructive"
       });
       return;
@@ -69,8 +72,8 @@ export const useOptimizedReputation = () => {
       // Safe type checking instead of direct casting
       if (!isRateArgumentResponse(data)) {
         toast({
-          title: "Bewertung nicht möglich",
-          description: "Unerwartete Antwort vom Server.",
+          title: text('Rating not possible', 'Bewertung nicht moglich'),
+          description: text('Unexpected server response.', 'Unerwartete Antwort vom Server.'),
           variant: "destructive"
         });
         return;
@@ -78,23 +81,23 @@ export const useOptimizedReputation = () => {
 
       if (!data.success) {
         toast({
-          title: "Bewertung nicht möglich",
-          description: data.message || "Die Bewertung konnte nicht abgegeben werden.",
+          title: text('Rating not possible', 'Bewertung nicht moglich'),
+          description: data.message || text('The rating could not be submitted.', 'Die Bewertung konnte nicht abgegeben werden.'),
           variant: "destructive"
         });
         return;
       }
 
       toast({
-        title: "Bewertung erfolgreich",
-        description: `+${data.points_awarded || 0} Reputationspunkte vergeben.`
+        title: text('Rating submitted', 'Bewertung erfolgreich'),
+        description: text(`+${data.points_awarded || 0} reputation points awarded.`, `+${data.points_awarded || 0} Reputationspunkte vergeben.`)
       });
 
     } catch (error: unknown) {
       console.error('Error rating argument:', error);
       toast({
-        title: "Fehler beim Bewerten",
-        description: "Die Bewertung konnte nicht verarbeitet werden.",
+        title: text('Failed to submit rating', 'Fehler beim Bewerten'),
+        description: text('Could not process rating.', 'Die Bewertung konnte nicht verarbeitet werden.'),
         variant: "destructive"
       });
     } finally {

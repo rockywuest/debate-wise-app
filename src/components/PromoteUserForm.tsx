@@ -6,17 +6,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Shield } from 'lucide-react';
+import { useTranslation } from '@/utils/i18n';
 
 export const PromoteUserForm = () => {
   const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   const handlePromoteToAdmin = async () => {
     if (!userId.trim()) {
       toast({
-        title: 'Fehler',
-        description: 'Bitte geben Sie eine gültige Benutzer-ID ein.',
+        title: text('Error', 'Fehler'),
+        description: text('Please enter a valid user ID.', 'Bitte geben Sie eine gultige Benutzer-ID ein.'),
         variant: 'destructive'
       });
       return;
@@ -36,17 +39,17 @@ export const PromoteUserForm = () => {
       }
 
       toast({
-        title: 'Erfolgreich',
-        description: 'Benutzer wurde zum Admin befördert.',
+        title: text('Success', 'Erfolgreich'),
+        description: text('User promoted to admin.', 'Benutzer wurde zum Admin befordert.'),
       });
       setUserId('');
     } catch (error: unknown) {
       const description = error instanceof Error
         ? error.message
-        : 'Fehler beim Befördern des Benutzers.';
+        : text('Failed to promote user.', 'Fehler beim Befordern des Benutzers.');
       console.error('Error promoting user:', error);
       toast({
-        title: 'Fehler',
+        title: text('Error', 'Fehler'),
         description,
         variant: 'destructive'
       });
@@ -60,16 +63,16 @@ export const PromoteUserForm = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Shield className="h-5 w-5" />
-          Benutzer zu Admin befördern
+          {text('Promote user to admin', 'Benutzer zu Admin befordern')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <label className="text-sm font-medium">Benutzer-ID:</label>
+          <label className="text-sm font-medium">{text('User ID:', 'Benutzer-ID:')}</label>
           <Input
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
-            placeholder="UUID des Benutzers eingeben..."
+            placeholder={text('Enter user UUID...', 'UUID des Benutzers eingeben...')}
             className="mt-1"
           />
         </div>
@@ -78,10 +81,10 @@ export const PromoteUserForm = () => {
           disabled={loading}
           className="w-full"
         >
-          {loading ? 'Beförderung läuft...' : 'Zu Admin befördern'}
+          {loading ? text('Promoting...', 'Beforderung lauft...') : text('Promote to admin', 'Zu Admin befordern')}
         </Button>
         <p className="text-xs text-muted-foreground">
-          Hinweis: Sie finden Benutzer-IDs in der Supabase Auth Users Tabelle.
+          {text('Note: You can find user IDs in the Supabase Auth Users table.', 'Hinweis: Sie finden Benutzer-IDs in der Supabase Auth Users Tabelle.')}
         </p>
       </CardContent>
     </Card>

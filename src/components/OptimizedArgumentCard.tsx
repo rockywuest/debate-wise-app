@@ -8,6 +8,7 @@ import { SteelManDialog } from './SteelManDialog';
 import { CreateArgumentForm } from './CreateArgumentForm';
 import { useOptimizedReputation } from '@/hooks/useOptimizedReputation';
 import { ReputationDisplay } from './ReputationDisplay';
+import { useTranslation } from '@/utils/i18n';
 import { MessageSquare, ThumbsUp, ThumbsDown, Award, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -42,6 +43,8 @@ export const OptimizedArgumentCard = ({
   childArguments = []
 }: OptimizedArgumentCardProps) => {
   const { rateArgument, loading: ratingLoading } = useOptimizedReputation();
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   const getTypeIcon = () => {
     switch (type) {
@@ -88,7 +91,7 @@ export const OptimizedArgumentCard = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <p className="text-sm text-muted-foreground">
-              von {author} • {new Date(createdAt).toLocaleDateString('de-DE')}
+              {text('by', 'von')} {author} • {new Date(createdAt).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
             </p>
             <ReputationDisplay score={authorReputation} size="sm" />
           </div>
@@ -108,7 +111,7 @@ export const OptimizedArgumentCard = ({
         {childArguments.length > 0 && (
           <div className="mt-4 p-3 bg-muted rounded-lg">
             <h4 className="font-semibold text-sm mb-2">
-              Antworten ({childArguments.length})
+              {text('Replies', 'Antworten')} ({childArguments.length})
             </h4>
             <div className="space-y-2">
               {childArguments.slice(0, 2).map((child) => (
@@ -128,7 +131,7 @@ export const OptimizedArgumentCard = ({
               ))}
               {childArguments.length > 2 && (
                 <p className="text-xs text-muted-foreground">
-                  ... und {childArguments.length - 2} weitere Antworten
+                  ... {text('and', 'und')} {childArguments.length - 2} {text('more replies', 'weitere Antworten')}
                 </p>
               )}
             </div>
@@ -146,7 +149,7 @@ export const OptimizedArgumentCard = ({
               className="flex items-center gap-1"
             >
               <Award className="h-3 w-3" />
-              Einsichtig (+5)
+              {text('Insightful (+5)', 'Einsichtig (+5)')}
             </Button>
             <Button
               variant="outline"
@@ -156,7 +159,7 @@ export const OptimizedArgumentCard = ({
               className="flex items-center gap-1"
             >
               <Target className="h-3 w-3" />
-              Punkt zugestehen (+20)
+              {text('Concede point (+20)', 'Punkt zugestehen (+20)')}
             </Button>
           </div>
         </div>
@@ -165,7 +168,7 @@ export const OptimizedArgumentCard = ({
           <CreateArgumentForm 
             debateId={debateId}
             parentId={id}
-            buttonText="Antworten"
+            buttonText={text('Reply', 'Antworten')}
             buttonVariant="outline"
           />
           

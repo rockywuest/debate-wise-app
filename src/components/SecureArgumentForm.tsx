@@ -11,6 +11,7 @@ import { useSecureArguments } from '@/hooks/useSecureArguments';
 import { useAuth } from '@/hooks/useAuth';
 import { useEnhancedReputation } from '@/hooks/useEnhancedReputation';
 import { InputValidator } from '@/utils/inputValidation';
+import { useTranslation } from '@/utils/i18n';
 import { Plus, Shield, AlertTriangle } from 'lucide-react';
 
 interface SecureArgumentFormProps {
@@ -24,7 +25,7 @@ interface SecureArgumentFormProps {
 export const SecureArgumentForm = ({
   debateId,
   parentId,
-  buttonText = "Argument hinzufügen",
+  buttonText,
   buttonVariant = "default",
   onSubmit
 }: SecureArgumentFormProps) => {
@@ -39,6 +40,9 @@ export const SecureArgumentForm = ({
   const { createArgument, creating } = useSecureArguments(debateId);
   const { user } = useAuth();
   const { awardReputation } = useEnhancedReputation();
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const resolvedButtonText = buttonText ?? text('Add argument', 'Argument hinzufugen');
 
   const validateForm = (): boolean => {
     const errors: string[] = [];
@@ -93,7 +97,7 @@ export const SecureArgumentForm = ({
       if (sourceUrl && sourceDescription) {
         const urlValidation = InputValidator.validateSourceUrl(sourceUrl);
         if (urlValidation.isValid) {
-          enhancedText += `\n\nQuelle: ${sourceDescription} (${urlValidation.sanitizedValue})`;
+          enhancedText += `\n\n${text('Source', 'Quelle')}: ${sourceDescription} (${urlValidation.sanitizedValue})`;
         }
       }
 
@@ -137,7 +141,7 @@ export const SecureArgumentForm = ({
         className="gap-2"
       >
         <Plus className="h-4 w-4" />
-        {buttonText}
+        {resolvedButtonText}
       </Button>
 
       {isOpen && (
@@ -145,15 +149,15 @@ export const SecureArgumentForm = ({
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-4">
               <Shield className="h-4 w-4 text-green-600" />
-              <span className="text-sm font-medium">Sichere Argumenterstellung</span>
-              <Badge variant="secondary" className="text-xs">Validiert & Sanitisiert</Badge>
+              <span className="text-sm font-medium">{text('Secure argument creation', 'Sichere Argumenterstellung')}</span>
+              <Badge variant="secondary" className="text-xs">{text('Validated & sanitized', 'Validiert & sanitisiert')}</Badge>
             </div>
 
             {validationErrors.length > 0 && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
                 <div className="flex items-center gap-2 mb-2">
                   <AlertTriangle className="h-4 w-4 text-red-600" />
-                  <span className="text-sm font-medium text-red-800">Validierungsfehler:</span>
+                  <span className="text-sm font-medium text-red-800">{text('Validation errors:', 'Validierungsfehler:')}</span>
                 </div>
                 <ul className="text-sm text-red-700 list-disc list-inside">
                   {validationErrors.map((error, index) => (
@@ -165,31 +169,31 @@ export const SecureArgumentForm = ({
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="argument-type">Typ des Arguments</Label>
+                <Label htmlFor="argument-type">{text('Argument type', 'Typ des Arguments')}</Label>
                 <Select value={argumentType} onValueChange={(value: 'These' | 'Pro' | 'Contra') => setArgumentType(value)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Pro">Pro-Argument</SelectItem>
-                    <SelectItem value="Contra">Contra-Argument</SelectItem>
-                    <SelectItem value="These">Neutrale These</SelectItem>
+                    <SelectItem value="Pro">{text('Pro argument', 'Pro-Argument')}</SelectItem>
+                    <SelectItem value="Contra">{text('Contra argument', 'Contra-Argument')}</SelectItem>
+                    <SelectItem value="These">{text('Neutral thesis', 'Neutrale These')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
                 <Label htmlFor="argument-text">
-                  Argument
+                  {text('Argument', 'Argument')}
                   <span className="text-xs text-muted-foreground ml-2">
-                    ({argumentText.length}/2000 Zeichen)
+                    ({argumentText.length}/2000 {text('characters', 'Zeichen')})
                   </span>
                 </Label>
                 <Textarea
                   id="argument-text"
                   value={argumentText}
                   onChange={(e) => handleTextChange(e.target.value)}
-                  placeholder="Beschreiben Sie Ihr Argument ausführlich..."
+                  placeholder={text('Describe your argument in detail...', 'Beschreiben Sie Ihr Argument ausfuhrlich...')}
                   className="min-h-[100px]"
                   maxLength={2000}
                   required
@@ -198,12 +202,12 @@ export const SecureArgumentForm = ({
 
               <div className="space-y-3 border-t pt-3">
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="text-xs">Optional</Badge>
-                  <Label className="text-sm font-medium">Quelle hinzufügen (+10 Reputation)</Label>
+                  <Badge variant="secondary" className="text-xs">{text('Optional', 'Optional')}</Badge>
+                  <Label className="text-sm font-medium">{text('Add source (+10 reputation)', 'Quelle hinzufugen (+10 Reputation)')}</Label>
                 </div>
                 
                 <div>
-                  <Label htmlFor="source-url" className="text-sm">URL der Quelle</Label>
+                  <Label htmlFor="source-url" className="text-sm">{text('Source URL', 'URL der Quelle')}</Label>
                   <Input
                     id="source-url"
                     type="url"
@@ -215,12 +219,12 @@ export const SecureArgumentForm = ({
                 </div>
 
                 <div>
-                  <Label htmlFor="source-description" className="text-sm">Beschreibung der Quelle</Label>
+                  <Label htmlFor="source-description" className="text-sm">{text('Source description', 'Beschreibung der Quelle')}</Label>
                   <Input
                     id="source-description"
                     value={sourceDescription}
                     onChange={(e) => setSourceDescription(e.target.value)}
-                    placeholder="z.B. Studie der Universität XY, Artikel von..."
+                    placeholder={text('e.g. university study, published article...', 'z.B. Studie der Universitat XY, Artikel von...')}
                     maxLength={200}
                   />
                 </div>
@@ -228,16 +232,16 @@ export const SecureArgumentForm = ({
 
               <div>
                 <Label htmlFor="author-name">
-                  Ihr Name (optional)
+                  {text('Your name (optional)', 'Ihr Name (optional)')}
                   <span className="text-xs text-muted-foreground ml-2">
-                    (max. 50 Zeichen)
+                    ({text('max. 50 characters', 'max. 50 Zeichen')})
                   </span>
                 </Label>
                 <Input
                   id="author-name"
                   value={authorName}
                   onChange={(e) => setAuthorName(e.target.value)}
-                  placeholder="Ihr Name..."
+                  placeholder={text('Your name...', 'Ihr Name...')}
                   maxLength={50}
                 />
               </div>
@@ -247,10 +251,10 @@ export const SecureArgumentForm = ({
                   type="submit" 
                   disabled={creating || !argumentText.trim() || validationErrors.length > 0}
                 >
-                  {creating ? 'Wird erstellt...' : 'Argument hinzufügen'}
+                  {creating ? text('Creating...', 'Wird erstellt...') : text('Add argument', 'Argument hinzufugen')}
                 </Button>
                 <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
-                  Abbrechen
+                  {text('Cancel', 'Abbrechen')}
                 </Button>
               </div>
             </form>

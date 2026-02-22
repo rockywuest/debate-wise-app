@@ -3,6 +3,7 @@ import type { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from '@/utils/i18n';
 
 export interface Argument {
   id: string;
@@ -22,13 +23,16 @@ export const useArguments = (debateId?: string) => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { language } = useTranslation();
+  const text = useCallback((en: string, de: string) => (language === 'de' ? de : en), [language]);
+  const defaultErrorMessage = text('An unexpected error occurred.', 'Ein unerwarteter Fehler ist aufgetreten.');
 
   const getErrorMessage = useCallback((error: unknown): string => {
     if (error instanceof Error) {
       return error.message;
     }
-    return 'Ein unerwarteter Fehler ist aufgetreten.';
-  }, []);
+    return defaultErrorMessage;
+  }, [defaultErrorMessage]);
 
   const organizeArgumentsHierarchically = (data: Argument[]) => {
     const topLevelArgs = data.filter(arg => !arg.eltern_id);
@@ -61,14 +65,14 @@ export const useArguments = (debateId?: string) => {
     } catch (error: unknown) {
       console.error('Error fetching arguments:', error);
       toast({
-        title: "Fehler beim Laden der Argumente",
+        title: text('Failed to load arguments', 'Fehler beim Laden der Argumente'),
         description: getErrorMessage(error),
         variant: "destructive"
       });
     } finally {
       setLoading(false);
     }
-  }, [debateId, getErrorMessage, toast]);
+  }, [debateId, getErrorMessage, toast, text]);
 
   const createArgument = async (
     argumentText: string,
@@ -78,8 +82,8 @@ export const useArguments = (debateId?: string) => {
   ) => {
     if (!user || !debateId) {
       toast({
-        title: "Anmeldung erforderlich",
-        description: "Sie müssen angemeldet sein, um ein Argument zu erstellen.",
+        title: text('Sign-in required', 'Anmeldung erforderlich'),
+        description: text('You must be signed in to create an argument.', 'Sie mussen angemeldet sein, um ein Argument zu erstellen.'),
         variant: "destructive"
       });
       return null;
@@ -102,8 +106,8 @@ export const useArguments = (debateId?: string) => {
       if (error) throw error;
 
       toast({
-        title: "Argument hinzugefügt",
-        description: "Das neue Argument wurde erfolgreich erstellt."
+        title: text('Argument added', 'Argument hinzugefugt'),
+        description: text('The new argument was created successfully.', 'Das neue Argument wurde erfolgreich erstellt.')
       });
 
       // No need to manually refresh as real-time will handle it
@@ -111,7 +115,7 @@ export const useArguments = (debateId?: string) => {
     } catch (error: unknown) {
       console.error('Error creating argument:', error);
       toast({
-        title: "Fehler beim Erstellen des Arguments",
+        title: text('Failed to create argument', 'Fehler beim Erstellen des Arguments'),
         description: getErrorMessage(error),
         variant: "destructive"
       });

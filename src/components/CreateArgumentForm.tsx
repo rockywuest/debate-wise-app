@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus } from 'lucide-react';
+import { useTranslation } from '@/utils/i18n';
 
 interface CreateArgumentFormProps {
   debateId: string;
@@ -20,7 +21,7 @@ interface CreateArgumentFormProps {
 export const CreateArgumentForm = ({ 
   debateId, 
   parentId, 
-  buttonText = "Neues Argument hinzufügen",
+  buttonText,
   buttonVariant = "default"
 }: CreateArgumentFormProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,14 +31,17 @@ export const CreateArgumentForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { createArgument } = useArguments(debateId);
   const { toast } = useToast();
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const resolvedButtonText = buttonText ?? text('Add argument', 'Neues Argument hinzufugen');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!argumentText.trim()) {
       toast({
-        title: "Fehler",
-        description: "Bitte geben Sie einen Argumenttext ein.",
+        title: text('Error', 'Fehler'),
+        description: text('Please enter argument text.', 'Bitte geben Sie einen Argumenttext ein.'),
         variant: "destructive"
       });
       return;
@@ -69,47 +73,47 @@ export const CreateArgumentForm = ({
       <DialogTrigger asChild>
         <Button variant={buttonVariant} className="gap-2">
           <Plus className="h-4 w-4" />
-          {buttonText}
+          {resolvedButtonText}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
-            {parentId ? 'Antwort hinzufügen' : 'Neues Argument erstellen'}
+            {parentId ? text('Add reply', 'Antwort hinzufugen') : text('Create new argument', 'Neues Argument erstellen')}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="argumentTyp">Argumenttyp</Label>
+            <Label htmlFor="argumentTyp">{text('Argument type', 'Argumenttyp')}</Label>
             <Select value={argumentTyp} onValueChange={(value: 'These' | 'Pro' | 'Contra') => setArgumentTyp(value)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="These">These</SelectItem>
-                <SelectItem value="Pro">Pro</SelectItem>
-                <SelectItem value="Contra">Contra</SelectItem>
+                <SelectItem value="These">{text('Thesis', 'These')}</SelectItem>
+                <SelectItem value="Pro">{text('Pro', 'Pro')}</SelectItem>
+                <SelectItem value="Contra">{text('Contra', 'Contra')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="argumentText">Argument *</Label>
+            <Label htmlFor="argumentText">{text('Argument *', 'Argument *')}</Label>
             <Textarea
               id="argumentText"
               value={argumentText}
               onChange={(e) => setArgumentText(e.target.value)}
-              placeholder="Geben Sie Ihr Argument ein..."
+              placeholder={text('Enter your argument...', 'Geben Sie Ihr Argument ein...')}
               rows={4}
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="autorName">Autor (optional)</Label>
+            <Label htmlFor="autorName">{text('Author (optional)', 'Autor (optional)')}</Label>
             <Input
               id="autorName"
               value={autorName}
               onChange={(e) => setAutorName(e.target.value)}
-              placeholder="Ihr Name..."
+              placeholder={text('Your name...', 'Ihr Name...')}
             />
           </div>
           <div className="flex justify-end gap-3">
@@ -119,10 +123,10 @@ export const CreateArgumentForm = ({
               onClick={() => setIsOpen(false)}
               disabled={isSubmitting}
             >
-              Abbrechen
+              {text('Cancel', 'Abbrechen')}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Erstelle...' : 'Argument hinzufügen'}
+              {isSubmitting ? text('Creating...', 'Erstelle...') : text('Add argument', 'Argument hinzufugen')}
             </Button>
           </div>
         </form>

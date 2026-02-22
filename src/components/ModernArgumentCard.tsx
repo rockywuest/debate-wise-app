@@ -8,6 +8,7 @@ import { CreateArgumentForm } from './CreateArgumentForm';
 import { ArgumentRatingButtons } from './ArgumentRatingButtons';
 import { ChildArgumentsPreview } from './ChildArgumentsPreview';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useTranslation } from '@/utils/i18n';
 import { ThumbsUp, ThumbsDown, MessageSquare, MoreHorizontal, Reply, Brain, User, Calendar } from 'lucide-react';
 
 interface ModernArgumentCardProps {
@@ -42,6 +43,8 @@ export const ModernArgumentCard = ({
 }: ModernArgumentCardProps) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   const getTypeConfig = () => {
     switch (type) {
@@ -100,11 +103,11 @@ export const ModernArgumentCard = ({
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => setShowAnalysis(!showAnalysis)}>
                         <Brain className="h-4 w-4 mr-2" />
-                        KI-Analyse
+                        {text('AI analysis', 'KI-Analyse')}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setShowReplyForm(!showReplyForm)}>
                         <Reply className="h-4 w-4 mr-2" />
-                        Antworten
+                        {text('Reply', 'Antworten')}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -118,7 +121,7 @@ export const ModernArgumentCard = ({
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
-                  <span>{new Date(createdAt).toLocaleDateString('de-DE')}</span>
+                  <span>{new Date(createdAt).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}</span>
                 </div>
               </div>
             </div>
@@ -163,7 +166,7 @@ export const ModernArgumentCard = ({
               className="modern-button modern-button-ghost"
             >
               <Reply className="h-4 w-4" />
-              Antworten
+              {text('Reply', 'Antworten')}
             </Button>
           </div>
 
@@ -173,7 +176,7 @@ export const ModernArgumentCard = ({
               <CreateArgumentForm 
                 debateId={debateId}
                 parentId={id}
-                buttonText="Antwort senden"
+                buttonText={text('Send reply', 'Antwort senden')}
                 buttonVariant="default"
               />
             </div>

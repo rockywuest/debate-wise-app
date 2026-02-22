@@ -8,6 +8,7 @@ import { SteelManDialog } from './SteelManDialog';
 import { CreateArgumentForm } from './CreateArgumentForm';
 import { ArgumentRatingButtons } from './ArgumentRatingButtons';
 import { ReputationDisplay } from './ReputationDisplay';
+import { useTranslation } from '@/utils/i18n';
 import { MessageSquare, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 interface ArgumentCardProps {
@@ -40,6 +41,9 @@ export const ArgumentCard = ({
   childArguments = [],
   onReply
 }: ArgumentCardProps) => {
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
+
   const getTypeIcon = () => {
     switch (type) {
       case 'pro':
@@ -78,14 +82,14 @@ export const ArgumentCard = ({
         </div>
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            von {author} • {new Date(createdAt).toLocaleDateString('de-DE')}
+            {text('by', 'von')} {author} • {new Date(createdAt).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
           </p>
         </div>
       </CardHeader>
       <CardContent>
         <p className="text-gray-700 mb-4">{content}</p>
         
-        {/* Enhanced KI-Analyse für Mehrdimensionalität */}
+        {/* Enhanced AI analysis for multidimensional quality checks */}
         <ArgumentQualityAnalysis 
           argumentText={content} 
           debateTitle={title}
@@ -95,7 +99,7 @@ export const ArgumentCard = ({
         {childArguments.length > 0 && (
           <div className="mt-4 p-3 bg-muted rounded-lg">
             <h4 className="font-semibold text-sm mb-2">
-              Antworten ({childArguments.length})
+              {text('Replies', 'Antworten')} ({childArguments.length})
             </h4>
             <div className="space-y-2">
               {childArguments.slice(0, 2).map((child) => (
@@ -115,7 +119,7 @@ export const ArgumentCard = ({
               ))}
               {childArguments.length > 2 && (
                 <p className="text-xs text-muted-foreground">
-                  ... und {childArguments.length - 2} weitere Antworten
+                  ... {text('and', 'und')} {childArguments.length - 2} {text('more replies', 'weitere Antworten')}
                 </p>
               )}
             </div>
@@ -131,11 +135,11 @@ export const ArgumentCard = ({
           <CreateArgumentForm 
             debateId={debateId}
             parentId={id}
-            buttonText="Antworten"
+            buttonText={text('Reply', 'Antworten')}
             buttonVariant="outline"
           />
           
-          {/* Steel-Manning Button nur für Contra-Argumente */}
+          {/* Steel-manning button for contra arguments */}
           {type === 'contra' && (
             <SteelManDialog originalArgument={content} />
           )}

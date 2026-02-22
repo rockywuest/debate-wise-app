@@ -28,7 +28,8 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
   const { user } = useAuth();
   const { createArgument, creating } = useSecureArguments(debateId);
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   const handleAnalysisComplete = (analysisData: ArgumentAnalysis, score: number) => {
     setAnalysis(analysisData);
@@ -41,8 +42,8 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
     
     if (!argumentText.trim()) {
       toast({
-        title: t('common.error'),
-        description: "Please enter an argument.",
+        title: text('Error', 'Fehler'),
+        description: text('Please enter an argument.', 'Bitte geben Sie ein Argument ein.'),
         variant: "destructive"
       });
       return;
@@ -50,8 +51,8 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
 
     if (argumentText.length < 20) {
       toast({
-        title: "Argument zu kurz",
-        description: "Bitte formulieren Sie Ihr Argument ausführlicher (mindestens 20 Zeichen).",
+        title: text('Argument too short', 'Argument zu kurz'),
+        description: text('Please expand your argument (at least 20 characters).', 'Bitte formulieren Sie Ihr Argument ausfuhrlicher (mindestens 20 Zeichen).'),
         variant: "destructive"
       });
       return;
@@ -60,8 +61,8 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
     // Quality gate: Don't allow submission of very poor arguments
     if (qualityScore > 0 && qualityScore < 30) {
       toast({
-        title: "Argumentqualität zu niedrig",
-        description: "Bitte überarbeiten Sie Ihr Argument basierend auf den KI-Vorschlägen, bevor Sie es einreichen.",
+        title: text('Argument quality too low', 'Argumentqualitat zu niedrig'),
+        description: text('Please revise your argument based on the AI suggestions before submitting.', 'Bitte uberarbeiten Sie Ihr Argument basierend auf den KI-Vorschlagen, bevor Sie es einreichen.'),
         variant: "destructive"
       });
       return;
@@ -77,23 +78,23 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
       onSuccess?.();
       
       const qualityMessage = qualityScore >= 70 ? 
-        "Ihr hochwertiges Argument wurde hinzugefügt!" : 
-        "Ihr Argument wurde hinzugefügt und wird analysiert.";
+        text('Your high-quality argument was added!', 'Ihr hochwertiges Argument wurde hinzugefugt!') : 
+        text('Your argument was added and will be analyzed.', 'Ihr Argument wurde hinzugefugt und wird analysiert.');
       
       toast({
-        title: "Argument hinzugefügt",
+        title: text('Argument added', 'Argument hinzugefugt'),
         description: qualityMessage,
       });
     }
   };
 
   const getSubmitButtonState = () => {
-    if (creating) return { disabled: true, text: 'Wird erstellt...', variant: 'default' as const };
-    if (argumentText.length < 20) return { disabled: true, text: 'Mindestens 20 Zeichen', variant: 'outline' as const };
-    if (qualityScore > 0 && qualityScore < 30) return { disabled: true, text: 'Qualität zu niedrig', variant: 'destructive' as const };
-    if (qualityScore >= 70) return { disabled: false, text: '✅ Hochwertiges Argument einreichen', variant: 'default' as const };
-    if (qualityScore >= 30) return { disabled: false, text: 'Argument einreichen', variant: 'default' as const };
-    return { disabled: false, text: 'Argument einreichen', variant: 'default' as const };
+    if (creating) return { disabled: true, text: text('Creating...', 'Wird erstellt...'), variant: 'default' as const };
+    if (argumentText.length < 20) return { disabled: true, text: text('At least 20 characters', 'Mindestens 20 Zeichen'), variant: 'outline' as const };
+    if (qualityScore > 0 && qualityScore < 30) return { disabled: true, text: text('Quality too low', 'Qualitat zu niedrig'), variant: 'destructive' as const };
+    if (qualityScore >= 70) return { disabled: false, text: text('✅ Submit high-quality argument', '✅ Hochwertiges Argument einreichen'), variant: 'default' as const };
+    if (qualityScore >= 30) return { disabled: false, text: text('Submit argument', 'Argument einreichen'), variant: 'default' as const };
+    return { disabled: false, text: text('Submit argument', 'Argument einreichen'), variant: 'default' as const };
   };
 
   if (!user) {
@@ -101,7 +102,7 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
       <Card>
         <CardContent className="p-4 text-center">
           <p className="text-muted-foreground">
-            Melden Sie sich an, um an der Debatte teilzunehmen.
+            {text('Sign in to participate in this debate.', 'Melden Sie sich an, um an der Debatte teilzunehmen.')}
           </p>
         </CardContent>
       </Card>
@@ -116,14 +117,14 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-blue-600" />
-            <span>Intelligente Argumenterstellung</span>
+            <span>{text('Intelligent argument creation', 'Intelligente Argumenterstellung')}</span>
           </div>
           <Badge variant="secondary" className="text-xs">
-            KI-Unterstützt
+            {text('AI-assisted', 'KI-unterstutzt')}
           </Badge>
         </CardTitle>
         <div className="text-sm text-muted-foreground">
-          Ihre Argumente werden in Echtzeit auf Qualität und Relevanz analysiert
+          {text('Your arguments are analyzed in real time for quality and relevance.', 'Ihre Argumente werden in Echtzeit auf Qualitat und Relevanz analysiert.')}
         </div>
       </CardHeader>
       <CardContent>
@@ -136,7 +137,7 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
               onClick={() => setArgumentType('Pro')}
               className="flex-1"
             >
-              👍 Pro-Argument
+              {text('👍 Pro argument', '👍 Pro-Argument')}
             </Button>
             <Button
               type="button"
@@ -145,24 +146,24 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
               onClick={() => setArgumentType('Contra')}
               className="flex-1"
             >
-              👎 Contra-Argument
+              {text('👎 Contra argument', '👎 Contra-Argument')}
             </Button>
           </div>
           
           <Textarea
             value={argumentText}
             onChange={(e) => setArgumentText(e.target.value)}
-            placeholder="Formulieren Sie Ihr Argument ausführlich und substantiiert..."
+            placeholder={text('Formulate your argument in detail and support it with evidence...', 'Formulieren Sie Ihr Argument ausfuhrlich und substantiiert...')}
             className="min-h-[120px]"
             maxLength={2000}
           />
           
           <div className="flex justify-between items-center text-xs text-muted-foreground">
-            <span>{argumentText.length}/2000 Zeichen (Min. 20)</span>
+            <span>{argumentText.length}/2000 {text('characters (min. 20)', 'Zeichen (Min. 20)')}</span>
             {qualityScore > 0 && (
               <div className="flex items-center gap-1">
                 <Target className="h-3 w-3" />
-                <span>Qualität: {qualityScore}%</span>
+                <span>{text('Quality', 'Qualitat')}: {qualityScore}%</span>
               </div>
             )}
           </div>
@@ -170,7 +171,7 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
           {argumentText.length >= 20 && (
             <RealTimeArgumentAnalysis
               argumentText={argumentText}
-              debateTitle="Aktuelle Debatte"
+              debateTitle={text('Current debate', 'Aktuelle Debatte')}
               debateDescription=""
               onAnalysisComplete={handleAnalysisComplete}
               autoAnalyze={true}

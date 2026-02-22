@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, Target } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from '@/utils/i18n';
 
 interface SteelManDialogProps {
   originalArgument: string;
@@ -19,6 +20,8 @@ export const SteelManDialog = ({ originalArgument, onSuccess }: SteelManDialogPr
   const [reformulation, setReformulation] = useState('');
   const [validation, setValidation] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   const handleSubmit = async () => {
     if (!reformulation.trim()) return;
@@ -36,7 +39,13 @@ export const SteelManDialog = ({ originalArgument, onSuccess }: SteelManDialogPr
       setValidation(data.validation);
       
       // Call onSuccess if validation is positive
-      if (data.validation && data.validation.toLowerCase().includes('ja') && !data.validation.toLowerCase().includes('nein')) {
+      const normalizedValidation = typeof data.validation === 'string' ? data.validation.toLowerCase() : '';
+      const isPositive =
+        (normalizedValidation.includes('ja') || normalizedValidation.includes('yes')) &&
+        !normalizedValidation.includes('nein') &&
+        !normalizedValidation.includes('no');
+
+      if (isPositive) {
         onSuccess?.();
       }
     } catch (error) {
@@ -53,8 +62,9 @@ export const SteelManDialog = ({ originalArgument, onSuccess }: SteelManDialogPr
   };
 
   const isPositiveValidation = validation && (
-    validation.toLowerCase().includes('ja') && 
-    !validation.toLowerCase().includes('nein')
+    (validation.toLowerCase().includes('ja') || validation.toLowerCase().includes('yes')) &&
+    !validation.toLowerCase().includes('nein') &&
+    !validation.toLowerCase().includes('no')
   );
 
   return (
@@ -62,19 +72,19 @@ export const SteelManDialog = ({ originalArgument, onSuccess }: SteelManDialogPr
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           <Target className="h-4 w-4" />
-          Gegenargument fair darstellen
+          {text('Fairly represent counterargument', 'Gegenargument fair darstellen')}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Steel-Manning: Faire Darstellung des Gegenarguments</DialogTitle>
+          <DialogTitle>{text('Steel-Manning: Fair representation of the counterargument', 'Steel-Manning: Faire Darstellung des Gegenarguments')}</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4">
           <Card className="border-gray-200 bg-gray-50">
             <CardContent className="p-4">
               <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                Originalargument:
+                {text('Original argument:', 'Originalargument:')}
               </Label>
               <p className="text-sm italic text-gray-600">"{originalArgument}"</p>
             </CardContent>
@@ -82,14 +92,16 @@ export const SteelManDialog = ({ originalArgument, onSuccess }: SteelManDialogPr
 
           <div className="space-y-2">
             <Label htmlFor="reformulation">
-              Um sicherzustellen, dass du die Gegenposition verstehst, formuliere das Argument, 
-              das du widerlegst, bitte in der stärksten und fairsten Weise neu:
+              {text(
+                'To confirm that you understand the opposing position, reformulate the argument you want to refute in the strongest and fairest possible way:',
+                'Um sicherzustellen, dass du die Gegenposition verstehst, formuliere das Argument, das du widerlegst, bitte in der starksten und fairsten Weise neu:'
+              )}
             </Label>
             <Textarea
               id="reformulation"
               value={reformulation}
               onChange={(e) => setReformulation(e.target.value)}
-              placeholder="Schreibe hier deine faire und starke Interpretation des Arguments..."
+              placeholder={text('Write your fair and strong interpretation of the argument here...', 'Schreibe hier deine faire und starke Interpretation des Arguments...')}
               rows={4}
               className="w-full"
             />
@@ -109,7 +121,7 @@ export const SteelManDialog = ({ originalArgument, onSuccess }: SteelManDialogPr
                       variant="outline" 
                       className={`mb-2 ${isPositiveValidation ? 'border-green-300 text-green-700' : 'border-red-300 text-red-700'}`}
                     >
-                      KI-Bewertung
+                      {text('AI evaluation', 'KI-Bewertung')}
                     </Badge>
                     <p className="text-sm">{validation}</p>
                   </div>
@@ -120,13 +132,13 @@ export const SteelManDialog = ({ originalArgument, onSuccess }: SteelManDialogPr
 
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={resetDialog}>
-              Schließen
+              {text('Close', 'Schliessen')}
             </Button>
             <Button 
               onClick={handleSubmit} 
               disabled={!reformulation.trim() || loading}
             >
-              {loading ? 'Prüfe...' : 'Bewerten lassen'}
+              {loading ? text('Evaluating...', 'Prufe...') : text('Get evaluation', 'Bewerten lassen')}
             </Button>
           </div>
         </div>
