@@ -3,7 +3,7 @@ import type { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 
 export interface Argument {
   id: string;
@@ -23,8 +23,7 @@ export const useArguments = (debateId?: string) => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
-  const { language } = useTranslation();
-  const text = useCallback((en: string, de: string) => (language === 'de' ? de : en), [language]);
+  const text = useLocalizedText();
   const defaultErrorMessage = text('An unexpected error occurred.', 'Ein unerwarteter Fehler ist aufgetreten.');
 
   const getErrorMessage = useCallback((error: unknown): string => {

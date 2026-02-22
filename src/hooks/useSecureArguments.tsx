@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { InputValidator } from '@/utils/inputValidation';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 import type { Argument } from './useArguments';
 
 export const useSecureArguments = (debateId?: string) => {
@@ -14,8 +14,7 @@ export const useSecureArguments = (debateId?: string) => {
   const [creating, setCreating] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
-  const { language } = useTranslation();
-  const text = useCallback((en: string, de: string) => (language === 'de' ? de : en), [language]);
+  const text = useLocalizedText();
   const defaultErrorMessage = text('An unexpected error occurred.', 'Ein unerwarteter Fehler ist aufgetreten.');
 
   const getErrorMessage = useCallback((error: unknown): string => {
