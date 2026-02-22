@@ -38,6 +38,7 @@ Ship Debate Wise as an open-source, English-first project with bilingual UI supp
 - [x] One-click local developer bootstrap script (`npm run bootstrap`)
 - [x] Architecture decision records (ADRs) for core product decisions (`docs/adr/`)
 - [x] Maintainer triage automation for stale issues/PRs (`.github/workflows/stale.yml`)
+- [x] Deployment mode runbooks for self-hosting and public commons operations (`docs/SELF_HOSTING.md`, `docs/PUBLIC_COMMONS_OPERATIONS.md`)
 
 ## Launch Recommendation
 

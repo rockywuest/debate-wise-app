@@ -135,6 +135,8 @@ Architecture and roadmap:
 - `docs/adr/README.md`
 - `docs/ROADMAP.md`
 - `docs/RELEASE_PROCESS.md`
+- `docs/SELF_HOSTING.md`
+- `docs/PUBLIC_COMMONS_OPERATIONS.md`
 
 ## Known Gaps (Good First Contributions)
 

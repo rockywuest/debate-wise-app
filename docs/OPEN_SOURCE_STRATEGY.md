@@ -58,6 +58,11 @@ To support both modes cleanly:
 - host one official commons
 - keep self-hosting docs maintained
 
+## Operational Guides
+
+- Self-hosted deployment: `docs/SELF_HOSTING.md`
+- Public commons operations: `docs/PUBLIC_COMMONS_OPERATIONS.md`
+
 ## Success Metrics
 
 - time-to-first-contribution

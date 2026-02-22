@@ -21,6 +21,7 @@ Build the best open-source platform for constructive, evidence-based public disc
 - [ ] First-contribution pipeline: curated issues + fast review SLA
 - [ ] Contributor analytics dashboard (response times, merge times)
 - [x] ADR baseline for core technical and product decisions
+- [x] Baseline deployment and operations runbooks for both distribution modes
 
 ## Phase 3: Product Depth
 
