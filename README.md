@@ -122,6 +122,7 @@ npm run build
 - Security baseline: no production dependency vulnerabilities in current lockfile
 - Security automation: Dependabot + CodeQL + Scorecard workflows configured
 - Release automation: release drafter workflow configured
+- Maintainer operations: stale issue/PR triage workflow configured
 - Performance baseline: route and vendor chunk splitting enabled in Vite build
 - Open-source baseline: contribution docs, issue/PR templates, and security policy in place
 - Localization baseline: core debate/auth/admin/rating flows support EN/DE with English-first behavior
@@ -129,6 +130,7 @@ npm run build
 Detailed launch checklist: see `docs/MARKET_READINESS.md`.
 Architecture and roadmap:
 - `docs/ARCHITECTURE.md`
+- `docs/adr/README.md`
 - `docs/ROADMAP.md`
 - `docs/RELEASE_PROCESS.md`
 
@@ -154,6 +156,7 @@ Architecture and roadmap:
 - Maintainers: see `MAINTAINERS.md`
 - Support: see `SUPPORT.md`
 - Community operations: see `docs/COMMUNITY_PLAYBOOK.md`
+- Maintainer runbook: see `docs/MAINTAINER_RUNBOOK.md`
 - Security reporting: see `SECURITY.md`
 
 ## License

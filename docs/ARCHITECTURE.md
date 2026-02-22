@@ -62,3 +62,12 @@
 - explicit `space_id` abstraction for public commons + private spaces
 - moderation policy layer per space
 - broader integration/e2e test coverage
+
+## Architecture Decisions
+
+Core decisions are tracked as ADRs:
+
+- `docs/adr/README.md`
+- `docs/adr/ADR-0001-english-first-repository-and-bilingual-product.md`
+- `docs/adr/ADR-0002-dual-distribution-public-commons-and-self-hosted.md`
+- `docs/adr/ADR-0003-rpc-guardrails-for-sensitive-writes.md`

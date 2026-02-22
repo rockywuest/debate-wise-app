@@ -11,7 +11,7 @@ This playbook helps maintainers grow a healthy contributor community around Deba
 ## Monthly Maintainer Cadence
 
 1. Curate and refresh `docs/GOOD_FIRST_ISSUES.md`
-2. Close stale triage items that are already resolved
+2. Review stale triage automation results and restore valid threads quickly
 3. Publish a short "what shipped / what is next" update
 4. Identify one onboarding improvement from contributor feedback
 

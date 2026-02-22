@@ -34,8 +34,9 @@ Ship Debate Wise as an open-source, English-first project with bilingual UI supp
 
 - [x] Public-commons + self-hosted strategy documented (`docs/OPEN_SOURCE_STRATEGY.md`)
 - [x] Good-first-issues starter list documented (`docs/GOOD_FIRST_ISSUES.md`)
-- [ ] Add one-click local developer bootstrap script
-- [ ] Add architecture decision records (ADRs) for core product decisions
+- [x] One-click local developer bootstrap script (`npm run bootstrap`)
+- [x] Architecture decision records (ADRs) for core product decisions (`docs/adr/`)
+- [x] Maintainer triage automation for stale issues/PRs (`.github/workflows/stale.yml`)
 
 ## Launch Recommendation
 
