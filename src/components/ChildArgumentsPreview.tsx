@@ -3,7 +3,7 @@ import React from 'react';
 import { MessageSquare, ThumbsUp, ThumbsDown, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 
 interface ChildArgument {
   id: string;
@@ -18,8 +18,7 @@ interface ChildArgumentsPreviewProps {
 }
 
 export const ChildArgumentsPreview = ({ childArguments, onViewAll }: ChildArgumentsPreviewProps) => {
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   if (childArguments.length === 0) return null;
 

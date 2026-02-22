@@ -1,9 +1,9 @@
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { AdminDashboard } from '@/components/AdminDashboard';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -11,10 +11,9 @@ const Admin = () => {
   const { user, loading: authLoading } = useAuth();
   const { role, loading: roleLoading, isAdmin } = useUserRole();
   const navigate = useNavigate();
-  const { language } = useTranslation();
   const { toast } = useToast();
   const [checking, setChecking] = useState(true);
-  const text = useCallback((en: string, de: string) => (language === 'de' ? de : en), [language]);
+  const text = useLocalizedText();
 
   useEffect(() => {
     if (!authLoading && !roleLoading) {

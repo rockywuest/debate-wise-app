@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
 import { createDemoContent } from '@/utils/createDemoContent';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 import { PromoteUserForm } from './PromoteUserForm';
 import { 
   Settings, 
@@ -21,8 +21,7 @@ import {
 export const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const handleSeedContent = async () => {
     setLoading(true);

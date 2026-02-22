@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { ModernArgumentCard } from './ModernArgumentCard';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 
 interface Argument {
   id: string;
@@ -21,8 +21,7 @@ interface ModernDebateThreadProps {
 }
 
 export const ModernDebateThread = ({ arguments: args, debateId, level = 0 }: ModernDebateThreadProps) => {
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const getIndentationClass = (level: number) => {
     if (level === 0) return '';

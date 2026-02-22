@@ -1,10 +1,10 @@
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 
 interface RealtimeConfig {
   table: string;
@@ -16,8 +16,7 @@ interface RealtimeConfig {
 export const useRealtimeSubscriptions = (configs: RealtimeConfig[]) => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { language } = useTranslation();
-  const text = useCallback((en: string, de: string) => (language === 'de' ? de : en), [language]);
+  const text = useLocalizedText();
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
 
   useEffect(() => {

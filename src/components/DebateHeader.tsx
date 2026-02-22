@@ -2,6 +2,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { localizeText } from '@/utils/i18n';
 import { Clock, Users, MessageSquare, Activity, Plus } from 'lucide-react';
 
 interface DebateHeaderProps {
@@ -14,7 +15,7 @@ interface DebateHeaderProps {
   };
   argumentsCount: number;
   participantsCount: number;
-  language: string;
+  language: 'de' | 'en';
   onShowForm: () => void;
 }
 
@@ -25,7 +26,7 @@ export const DebateHeader = ({
   language, 
   onShowForm 
 }: DebateHeaderProps) => {
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = (en: string, de: string) => localizeText(language, en, de);
 
   return (
     <div className="debate-header p-8 mb-8">

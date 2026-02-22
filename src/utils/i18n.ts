@@ -237,3 +237,11 @@ export const useTranslation = (): I18nContextValue => {
 
   return context;
 };
+
+export const useLocalizedText = () => {
+  const { language } = useTranslation();
+
+  return useCallback((en: string, de: string) => {
+    return localizeText(language, en, de);
+  }, [language]);
+};

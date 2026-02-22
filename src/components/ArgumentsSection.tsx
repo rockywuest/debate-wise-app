@@ -2,7 +2,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { ModernDebateThread } from './ModernDebateThread';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 import { ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
 
 interface Argument {
@@ -23,8 +23,7 @@ interface ArgumentsSectionProps {
 }
 
 export const ArgumentsSection = ({ type, arguments: args, debateId }: ArgumentsSectionProps) => {
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   if (args.length === 0) return null;
 

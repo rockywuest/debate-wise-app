@@ -8,13 +8,13 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MessageSquare, Users, Clock, Trophy, TrendingUp, Award, Star, Brain } from 'lucide-react';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText, useTranslation } from '@/utils/i18n';
 
 const Index = () => {
   const { user, loading: authLoading } = useAuth();
   const { debates, loading: debatesLoading } = useDebates();
   const { t, language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   if (authLoading) {
     return (
