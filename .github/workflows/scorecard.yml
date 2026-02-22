@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   analysis:
+    if: github.event.repository.private == false
     name: Scorecard analysis
     runs-on: ubuntu-latest
 
@@ -32,6 +33,16 @@ jobs:
           publish_results: true
 
       - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: results.sarif
+
+  private-repo-note:
+    if: github.event.repository.private == true
+    name: Scorecard skipped for private repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain skip condition
+        run: |
+          echo "Scorecard full analysis requires public repository access patterns."
+          echo "This repository is private, so Scorecard is intentionally skipped until the repo is public."
