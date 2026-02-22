@@ -23,6 +23,18 @@ A better open-source path is:
 
 This repository now documents both directions so contributors can build features for either mode.
 
+## Who This Is For
+
+- people who want structured debates instead of chaotic comment threads
+- educators and communities that want argument quality as a first-class signal
+- builders who want an open-source base for public or private debate spaces
+
+## Value in 10 Minutes
+
+1. Start the app locally with your Supabase project.
+2. Create a debate and add sample arguments.
+3. Review AI-assisted argument analysis and bilingual navigation (EN/DE).
+
 ## Current Status
 
 - Frontend: React + TypeScript + Vite + Tailwind
@@ -134,6 +146,7 @@ npm run build
 - Localization baseline: core debate/auth/admin/rating flows support EN/DE with English-first behavior
 
 Detailed launch checklist: see `docs/MARKET_READINESS.md`.
+Release audit snapshot: see `docs/RELEASE_AUDIT_2026-02-22.md`.
 Architecture and roadmap:
 - `docs/ARCHITECTURE.md`
 - `docs/adr/README.md`
@@ -163,6 +176,7 @@ Architecture and roadmap:
 - Governance: see `GOVERNANCE.md`
 - Maintainers: see `MAINTAINERS.md`
 - Support: see `SUPPORT.md`
+- Changelog: see `CHANGELOG.md`
 - Community operations: see `docs/COMMUNITY_PLAYBOOK.md`
 - Maintainer runbook: see `docs/MAINTAINER_RUNBOOK.md`
 - Security reporting: see `SECURITY.md`

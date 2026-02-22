@@ -9,11 +9,13 @@ Ship Debate Wise as an open-source, English-first project with bilingual UI supp
 ## Baseline Status
 
 - [x] Repository docs and governance files in place (`README`, `CONTRIBUTING`, `CODE_OF_CONDUCT`, `SECURITY`, `LICENSE`)
+- [x] Changelog baseline in place (`CHANGELOG.md`)
 - [x] Issue and PR templates configured in `.github/`
 - [x] Frontend configuration decoupled from a fixed Supabase project (`.env.example`)
 - [x] CI workflow running `lint`, `typecheck`, `test`, and `build`
 - [x] Production dependency audit command available (`npm run audit:prod`)
 - [x] Bundle splitting configured in Vite for improved load profile
+- [x] Unknown route fallback in active router (`src/pages/NotFound.tsx`)
 
 ## Quality Gates (Current)
 
@@ -48,3 +50,5 @@ Ship Debate Wise as an open-source, English-first project with bilingual UI supp
 ## Launch Recommendation
 
 This repository is ready for a public beta open-source launch, with remaining work focused on scale-hardening and long-tail i18n cleanup rather than core blocking issues.
+
+Independent audit details: `docs/RELEASE_AUDIT_2026-02-22.md`.

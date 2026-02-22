@@ -22,6 +22,8 @@ Build the best open-source platform for constructive, evidence-based public disc
 - [x] Add hook-level integration tests for auth and debate data flows
 - [x] Add Playwright E2E smoke flows for core guest/auth journeys
 - [x] Enforce frontend bundle budgets in quality checks
+- [x] Remove legacy, unreferenced router/page stack from active codebase
+- [x] Reduce dependency-update noise with grouped Dependabot strategy
 - [ ] Publish regular release notes and monthly roadmap updates
 - [ ] First-contribution pipeline: curated issues + fast review SLA
 - [ ] Contributor analytics dashboard (response times, merge times)
