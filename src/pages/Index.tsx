@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MessageSquare, Users, Clock, Trophy, TrendingUp, Award, Star, Brain } from 'lucide-react';
-import { useLocalizedText, useTranslation } from '@/utils/i18n';
+import { formatLocalizedDate, useLocalizedText, useTranslation } from '@/utils/i18n';
 
 const Index = () => {
   const { user, loading: authLoading } = useAuth();
@@ -199,7 +199,7 @@ const Index = () => {
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Clock className="h-4 w-4" />
-                          {new Date(debate.erstellt_am).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
+                          {formatLocalizedDate(debate.erstellt_am, language)}
                         </div>
                         <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                           <TrendingUp className="h-3 w-3 mr-1" />

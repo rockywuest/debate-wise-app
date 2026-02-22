@@ -8,7 +8,7 @@ import { SteelManDialog } from './SteelManDialog';
 import { CreateArgumentForm } from './CreateArgumentForm';
 import { useOptimizedReputation } from '@/hooks/useOptimizedReputation';
 import { ReputationDisplay } from './ReputationDisplay';
-import { useLocalizedText, useTranslation } from '@/utils/i18n';
+import { formatLocalizedDate, useLocalizedText, useTranslation } from '@/utils/i18n';
 import { MessageSquare, ThumbsUp, ThumbsDown, Award, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -91,7 +91,7 @@ export const OptimizedArgumentCard = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <p className="text-sm text-muted-foreground">
-              {text('by', 'von')} {author} • {new Date(createdAt).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
+              {text('by', 'von')} {author} • {formatLocalizedDate(createdAt, language)}
             </p>
             <ReputationDisplay score={authorReputation} size="sm" />
           </div>

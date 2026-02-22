@@ -3,7 +3,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Award, Target, CheckCircle, Brain, Users } from 'lucide-react';
-import { useLocalizedText, useTranslation } from '@/utils/i18n';
+import { formatLocalizedDate, useLocalizedText, useTranslation } from '@/utils/i18n';
 
 interface ActionBasedReputationSystemProps {
   userScore: number;
@@ -96,7 +96,7 @@ export const ActionBasedReputationSystem = ({
                       {action.points >= 0 ? '+' : ''}{action.points}
                     </Badge>
                     <span className="text-muted-foreground">
-                      {new Date(action.timestamp).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
+                      {formatLocalizedDate(action.timestamp, language)}
                     </span>
                   </div>
                 </div>

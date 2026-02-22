@@ -8,7 +8,7 @@ import { SteelManDialog } from './SteelManDialog';
 import { CreateArgumentForm } from './CreateArgumentForm';
 import { ArgumentRatingButtons } from './ArgumentRatingButtons';
 import { ReputationDisplay } from './ReputationDisplay';
-import { useLocalizedText, useTranslation } from '@/utils/i18n';
+import { formatLocalizedDate, useLocalizedText, useTranslation } from '@/utils/i18n';
 import { MessageSquare, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 interface ArgumentCardProps {
@@ -82,7 +82,7 @@ export const ArgumentCard = ({
         </div>
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            {text('by', 'von')} {author} • {new Date(createdAt).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
+            {text('by', 'von')} {author} • {formatLocalizedDate(createdAt, language)}
           </p>
         </div>
       </CardHeader>

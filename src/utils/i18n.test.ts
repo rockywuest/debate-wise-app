@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach } from 'vitest';
-import { getPreferredLanguage, localizeText } from './i18n';
+import { formatLocalizedDate, getDateLocale, getPreferredLanguage, localizeText } from './i18n';
 
 describe('i18n utils', () => {
   let store: Map<string, string>;
@@ -30,6 +30,21 @@ describe('i18n utils', () => {
 
   it('returns german text for de language', () => {
     expect(localizeText('de', 'Hello', 'Hallo')).toBe('Hallo');
+  });
+
+  it('returns language-specific locale tags for dates', () => {
+    expect(getDateLocale('en')).toBe('en-US');
+    expect(getDateLocale('de')).toBe('de-DE');
+  });
+
+  it('formats dates with the expected locale rules', () => {
+    const value = '2026-02-22T12:00:00.000Z';
+    const en = formatLocalizedDate(value, 'en', { timeZone: 'UTC' });
+    const de = formatLocalizedDate(value, 'de', { timeZone: 'UTC' });
+
+    expect(en).not.toBe(de);
+    expect(en).toMatch(/2026/);
+    expect(de).toMatch(/2026/);
   });
 
   it('prefers stored language from known storage keys', () => {

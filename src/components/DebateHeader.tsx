@@ -2,7 +2,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { localizeText } from '@/utils/i18n';
+import { formatLocalizedDate, localizeText } from '@/utils/i18n';
 import { Clock, Users, MessageSquare, Activity, Plus } from 'lucide-react';
 
 interface DebateHeaderProps {
@@ -39,7 +39,7 @@ export const DebateHeader = ({
         </div>
         <Badge variant="secondary" className="ml-6 px-4 py-2 text-sm">
           <Clock className="h-4 w-4 mr-2" />
-          {new Date(debate.erstellt_am).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
+          {formatLocalizedDate(debate.erstellt_am, language)}
         </Badge>
       </div>
       

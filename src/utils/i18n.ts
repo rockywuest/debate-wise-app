@@ -193,6 +193,19 @@ export const localizeText = (language: SupportedLanguage, en: string, de: string
   return language === 'de' ? de : en;
 };
 
+export const getDateLocale = (language: SupportedLanguage): string => {
+  return language === 'de' ? 'de-DE' : 'en-US';
+};
+
+export const formatLocalizedDate = (
+  value: string | number | Date,
+  language: SupportedLanguage,
+  options?: Intl.DateTimeFormatOptions
+): string => {
+  const date = value instanceof Date ? value : new Date(value);
+  return date.toLocaleDateString(getDateLocale(language), options);
+};
+
 const persistLanguage = (newLanguage: SupportedLanguage) => {
   if (typeof window === 'undefined') {
     return;

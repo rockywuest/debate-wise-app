@@ -10,7 +10,7 @@ import { ArgumentRatingButtons } from './ArgumentRatingButtons';
 import { ChildArgumentsPreview } from './ChildArgumentsPreview';
 import { ReputationDisplay } from './ReputationDisplay';
 import { useEnhancedReputation } from '@/hooks/useEnhancedReputation';
-import { useLocalizedText, useTranslation } from '@/utils/i18n';
+import { formatLocalizedDate, useLocalizedText, useTranslation } from '@/utils/i18n';
 import { MessageSquare, ThumbsUp, ThumbsDown, Award, TrendingUp } from 'lucide-react';
 import type { ArgumentAnalysis } from '@/types/analysis';
 
@@ -121,7 +121,7 @@ export const EnhancedArgumentCard = ({
         </div>
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            {text('by', 'von')} {author} • {new Date(createdAt).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
+            {text('by', 'von')} {author} • {formatLocalizedDate(createdAt, language)}
           </p>
         </div>
       </CardHeader>

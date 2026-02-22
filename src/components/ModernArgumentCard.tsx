@@ -8,7 +8,7 @@ import { CreateArgumentForm } from './CreateArgumentForm';
 import { ArgumentRatingButtons } from './ArgumentRatingButtons';
 import { ChildArgumentsPreview } from './ChildArgumentsPreview';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { useLocalizedText, useTranslation } from '@/utils/i18n';
+import { formatLocalizedDate, useLocalizedText, useTranslation } from '@/utils/i18n';
 import { ThumbsUp, ThumbsDown, MessageSquare, MoreHorizontal, Reply, Brain, User, Calendar } from 'lucide-react';
 
 interface ModernArgumentCardProps {
@@ -121,7 +121,7 @@ export const ModernArgumentCard = ({
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
-                  <span>{new Date(createdAt).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}</span>
+                  <span>{formatLocalizedDate(createdAt, language)}</span>
                 </div>
               </div>
             </div>

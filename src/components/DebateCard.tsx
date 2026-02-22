@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
+import { formatLocalizedDate } from '@/utils/i18n';
 import { 
   MessageSquare, 
   Users, 
@@ -128,7 +129,7 @@ export const DebateCard = ({
     const diffInDays = Math.floor(diffInHours / 24);
     if (diffInDays < 7) return language === 'de' ? `Vor ${diffInDays}d` : `${diffInDays}d ago`;
     
-    return date.toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US');
+    return formatLocalizedDate(date, language);
   };
 
   return (
