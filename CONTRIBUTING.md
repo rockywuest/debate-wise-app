@@ -46,6 +46,10 @@ If lint fails due existing baseline issues, include only changes relevant to you
 - New strings include EN + DE variants.
 - Security/privacy impact assessed.
 
+## Major Change Proposals
+
+For significant architecture, moderation, governance, or security changes, open an RFC issue first using the RFC template and follow `docs/RFC_PROCESS.md`.
+
 ## Areas Where Help Is Most Needed
 
 - i18n consolidation (single source of truth)

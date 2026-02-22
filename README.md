@@ -126,6 +126,10 @@ npm run build
 - Localization baseline: core debate/auth/admin/rating flows support EN/DE with English-first behavior
 
 Detailed launch checklist: see `docs/MARKET_READINESS.md`.
+Architecture and roadmap:
+- `docs/ARCHITECTURE.md`
+- `docs/ROADMAP.md`
+- `docs/RELEASE_PROCESS.md`
 
 ## Known Gaps (Good First Contributions)
 

@@ -1,0 +1,42 @@
+name: RFC proposal
+description: Propose a major architecture, governance, moderation, or security change.
+title: "[RFC]: "
+labels: ["rfc"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for significant changes. See `docs/RFC_PROCESS.md`.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What change do you propose?
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: What problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: Detailed design
+      description: Outline architecture, tradeoffs, and rollout.
+    validations:
+      required: true
+  - type: textarea
+    id: security
+    attributes:
+      label: Security and abuse considerations
+      description: Risks and mitigation.
+    validations:
+      required: true
+  - type: textarea
+    id: migration
+    attributes:
+      label: Migration and rollback
+      description: How do we move safely and recover if needed?
