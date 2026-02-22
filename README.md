@@ -108,6 +108,7 @@ npm run build
 - `npm run bootstrap` - install dependencies and initialize local environment
 - `npm run check` - run full local quality gate (lint, typecheck, test, build, audit)
 - `npm run check:i18n` - fail on legacy inline EN/DE text helper duplication
+- `npm run smoke:routes` - run production-preview smoke checks for critical routes
 - `npm run build` - production build
 - `npm run build:dev` - development-mode build
 - `npm run typecheck` - TypeScript check
@@ -119,7 +120,7 @@ npm run build
 
 ## Market Readiness Snapshot (Feb 22, 2026)
 
-- Build pipeline: green (`lint`, `typecheck`, `test`, `build`, `audit:prod`)
+- Build pipeline: green (`lint`, `check:i18n`, `typecheck`, `test`, `build`, `smoke:routes`, `audit:prod`)
 - i18n guardrail: consistency check in local/CI quality gates (`check:i18n`)
 - Security baseline: no production dependency vulnerabilities in current lockfile
 - Security automation: Dependabot + CodeQL + Scorecard workflows configured

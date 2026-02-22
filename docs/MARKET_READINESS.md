@@ -22,6 +22,7 @@ Ship Debate Wise as an open-source, English-first project with bilingual UI supp
 - `npm run typecheck`: passing
 - `npm run test`: passing
 - `npm run build`: passing
+- `npm run smoke:routes`: passing
 - `npm run audit:prod`: passing (0 vulnerabilities)
 
 ## Localization Readiness

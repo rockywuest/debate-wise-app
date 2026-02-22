@@ -37,5 +37,8 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Route smoke checks
+        run: npm run smoke:routes
+
       - name: Audit production dependencies
         run: npm run audit:prod

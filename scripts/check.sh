@@ -16,6 +16,9 @@ npm run test
 echo "==> Build"
 npm run build
 
+echo "==> Route smoke checks"
+npm run smoke:routes
+
 echo "==> Security audit (prod deps)"
 npm run audit:prod
 

@@ -17,6 +17,7 @@ Build the best open-source platform for constructive, evidence-based public disc
 ## Phase 2: Community Flywheel
 
 - [ ] Expand test coverage (integration + e2e smoke paths)
+- [x] Add production route smoke checks for critical paths
 - [ ] Publish regular release notes and monthly roadmap updates
 - [ ] First-contribution pipeline: curated issues + fast review SLA
 - [ ] Contributor analytics dashboard (response times, merge times)

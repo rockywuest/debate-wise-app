@@ -35,6 +35,12 @@ For localization-related changes, also verify:
 npm run check:i18n
 ```
 
+For deployment-path changes, verify production route smoke checks:
+
+```bash
+npm run smoke:routes
+```
+
 If lint fails due existing baseline issues, include only changes relevant to your scope and mention remaining unrelated lint findings in the PR description.
 
 ## Coding Guidelines

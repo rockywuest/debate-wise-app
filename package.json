@@ -10,6 +10,7 @@
     "bootstrap": "bash scripts/bootstrap.sh",
     "check": "bash scripts/check.sh",
     "check:i18n": "bash scripts/check-i18n.sh",
+    "smoke:routes": "bash scripts/smoke-routes.sh",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "typecheck": "tsc --noEmit",
