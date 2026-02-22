@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -74,11 +74,7 @@ export const DebateCard = ({
 
   const t = translations[language];
 
-  useEffect(() => {
-    fetchDebateMetadata();
-  }, [id]);
-
-  const fetchDebateMetadata = async () => {
+  const fetchDebateMetadata = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -115,7 +111,11 @@ export const DebateCard = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [createdAt, id]);
+
+  useEffect(() => {
+    fetchDebateMetadata();
+  }, [fetchDebateMetadata]);
 
   const formatRelativeTime = (dateString: string) => {
     const date = new Date(dateString);

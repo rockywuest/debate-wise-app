@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -44,7 +44,7 @@ export const RealTimeArgumentAnalysis = ({
     return Math.round(score);
   };
 
-  const analyzeArgument = async () => {
+  const analyzeArgument = useCallback(async () => {
     if (!argumentText.trim() || argumentText.length < 20) return;
     
     setLoading(true);
@@ -69,7 +69,7 @@ export const RealTimeArgumentAnalysis = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [argumentText, debateDescription, debateTitle, onAnalysisComplete]);
 
   useEffect(() => {
     if (autoAnalyze && argumentText.length >= 20) {
@@ -79,7 +79,7 @@ export const RealTimeArgumentAnalysis = ({
       
       return () => clearTimeout(debounceTimer);
     }
-  }, [argumentText, autoAnalyze]);
+  }, [analyzeArgument, argumentText.length, autoAnalyze]);
 
   const getQualityColor = (score: number) => {
     if (score >= 80) return 'text-green-600 bg-green-50 border-green-200';
