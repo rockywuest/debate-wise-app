@@ -47,7 +47,7 @@ check_route() {
     exit 1
   fi
 
-  if ! rg -q 'id="root"' "${body_file}"; then
+  if ! grep -q 'id="root"' "${body_file}"; then
     echo "Smoke check failed for route '${route}': missing root mount node"
     exit 1
   fi
