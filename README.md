@@ -121,6 +121,7 @@ npm run build
 - Build pipeline: green (`lint`, `typecheck`, `test`, `build`, `audit:prod`)
 - Security baseline: no production dependency vulnerabilities in current lockfile
 - Security automation: Dependabot + CodeQL + Scorecard workflows configured
+- Release automation: release drafter workflow configured
 - Performance baseline: route and vendor chunk splitting enabled in Vite build
 - Open-source baseline: contribution docs, issue/PR templates, and security policy in place
 - Localization baseline: core debate/auth/admin/rating flows support EN/DE with English-first behavior
