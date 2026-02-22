@@ -41,6 +41,12 @@ For deployment-path changes, verify production route smoke checks:
 npm run smoke:routes
 ```
 
+For user-critical flow changes, run end-to-end checks:
+
+```bash
+npm run test:e2e
+```
+
 If lint fails due existing baseline issues, include only changes relevant to your scope and mention remaining unrelated lint findings in the PR description.
 
 ## Coding Guidelines

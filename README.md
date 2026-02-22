@@ -114,6 +114,7 @@ npm run build
 - `npm run typecheck` - TypeScript check
 - `npm run lint` - ESLint
 - `npm run test` - run unit tests (Vitest)
+- `npm run test:e2e` - run Playwright end-to-end tests (Chromium)
 - `npm run test:watch` - run tests in watch mode
 - `npm run audit:prod` - production dependency vulnerability scan
 - `npm run preview` - preview production build
@@ -121,7 +122,7 @@ npm run build
 ## Market Readiness Snapshot (Feb 22, 2026)
 
 - Build pipeline: green (`lint`, `check:i18n`, `typecheck`, `test`, `build`, `smoke:routes`, `audit:prod`)
-- Test baseline: unit coverage plus integration tests for `AuthForm`, `Index`, `Debates`, `useAuth`, and `useDebates`
+- Test baseline: unit + integration tests plus Playwright E2E smoke flows for auth, debates, and language toggle
 - i18n guardrail: consistency check in local/CI quality gates (`check:i18n`)
 - Security baseline: no production dependency vulnerabilities in current lockfile
 - Security automation: Dependabot + CodeQL + Scorecard workflows configured

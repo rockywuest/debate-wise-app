@@ -21,10 +21,12 @@ Ship Debate Wise as an open-source, English-first project with bilingual UI supp
 - `npm run check:i18n`: passing
 - `npm run typecheck`: passing
 - `npm run test`: passing
+- `npm run test:e2e`: passing
 - `npm run build`: passing
 - `npm run smoke:routes`: passing
 - `npm run audit:prod`: passing (0 vulnerabilities)
-- Integration baseline: UI and hook integration tests cover `AuthForm`, `Index`, `Debates`, `useAuth`, and `useDebates`
+- Integration baseline: UI + hook integration tests cover `AuthForm`, `Index`, `Debates`, `useAuth`, and `useDebates`
+- E2E baseline: Playwright core flow coverage for auth mode switch, guest debates view, and language toggle
 
 ## Localization Readiness
 

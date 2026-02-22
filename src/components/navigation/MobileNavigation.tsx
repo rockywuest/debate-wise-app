@@ -4,7 +4,7 @@ import type { User } from '@supabase/supabase-js';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { MessageSquare, LogOut, User, Globe, Menu } from 'lucide-react';
+import { MessageSquare, LogOut, User as UserIcon, Globe, Menu } from 'lucide-react';
 import { getNavItems } from './NavigationItems';
 import { useUserRole } from '@/hooks/useUserRole';
 
@@ -62,7 +62,7 @@ export const MobileNavigation = ({
             {user && (
               <div className="bg-fw-bg rounded-lg p-4 mb-8 border border-fw-border">
                 <div className="flex items-center gap-3">
-                  <User className="h-6 w-6 text-white" />
+                  <UserIcon className="h-6 w-6 text-white" />
                   <span className="font-semibold text-white text-lg">
                     {user.user_metadata?.username || 'User'}
                   </span>
