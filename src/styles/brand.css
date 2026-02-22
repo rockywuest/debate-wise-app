@@ -1,0 +1,153 @@
+
+:root {
+  --fw-bg: #1A1A1A;          /* darker for better contrast */
+  --fw-panel: #2A2A2A;       /* slightly lighter than bg */
+  --fw-accent: #E91E63;      /* pink/magenta - high contrast */
+  --fw-accent2: #FF9800;     /* orange - warmer tone */
+  --fw-accent3: #2196F3;     /* blue - accessible blue */
+  --fw-accent4: #4CAF50;     /* green - accessible green */
+  --fw-petrol: #00ACC1;      /* cyan - better contrast */
+  --fw-text: #FFFFFF;        /* pure white for max contrast */
+  --fw-subtext: #B0B0B0;     /* lighter gray for secondary text */
+  --fw-border: #404040;      /* visible borders */
+}
+
+/* Brand gradient for highlights */
+.fw-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--fw-accent) 0%,
+    var(--fw-accent2) 50%,
+    var(--fw-accent3) 100%
+  );
+}
+
+.fw-gradient-text {
+  background: linear-gradient(
+    135deg,
+    var(--fw-accent) 0%,
+    var(--fw-accent2) 50%,
+    var(--fw-accent3) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+/* Large brand shadow for active elements */
+.fw-shadow {
+  box-shadow: 0 8px 32px 0 rgba(233, 30, 99, 0.15);
+}
+
+/* Apple-like card style with better contrast */
+.fw-card {
+  background: var(--fw-panel);
+  color: var(--fw-text);
+  border-radius: 1.25rem;
+  border: 1px solid var(--fw-border);
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Avatar highlight on hover */
+.fw-avatar-frame {
+  border: 3px solid var(--fw-accent2);
+  border-radius: 16px;
+  transition: border-color 0.3s ease;
+}
+.fw-avatar-frame:hover {
+  border-color: var(--fw-accent);
+  box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.2);
+}
+
+/* Better body styling */
+body {
+  background-color: var(--fw-bg);
+  color: var(--fw-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+/* Primary button with proper contrast */
+.fw-button-gradient {
+  background: var(--fw-accent);
+  color: #FFFFFF !important;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px 0 rgba(233, 30, 99, 0.3);
+  padding: 12px 24px;
+}
+
+/* Button hover states with proper contrast */
+.fw-button-gradient:hover {
+  background: #C2185B;
+  box-shadow: 0 4px 16px 0 rgba(233, 30, 99, 0.4);
+  transform: translateY(-1px);
+}
+
+.fw-button-gradient:active {
+  background: #AD1457;
+  transform: translateY(0);
+  box-shadow: 0 2px 8px 0 rgba(233, 30, 99, 0.3);
+}
+
+/* Secondary button styling */
+.fw-button-secondary {
+  background: transparent;
+  color: var(--fw-text) !important;
+  border: 2px solid var(--fw-border);
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.fw-button-secondary:hover {
+  border-color: var(--fw-accent);
+  background: rgba(233, 30, 99, 0.1);
+  color: var(--fw-text) !important;
+}
+
+/* Header styling */
+.fw-header {
+  background: var(--fw-panel);
+  border-bottom: 1px solid var(--fw-border);
+  backdrop-filter: blur(10px);
+}
+
+/* Navigation links with better contrast */
+.fw-nav-link {
+  position: relative;
+  color: var(--fw-text);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.fw-nav-link:hover {
+  color: var(--fw-accent);
+  background: rgba(233, 30, 99, 0.1);
+}
+
+.fw-nav-link:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--fw-accent);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.fw-nav-link:hover:after {
+  width: 80%;
+}
