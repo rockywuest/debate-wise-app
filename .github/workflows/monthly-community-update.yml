@@ -1,0 +1,84 @@
+name: Monthly Community Update
+
+on:
+  schedule:
+    - cron: "0 9 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  monthly-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create monthly roadmap and release update issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const now = new Date();
+            const month = now.toISOString().slice(0, 7);
+            const title = `Monthly roadmap + release update (${month})`;
+            const { owner, repo } = context.repo;
+
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: "all",
+              per_page: 100
+            });
+
+            if (issues.some((issue) => issue.title === title)) {
+              core.info(`Monthly update issue already exists: ${title}`);
+              return;
+            }
+
+            const labelName = "community-update";
+            const hasLabel = issues
+              .flatMap((issue) => issue.labels || [])
+              .some((label) => typeof label === "object" && label.name === labelName);
+
+            if (!hasLabel) {
+              try {
+                await github.rest.issues.createLabel({
+                  owner,
+                  repo,
+                  name: labelName,
+                  color: "1f6feb",
+                  description: "Monthly roadmap and release update threads"
+                });
+              } catch (error) {
+                core.info(`Label ${labelName} already exists or could not be created: ${error.message}`);
+              }
+            }
+
+            const body = [
+              "## What shipped in the last month",
+              "- ",
+              "",
+              "## Current roadmap focus",
+              "- ",
+              "",
+              "## Community metrics (optional)",
+              "- New contributors:",
+              "- Merged PRs:",
+              "- Closed issues:",
+              "",
+              "## Next month priorities",
+              "- ",
+              "",
+              "## Help wanted now",
+              "- Pick an issue from `docs/GOOD_FIRST_ISSUES.md`",
+              "- Share feedback on onboarding friction points",
+              "",
+              "_This issue is created automatically each month to keep roadmap and release communication consistent._"
+            ].join("\\n");
+
+            await github.rest.issues.create({
+              owner,
+              repo,
+              title,
+              body,
+              labels: [labelName]
+            });

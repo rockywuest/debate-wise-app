@@ -19,3 +19,7 @@ Thanks for using Debate Wise.
 ## Response Expectations
 
 This is an open-source project with limited maintainer bandwidth. Response time can vary, but well-scoped reports with reproduction details get handled fastest.
+
+## Support the Project
+
+If this project helped you or made you smile, consider buying us a coffee: https://ko-fi.com/rockywuest

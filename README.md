@@ -5,6 +5,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/rockywuest/debate-wise-app/blob/main/LICENSE)
 [![Stars](https://img.shields.io/github/stars/rockywuest/debate-wise-app?style=social)](https://github.com/rockywuest/debate-wise-app/stargazers)
 
+![Debate Wise Demo Screenshot](docs/assets/demo-screenshot.png)
+
 Debate Wise is an AI-assisted debate platform for structured, evidence-based discussion.
 
 The project is now prepared as an **English-first open-source repository** while keeping **German and English in-product language support**.
@@ -40,6 +42,21 @@ This repository now documents both directions so contributors can build features
 2. Create a debate and add sample arguments.
 3. Review AI-assisted argument analysis and bilingual navigation (EN/DE).
 
+## Start Here
+
+- Contributor guide: `CONTRIBUTING.md`
+- Good first issues: `docs/GOOD_FIRST_ISSUES.md`
+- Release quality snapshot: `docs/RELEASE_AUDIT_2026-02-22.md`
+- Pinned starter issues:
+  - [#16 add keyboard shortcuts help dialog](https://github.com/rockywuest/debate-wise-app/issues/16)
+  - [#17 improve NotFound route recovery UX](https://github.com/rockywuest/debate-wise-app/issues/17)
+  - [#18 add contributor quickstart diagram](https://github.com/rockywuest/debate-wise-app/issues/18)
+
+## Social Preview Asset
+
+- Repository social preview image source: `docs/assets/social-preview.png` (1280x640)
+- Recommended: upload this file in GitHub repository settings under social preview.
+
 ## Discoverability Keywords
 
 Structured debate platform, AI argument analysis, civic discourse, critical thinking, evidence-based discussion, argument mapping, open-source debate app, bilingual debate software.
@@ -50,6 +67,7 @@ Structured debate platform, AI argument analysis, civic discourse, critical thin
 2. Open one high-quality issue with reproduction steps or a concrete feature proposal.
 3. Pick one item from `docs/GOOD_FIRST_ISSUES.md` and open a focused PR.
 4. Share the project with one community (education, civic tech, or moderation tooling).
+5. If this project helped you or made you smile, consider buying us a coffee: https://ko-fi.com/rockywuest
 
 ## Current Status
 
@@ -170,6 +188,7 @@ Architecture and roadmap:
 - `docs/RELEASE_PROCESS.md`
 - `docs/SELF_HOSTING.md`
 - `docs/PUBLIC_COMMONS_OPERATIONS.md`
+- `docs/MONTHLY_UPDATE_TEMPLATE.md`
 
 ## Known Gaps (Good First Contributions)
 

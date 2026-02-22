@@ -24,7 +24,7 @@ Build the best open-source platform for constructive, evidence-based public disc
 - [x] Enforce frontend bundle budgets in quality checks
 - [x] Remove legacy, unreferenced router/page stack from active codebase
 - [x] Reduce dependency-update noise with grouped Dependabot strategy
-- [ ] Publish regular release notes and monthly roadmap updates
+- [x] Publish regular release notes and monthly roadmap updates
 - [ ] First-contribution pipeline: curated issues + fast review SLA
 - [ ] Contributor analytics dashboard (response times, merge times)
 - [x] ADR baseline for core technical and product decisions
