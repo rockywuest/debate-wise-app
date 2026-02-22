@@ -3,7 +3,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Award, Target, CheckCircle, Brain, Users } from 'lucide-react';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText, useTranslation } from '@/utils/i18n';
 
 interface ActionBasedReputationSystemProps {
   userScore: number;
@@ -22,7 +22,7 @@ export const ActionBasedReputationSystem = ({
   compact = false 
 }: ActionBasedReputationSystemProps) => {
   const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
   
   const getReputationLevel = (score: number) => {
     if (score >= 1000) return { level: text('Debate master', 'Debattier-Meister'), color: 'bg-purple-100 text-purple-800', icon: <Award className="h-4 w-4" /> };

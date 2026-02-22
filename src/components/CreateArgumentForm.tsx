@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus } from 'lucide-react';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 
 interface CreateArgumentFormProps {
   debateId: string;
@@ -31,8 +31,7 @@ export const CreateArgumentForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { createArgument } = useArguments(debateId);
   const { toast } = useToast();
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
   const resolvedButtonText = buttonText ?? text('Add argument', 'Neues Argument hinzufugen');
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -6,14 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Shield } from 'lucide-react';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 
 export const PromoteUserForm = () => {
   const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const handlePromoteToAdmin = async () => {
     if (!userId.trim()) {

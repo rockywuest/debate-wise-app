@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { Brain, ThumbsUp, ThumbsDown, AlertCircle, CheckCircle, XCircle, Star } from 'lucide-react';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 import type { ArgumentAnalysis } from '@/types/analysis';
 
 interface ArgumentQualityAnalysisProps {
@@ -24,8 +24,7 @@ export const ArgumentQualityAnalysis = ({
   const [analysis, setAnalysis] = useState<ArgumentAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
   const [userFeedback, setUserFeedback] = useState<'helpful' | 'not_helpful' | null>(null);
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const isPresent = (status: string) => status === 'Vorhanden' || status === 'Present';
   const isConcrete = (status: string) => status === 'Konkret' || status === 'Concrete';

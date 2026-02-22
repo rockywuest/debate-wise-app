@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 import { Brain, CheckCircle, XCircle, AlertTriangle, Target, Search, MessageSquare } from 'lucide-react';
 import type { ArgumentAnalysis } from '@/types/analysis';
 
@@ -26,8 +26,7 @@ export const RealTimeArgumentAnalysis = ({
   const [analysis, setAnalysis] = useState<ArgumentAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
   const [qualityScore, setQualityScore] = useState<number>(0);
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const isPresent = (status: string) => status === 'Vorhanden' || status === 'Present';
   const isConcrete = (status: string) => status === 'Konkret' || status === 'Concrete';

@@ -11,7 +11,7 @@ import { useSecureArguments } from '@/hooks/useSecureArguments';
 import { useAuth } from '@/hooks/useAuth';
 import { useEnhancedReputation } from '@/hooks/useEnhancedReputation';
 import { InputValidator } from '@/utils/inputValidation';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 import { Plus, Shield, AlertTriangle } from 'lucide-react';
 
 interface SecureArgumentFormProps {
@@ -40,8 +40,7 @@ export const SecureArgumentForm = ({
   const { createArgument, creating } = useSecureArguments(debateId);
   const { user } = useAuth();
   const { awardReputation } = useEnhancedReputation();
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
   const resolvedButtonText = buttonText ?? text('Add argument', 'Argument hinzufugen');
 
   const validateForm = (): boolean => {

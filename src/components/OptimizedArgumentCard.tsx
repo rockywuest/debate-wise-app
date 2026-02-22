@@ -8,7 +8,7 @@ import { SteelManDialog } from './SteelManDialog';
 import { CreateArgumentForm } from './CreateArgumentForm';
 import { useOptimizedReputation } from '@/hooks/useOptimizedReputation';
 import { ReputationDisplay } from './ReputationDisplay';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText, useTranslation } from '@/utils/i18n';
 import { MessageSquare, ThumbsUp, ThumbsDown, Award, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -44,7 +44,7 @@ export const OptimizedArgumentCard = ({
 }: OptimizedArgumentCardProps) => {
   const { rateArgument, loading: ratingLoading } = useOptimizedReputation();
   const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const getTypeIcon = () => {
     switch (type) {

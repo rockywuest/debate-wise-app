@@ -2,7 +2,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Star } from 'lucide-react';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 
 interface ReputationDisplayProps {
   score: number;
@@ -17,8 +17,7 @@ export const ReputationDisplay = ({
   size = 'md', 
   showIcon = true 
 }: ReputationDisplayProps) => {
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const getScoreColor = (score: number) => {
     if (score >= 100) return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200';

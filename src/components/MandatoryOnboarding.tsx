@@ -5,14 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useOnboarding } from '@/hooks/useOnboarding';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 import { Brain, Target, Award, Users, CheckCircle, ArrowRight } from 'lucide-react';
 
 export const MandatoryOnboarding = () => {
   const { showOnboarding, completeOnboarding } = useOnboarding();
-  const { language } = useTranslation();
   const [currentStep, setCurrentStep] = useState(0);
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const onboardingSteps = [
     {

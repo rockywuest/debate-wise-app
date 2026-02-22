@@ -8,7 +8,7 @@ import { CreateArgumentForm } from './CreateArgumentForm';
 import { ArgumentRatingButtons } from './ArgumentRatingButtons';
 import { ChildArgumentsPreview } from './ChildArgumentsPreview';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText, useTranslation } from '@/utils/i18n';
 import { ThumbsUp, ThumbsDown, MessageSquare, MoreHorizontal, Reply, Brain, User, Calendar } from 'lucide-react';
 
 interface ModernArgumentCardProps {
@@ -44,7 +44,7 @@ export const ModernArgumentCard = ({
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const getTypeConfig = () => {
     switch (type) {

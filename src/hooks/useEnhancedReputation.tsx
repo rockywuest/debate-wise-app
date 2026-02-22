@@ -3,15 +3,14 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 import type { ArgumentAnalysis } from '@/types/analysis';
 
 export const useEnhancedReputation = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const calculateQualityScore = (analysis: Partial<ArgumentAnalysis> | null | undefined): number => {
     if (!analysis) return 0;

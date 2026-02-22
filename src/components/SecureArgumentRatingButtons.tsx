@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useSecureReputation } from '@/hooks/useSecureReputation';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 import { Heart, Award, CheckCircle, Shield } from 'lucide-react';
 
 interface SecureArgumentRatingButtonsProps {
@@ -16,8 +16,7 @@ interface SecureArgumentRatingButtonsProps {
 export const SecureArgumentRatingButtons = ({ argumentId, authorUserId }: SecureArgumentRatingButtonsProps) => {
   const { rateArgument, loading } = useSecureReputation();
   const { user } = useAuth();
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
   const [ratings, setRatings] = useState<{
     hasRatedInsightful: boolean;
     hasConcedePoint: boolean;

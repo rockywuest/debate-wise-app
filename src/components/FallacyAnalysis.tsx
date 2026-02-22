@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 
 interface FallacyAnalysisProps {
   argumentText: string;
@@ -13,8 +13,7 @@ interface FallacyAnalysisProps {
 export const FallacyAnalysis = ({ argumentText }: FallacyAnalysisProps) => {
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   useEffect(() => {
     const analyzeFallacies = async () => {

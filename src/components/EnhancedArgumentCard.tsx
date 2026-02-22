@@ -10,7 +10,7 @@ import { ArgumentRatingButtons } from './ArgumentRatingButtons';
 import { ChildArgumentsPreview } from './ChildArgumentsPreview';
 import { ReputationDisplay } from './ReputationDisplay';
 import { useEnhancedReputation } from '@/hooks/useEnhancedReputation';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText, useTranslation } from '@/utils/i18n';
 import { MessageSquare, ThumbsUp, ThumbsDown, Award, TrendingUp } from 'lucide-react';
 import type { ArgumentAnalysis } from '@/types/analysis';
 
@@ -47,7 +47,7 @@ export const EnhancedArgumentCard = ({
   const { awardReputation, calculateQualityScore } = useEnhancedReputation();
   const { language } = useTranslation();
   const [qualityScore, setQualityScore] = React.useState<number>(0);
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const getTypeIcon = () => {
     switch (type) {

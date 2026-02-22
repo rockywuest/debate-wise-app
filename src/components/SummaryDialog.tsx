@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { FileText, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 
 interface SummaryDialogProps {
   parentArgument: string;
@@ -25,8 +25,7 @@ export const SummaryDialog = ({ parentArgument, childArguments, disabled }: Summ
   const [summary, setSummary] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const handleSummarize = async () => {
     if (childArguments.length === 0) {

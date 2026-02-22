@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useSecureArguments } from '@/hooks/useSecureArguments';
 import { RealTimeArgumentAnalysis } from './RealTimeArgumentAnalysis';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 import { Brain, CheckCircle, AlertTriangle, Target } from 'lucide-react';
 import type { ArgumentAnalysis } from '@/types/analysis';
 
@@ -28,8 +28,7 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
   const { user } = useAuth();
   const { createArgument, creating } = useSecureArguments(debateId);
   const { toast } = useToast();
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const handleAnalysisComplete = (analysisData: ArgumentAnalysis, score: number) => {
     setAnalysis(analysisData);

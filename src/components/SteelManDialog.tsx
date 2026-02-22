@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, Target } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText } from '@/utils/i18n';
 
 interface SteelManDialogProps {
   originalArgument: string;
@@ -20,8 +20,7 @@ export const SteelManDialog = ({ originalArgument, onSuccess }: SteelManDialogPr
   const [reformulation, setReformulation] = useState('');
   const [validation, setValidation] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const handleSubmit = async () => {
     if (!reformulation.trim()) return;

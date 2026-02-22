@@ -8,7 +8,7 @@ import { SteelManDialog } from './SteelManDialog';
 import { CreateArgumentForm } from './CreateArgumentForm';
 import { ArgumentRatingButtons } from './ArgumentRatingButtons';
 import { ReputationDisplay } from './ReputationDisplay';
-import { useTranslation } from '@/utils/i18n';
+import { useLocalizedText, useTranslation } from '@/utils/i18n';
 import { MessageSquare, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 interface ArgumentCardProps {
@@ -42,7 +42,7 @@ export const ArgumentCard = ({
   onReply
 }: ArgumentCardProps) => {
   const { language } = useTranslation();
-  const text = (en: string, de: string) => (language === 'de' ? de : en);
+  const text = useLocalizedText();
 
   const getTypeIcon = () => {
     switch (type) {
