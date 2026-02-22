@@ -9,6 +9,7 @@
     "dev": "vite",
     "bootstrap": "bash scripts/bootstrap.sh",
     "check": "bash scripts/check.sh",
+    "check:i18n": "bash scripts/check-i18n.sh",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "typecheck": "tsc --noEmit",

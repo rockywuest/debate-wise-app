@@ -25,6 +25,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: i18n consistency
+        run: npm run check:i18n
+
       - name: Typecheck
         run: npm run typecheck
 

@@ -4,6 +4,9 @@ set -euo pipefail
 echo "==> Lint"
 npm run lint
 
+echo "==> i18n consistency"
+npm run check:i18n
+
 echo "==> Typecheck"
 npm run typecheck
 

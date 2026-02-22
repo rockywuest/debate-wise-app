@@ -18,6 +18,7 @@ Ship Debate Wise as an open-source, English-first project with bilingual UI supp
 ## Quality Gates (Current)
 
 - `npm run lint`: passing
+- `npm run check:i18n`: passing
 - `npm run typecheck`: passing
 - `npm run test`: passing
 - `npm run build`: passing

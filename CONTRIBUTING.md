@@ -29,6 +29,12 @@ Run:
 npm run check
 ```
 
+For localization-related changes, also verify:
+
+```bash
+npm run check:i18n
+```
+
 If lint fails due existing baseline issues, include only changes relevant to your scope and mention remaining unrelated lint findings in the PR description.
 
 ## Coding Guidelines
