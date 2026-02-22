@@ -39,6 +39,8 @@ This repository now documents both directions so contributors can build features
 - English-first `README` and repository docs
 - Added `LICENSE` (MIT)
 - Added `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and `SECURITY.md`
+- Added governance and support files (`GOVERNANCE.md`, `MAINTAINERS.md`, `SUPPORT.md`)
+- Added RFC process docs (`docs/RFC_PROCESS.md`, `docs/RFC_TEMPLATE.md`)
 - Added `.env.example` for self-hosting setup
 - Removed hard-coded frontend Supabase instance values in favor of environment variables
 - Set English as default UI language fallback
@@ -116,6 +118,7 @@ npm run build
 
 - Build pipeline: green (`lint`, `typecheck`, `test`, `build`, `audit:prod`)
 - Security baseline: no production dependency vulnerabilities in current lockfile
+- Security automation: Dependabot + CodeQL + Scorecard workflows configured
 - Performance baseline: route and vendor chunk splitting enabled in Vite build
 - Open-source baseline: contribution docs, issue/PR templates, and security policy in place
 - Localization baseline: core debate/auth/admin/rating flows support EN/DE with English-first behavior
