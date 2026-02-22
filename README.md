@@ -1,5 +1,10 @@
 # Debate Wise
 
+[![CI](https://github.com/rockywuest/debate-wise-app/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rockywuest/debate-wise-app/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/rockywuest/debate-wise-app)](https://github.com/rockywuest/debate-wise-app/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/rockywuest/debate-wise-app/blob/main/LICENSE)
+[![Stars](https://img.shields.io/github/stars/rockywuest/debate-wise-app?style=social)](https://github.com/rockywuest/debate-wise-app/stargazers)
+
 Debate Wise is an AI-assisted debate platform for structured, evidence-based discussion.
 
 The project is now prepared as an **English-first open-source repository** while keeping **German and English in-product language support**.
@@ -34,6 +39,17 @@ This repository now documents both directions so contributors can build features
 1. Start the app locally with your Supabase project.
 2. Create a debate and add sample arguments.
 3. Review AI-assisted argument analysis and bilingual navigation (EN/DE).
+
+## Discoverability Keywords
+
+Structured debate platform, AI argument analysis, civic discourse, critical thinking, evidence-based discussion, argument mapping, open-source debate app, bilingual debate software.
+
+## Help This Project Grow
+
+1. Star the repository and watch releases.
+2. Open one high-quality issue with reproduction steps or a concrete feature proposal.
+3. Pick one item from `docs/GOOD_FIRST_ISSUES.md` and open a focused PR.
+4. Share the project with one community (education, civic tech, or moderation tooling).
 
 ## Current Status
 
