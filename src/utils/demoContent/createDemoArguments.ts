@@ -3,7 +3,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { seedData } from '../seedData';
 import { demoUsers } from './createDemoUsers';
 
-export const createDemoArguments = async (createdDebates: any[]) => {
+interface CreatedDebate {
+  id: string;
+}
+
+export const createDemoArguments = async (createdDebates: CreatedDebate[]) => {
   console.log('Creating demo arguments...');
   
   if (!createdDebates || createdDebates.length === 0) {

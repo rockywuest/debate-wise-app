@@ -40,11 +40,14 @@ export const PromoteUserForm = () => {
         description: 'Benutzer wurde zum Admin befördert.',
       });
       setUserId('');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const description = error instanceof Error
+        ? error.message
+        : 'Fehler beim Befördern des Benutzers.';
       console.error('Error promoting user:', error);
       toast({
         title: 'Fehler',
-        description: error.message || 'Fehler beim Befördern des Benutzers.',
+        description,
         variant: 'destructive'
       });
     } finally {

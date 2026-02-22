@@ -8,6 +8,7 @@ import { useDebates } from '@/hooks/useDebates';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus } from 'lucide-react';
+import { useTranslation } from '@/utils/i18n';
 
 export const CreateDebateForm = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,14 +17,15 @@ export const CreateDebateForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { createDebate } = useDebates();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!titel.trim()) {
       toast({
-        title: "Fehler",
-        description: "Bitte geben Sie einen Titel ein.",
+        title: t('createDebate.errorTitle'),
+        description: t('createDebate.errorDescription'),
         variant: "destructive"
       });
       return;
@@ -37,8 +39,8 @@ export const CreateDebateForm = () => {
         setBeschreibung('');
         setIsOpen(false);
         toast({
-          title: "Debatte erstellt",
-          description: "Die neue Debatte wurde erfolgreich erstellt."
+          title: t('createDebate.successTitle'),
+          description: t('createDebate.successDescription')
         });
       }
     } catch (error) {
@@ -53,31 +55,31 @@ export const CreateDebateForm = () => {
       <DialogTrigger asChild>
         <Button className="gap-2">
           <Plus className="h-4 w-4" />
-          Neue Debatte erstellen
+          {t('createDebate.button')}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Neue Debatte erstellen</DialogTitle>
+          <DialogTitle>{t('createDebate.title')}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="titel">Titel *</Label>
+            <Label htmlFor="titel">{t('createDebate.name')}</Label>
             <Input
               id="titel"
               value={titel}
               onChange={(e) => setTitel(e.target.value)}
-              placeholder="Geben Sie den Titel der Debatte ein..."
+              placeholder={t('createDebate.namePlaceholder')}
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="beschreibung">Beschreibung (optional)</Label>
+            <Label htmlFor="beschreibung">{t('createDebate.description')}</Label>
             <Textarea
               id="beschreibung"
               value={beschreibung}
               onChange={(e) => setBeschreibung(e.target.value)}
-              placeholder="Beschreiben Sie das Thema der Debatte..."
+              placeholder={t('createDebate.descriptionPlaceholder')}
               rows={3}
             />
           </div>
@@ -88,10 +90,10 @@ export const CreateDebateForm = () => {
               onClick={() => setIsOpen(false)}
               disabled={isSubmitting}
             >
-              Abbrechen
+              {t('createDebate.cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Erstelle...' : 'Debatte erstellen'}
+              {isSubmitting ? t('createDebate.creating') : t('createDebate.create')}
             </Button>
           </div>
         </form>

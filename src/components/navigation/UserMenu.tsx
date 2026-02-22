@@ -1,16 +1,20 @@
 
 import React from 'react';
+import type { User as AuthUser } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { LogOut, User } from 'lucide-react';
 
 interface UserMenuProps {
-  user: any;
-  signOut: () => void;
+  user: AuthUser | null;
+  signOut: () => Promise<void> | void;
+  language: 'de' | 'en';
 }
 
-export const UserMenu = ({ user, signOut }: UserMenuProps) => {
+export const UserMenu = ({ user, signOut, language }: UserMenuProps) => {
+  const isGerman = language === 'de';
+
   if (!user) {
     return (
       <Link to="/auth">
@@ -18,7 +22,7 @@ export const UserMenu = ({ user, signOut }: UserMenuProps) => {
           size="default"
           className="font-semibold text-lg"
         >
-          Anmelden
+          {isGerman ? 'Anmelden' : 'Sign In'}
         </Button>
       </Link>
     );
@@ -42,7 +46,7 @@ export const UserMenu = ({ user, signOut }: UserMenuProps) => {
           className="text-white hover:bg-fw-border/50 cursor-pointer gap-3"
         >
           <LogOut className="h-4 w-4" />
-          Ausloggen
+          {isGerman ? 'Abmelden' : 'Sign Out'}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

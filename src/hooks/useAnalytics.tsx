@@ -4,7 +4,7 @@ import { useAuth } from './useAuth';
 
 interface AnalyticsEvent {
   event_type: string;
-  event_data?: Record<string, any>;
+  event_data?: Record<string, unknown>;
   page_url?: string;
   user_agent?: string;
 }
@@ -54,7 +54,7 @@ export const useAnalytics = () => {
     });
   }, [trackEvent]);
 
-  const trackInteraction = useCallback((interaction: string, data?: Record<string, any>) => {
+  const trackInteraction = useCallback((interaction: string, data?: Record<string, unknown>) => {
     trackEvent({
       event_type: 'user_interaction',
       event_data: { interaction, ...data }

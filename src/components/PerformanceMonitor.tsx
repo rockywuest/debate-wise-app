@@ -11,6 +11,12 @@ interface PerformanceMetrics {
   connectionQuality: 'excellent' | 'good' | 'poor' | 'offline';
 }
 
+interface MemoryPerformance extends Performance {
+  memory?: {
+    usedJSHeapSize: number;
+  };
+}
+
 export const PerformanceMonitor = () => {
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     loadTime: 0,
@@ -32,8 +38,9 @@ export const PerformanceMonitor = () => {
       const renderTime = performance.now() - renderStart;
       
       // Get memory usage (if available)
-      const memoryUsage = (performance as any).memory 
-        ? (performance as any).memory.usedJSHeapSize / 1024 / 1024 
+      const performanceWithMemory = performance as MemoryPerformance;
+      const memoryUsage = performanceWithMemory.memory 
+        ? performanceWithMemory.memory.usedJSHeapSize / 1024 / 1024 
         : 0;
 
       setMetrics(prev => ({
@@ -68,9 +75,7 @@ export const PerformanceMonitor = () => {
     const interval = setInterval(updateConnectionQuality, 30000);
 
     // Show monitor in development or when performance is poor
-    const shouldShow = process.env.NODE_ENV === 'development' || 
-                     loadTime > 3000 || 
-                     metrics.renderTime > 100;
+    const shouldShow = import.meta.env.DEV || loadTime > 3000;
     setIsVisible(shouldShow);
 
     return () => clearInterval(interval);

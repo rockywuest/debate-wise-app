@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/button';
 import { useReputation } from '@/hooks/useReputation';
 import { useAuth } from '@/hooks/useAuth';
@@ -26,7 +27,7 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
     concedePointCount: 0
   });
 
-  const fetchRatings = async () => {
+  const fetchRatings = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -57,7 +58,7 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
     } catch (error) {
       console.error('Error fetching ratings:', error);
     }
-  };
+  }, [argumentId, user]);
 
   const handleRating = async (ratingType: 'insightful' | 'concede_point') => {
     await rateArgument(argumentId, ratingType);
@@ -67,12 +68,12 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
   useEffect(() => {
     if (!user) return;
     fetchRatings();
-  }, [argumentId, user]);
+  }, [fetchRatings, user]);
 
   useEffect(() => {
     if (!user) return;
 
-    let channel: any = null;
+    let channel: RealtimeChannel | null = null;
 
     const setupRealtimeSubscription = async () => {
       try {
@@ -110,7 +111,7 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
         supabase.removeChannel(channel);
       }
     };
-  }, [argumentId, user]);
+  }, [argumentId, fetchRatings, user]);
 
   // Verstecke Buttons für eigene Argumente
   if (user?.id === authorUserId) {

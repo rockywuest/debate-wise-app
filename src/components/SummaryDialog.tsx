@@ -50,7 +50,7 @@ export const SummaryDialog = ({ parentArgument, childArguments, disabled }: Summ
 
       setSummary(data.summary);
       setIsOpen(true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error summarizing thread:', error);
       toast({
         title: "Fehler bei der Zusammenfassung",

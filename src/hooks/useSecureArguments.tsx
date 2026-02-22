@@ -1,5 +1,6 @@
 
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
@@ -13,7 +14,14 @@ export const useSecureArguments = (debateId?: string) => {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const organizeArgumentsHierarchically = (data: any[]) => {
+  const getErrorMessage = useCallback((error: unknown): string => {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return "Ein unerwarteter Fehler ist aufgetreten.";
+  }, []);
+
+  const organizeArgumentsHierarchically = (data: Argument[]) => {
     const topLevelArgs = data.filter(arg => !arg.eltern_id);
     const childArgs = data.filter(arg => arg.eltern_id);
 
@@ -23,7 +31,7 @@ export const useSecureArguments = (debateId?: string) => {
     }));
   };
 
-  const fetchArguments = async () => {
+  const fetchArguments = useCallback(async () => {
     if (!debateId) {
       setLoading(false);
       return;
@@ -41,17 +49,17 @@ export const useSecureArguments = (debateId?: string) => {
 
       const argumentsWithChildren = organizeArgumentsHierarchically(data || []);
       setDebateArguments(argumentsWithChildren);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching arguments:', error);
       toast({
         title: "Fehler beim Laden der Argumente",
-        description: "Die Argumente konnten nicht geladen werden.",
+        description: getErrorMessage(error),
         variant: "destructive"
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [debateId, getErrorMessage, toast]);
 
   const createSecureArgument = async (
     argumentText: string,
@@ -109,7 +117,7 @@ export const useSecureArguments = (debateId?: string) => {
 
       // Additional server-side validation through RPC
       const { data: validationResult, error: validationError } = await supabase
-        .rpc('validate_argument_creation' as any, {
+        .rpc('validate_argument_creation', {
           p_user_id: user.id,
           p_debate_id: debateId,
           p_argument_text: argumentValidation.sanitizedValue!
@@ -140,11 +148,11 @@ export const useSecureArguments = (debateId?: string) => {
       });
 
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating argument:', error);
       toast({
         title: "Fehler beim Erstellen des Arguments",
-        description: "Das Argument konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
+        description: getErrorMessage(error),
         variant: "destructive"
       });
       return null;
@@ -155,12 +163,12 @@ export const useSecureArguments = (debateId?: string) => {
 
   useEffect(() => {
     fetchArguments();
-  }, [debateId]);
+  }, [fetchArguments]);
 
   useEffect(() => {
     if (!debateId) return;
 
-    let channel: any = null;
+    let channel: RealtimeChannel | null = null;
 
     const setupRealtimeSubscription = async () => {
       try {
@@ -196,7 +204,7 @@ export const useSecureArguments = (debateId?: string) => {
         supabase.removeChannel(channel);
       }
     };
-  }, [debateId]);
+  }, [debateId, fetchArguments]);
 
   return {
     arguments: debateArguments,

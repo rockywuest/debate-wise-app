@@ -1,4 +1,6 @@
 
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 export interface TranslationKey {
   en: string;
   de: string;
@@ -8,15 +10,35 @@ export const translations = {
   // Navigation
   'nav.debates': { en: 'Debates', de: 'Debatten' },
   'nav.leaderboard': { en: 'Leaderboard', de: 'Rangliste' },
-  'nav.logout': { en: 'Logout', de: 'Abmelden' },
-  'nav.login': { en: 'Login', de: 'Anmelden' },
+  'nav.logout': { en: 'Sign Out', de: 'Abmelden' },
+  'nav.login': { en: 'Sign In', de: 'Anmelden' },
   'nav.analytics': { en: 'Analytics', de: 'Analytics' },
+  'nav.admin': { en: 'Admin', de: 'Admin' },
 
   // Debate page
   'debates.title': { en: 'Active Debates', de: 'Aktive Debatten' },
   'debates.subtitle': { en: 'Join the discourse, elevate the debate', de: 'Diskutieren Sie mit, verbessern Sie die Debatte' },
   'debates.create': { en: 'Create New Debate', de: 'Neue Debatte erstellen' },
   'debates.empty': { en: 'No debates yet. Be the first to start an intelligent discussion!', de: 'Noch keine Debatten. Seien Sie der Erste, der eine intelligente Diskussion startet!' },
+  'debates.intelligentTitle': { en: 'Intelligent Debates', de: 'Intelligente Debatten' },
+  'debates.intelligentSubtitle': {
+    en: 'Participate in evidence-based discussions and develop your arguments through AI feedback.',
+    de: 'Nehmen Sie an evidenzbasierten Diskussionen teil und entwickeln Sie Ihre Argumente durch KI-Feedback weiter.'
+  },
+  'debates.newDebate': { en: 'New Debate', de: 'Neue Debatte' },
+  'debates.welcomeTitle': {
+    en: 'Welcome to the Intelligent Debate Platform',
+    de: 'Willkommen zur intelligenten Debattenplattform'
+  },
+  'debates.welcomeDescription': {
+    en: 'Sign in to participate in debates and benefit from AI-powered argument analysis.',
+    de: 'Melden Sie sich an, um an Debatten teilzunehmen und von KI-gestützter Argumentanalyse zu profitieren.'
+  },
+  'debates.noDebatesTitle': { en: 'No debates yet', de: 'Noch keine Debatten' },
+  'debates.noDebatesDescription': { en: 'Be the first to start a debate!', de: 'Seien Sie der Erste, der eine Debatte startet!' },
+  'debates.active': { en: 'Active', de: 'Aktiv' },
+  'debates.discussion': { en: 'Discussion', de: 'Diskussion' },
+  'debates.joinDiscussion': { en: 'Join Discussion', de: 'Teilnehmen' },
 
   // Debate detail
   'debate.proArguments': { en: 'Pro Arguments', de: 'Pro-Argumente' },
@@ -55,6 +77,34 @@ export const translations = {
 
   // Auth page
   'auth.loading': { en: 'Loading...', de: 'Wird geladen...' },
+  'auth.signIn': { en: 'Sign In', de: 'Anmelden' },
+  'auth.signUp': { en: 'Sign Up', de: 'Registrieren' },
+  'auth.signInDescription': { en: 'Sign in to your account', de: 'Melden Sie sich in Ihrem Konto an' },
+  'auth.signUpDescription': { en: 'Create a new account', de: 'Erstellen Sie ein neues Konto' },
+  'auth.username': { en: 'Username', de: 'Benutzername' },
+  'auth.email': { en: 'Email', de: 'E-Mail' },
+  'auth.password': { en: 'Password', de: 'Passwort' },
+  'auth.usernamePlaceholder': { en: 'Your username', de: 'Ihr Benutzername' },
+  'auth.emailPlaceholder': { en: 'your.email@example.com', de: 'ihre.email@beispiel.de' },
+  'auth.passwordPlaceholder': { en: 'Your password', de: 'Ihr Passwort' },
+  'auth.processing': { en: 'Processing...', de: 'Wird verarbeitet...' },
+  'auth.noAccount': { en: "Don't have an account? Sign up", de: 'Noch kein Konto? Hier registrieren' },
+  'auth.haveAccount': { en: 'Already have an account? Sign in', de: 'Bereits ein Konto? Hier anmelden' },
+
+  // Create debate
+  'createDebate.button': { en: 'Create New Debate', de: 'Neue Debatte erstellen' },
+  'createDebate.title': { en: 'Create New Debate', de: 'Neue Debatte erstellen' },
+  'createDebate.name': { en: 'Title *', de: 'Titel *' },
+  'createDebate.description': { en: 'Description (optional)', de: 'Beschreibung (optional)' },
+  'createDebate.namePlaceholder': { en: 'Enter the debate title...', de: 'Geben Sie den Titel der Debatte ein...' },
+  'createDebate.descriptionPlaceholder': { en: 'Describe the debate topic...', de: 'Beschreiben Sie das Thema der Debatte...' },
+  'createDebate.cancel': { en: 'Cancel', de: 'Abbrechen' },
+  'createDebate.create': { en: 'Create Debate', de: 'Debatte erstellen' },
+  'createDebate.creating': { en: 'Creating...', de: 'Erstelle...' },
+  'createDebate.errorTitle': { en: 'Error', de: 'Fehler' },
+  'createDebate.errorDescription': { en: 'Please enter a title.', de: 'Bitte geben Sie einen Titel ein.' },
+  'createDebate.successTitle': { en: 'Debate created', de: 'Debatte erstellt' },
+  'createDebate.successDescription': { en: 'The new debate was created successfully.', de: 'Die neue Debatte wurde erfolgreich erstellt.' },
 
   // Quality analysis
   'quality.title': { en: 'AI Quality Analysis', de: 'KI-Qualitätsanalyse' },
@@ -99,33 +149,85 @@ export const translations = {
   'common.loading': { en: 'Loading...', de: 'Wird geladen...' },
   'common.error': { en: 'Error', de: 'Fehler' },
   'common.success': { en: 'Success', de: 'Erfolg' },
+  'common.cancel': { en: 'Cancel', de: 'Abbrechen' },
   'common.back': { en: 'Back', de: 'Zurück' },
   'common.next': { en: 'Next', de: 'Weiter' },
   'common.previous': { en: 'Previous', de: 'Zurück' },
 } as const;
 
 export type TranslationKeys = keyof typeof translations;
+export type SupportedLanguage = 'en' | 'de';
 
-export const useTranslation = () => {
-  // Get language from localStorage with fallback to browser language
-  const getLanguage = (): 'en' | 'de' => {
-    const savedLanguage = localStorage.getItem('debate-wise-language') as 'en' | 'de';
-    if (savedLanguage) return savedLanguage;
-    
-    const browserLang = navigator.language.toLowerCase();
-    return browserLang.startsWith('de') ? 'de' : 'en';
-  };
+interface I18nContextValue {
+  language: SupportedLanguage;
+  setLanguage: (newLanguage: SupportedLanguage) => void;
+  t: (key: TranslationKeys) => string;
+}
 
-  const language = getLanguage();
+const I18nContext = createContext<I18nContextValue | undefined>(undefined);
 
-  const t = (key: TranslationKeys): string => {
-    return translations[key][language];
-  };
+const LANGUAGE_STORAGE_KEYS = ['debate-wise-language', 'debate-platform-language'] as const;
 
-  const setLanguage = (newLanguage: 'en' | 'de') => {
-    localStorage.setItem('debate-wise-language', newLanguage);
-    window.location.reload(); // Simple refresh to apply language change
-  };
+const isSupportedLanguage = (value: string | null): value is SupportedLanguage => {
+  return value === 'en' || value === 'de';
+};
 
-  return { t, language, setLanguage };
+const getStoredLanguage = (): SupportedLanguage => {
+  if (typeof window === 'undefined') {
+    return 'en';
+  }
+
+  for (const key of LANGUAGE_STORAGE_KEYS) {
+    const value = window.localStorage.getItem(key);
+    if (isSupportedLanguage(value)) {
+      return value;
+    }
+  }
+
+  return 'en';
+};
+
+const persistLanguage = (newLanguage: SupportedLanguage) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  for (const key of LANGUAGE_STORAGE_KEYS) {
+    window.localStorage.setItem(key, newLanguage);
+  }
+};
+
+const createTranslator = (language: SupportedLanguage) => {
+  return (key: TranslationKeys): string => translations[key][language];
+};
+
+export const I18nProvider = ({ children }: { children: React.ReactNode }) => {
+  const [language, setLanguageState] = useState<SupportedLanguage>(getStoredLanguage);
+
+  const setLanguage = useCallback((newLanguage: SupportedLanguage) => {
+    persistLanguage(newLanguage);
+    setLanguageState(newLanguage);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
+
+  const t = useMemo(() => createTranslator(language), [language]);
+  const value = useMemo<I18nContextValue>(
+    () => ({ language, setLanguage, t }),
+    [language, setLanguage, t]
+  );
+
+  return React.createElement(I18nContext.Provider, { value }, children);
+};
+
+export const useTranslation = (): I18nContextValue => {
+  const context = useContext(I18nContext);
+
+  if (!context) {
+    throw new Error('useTranslation must be used within I18nProvider');
+  }
+
+  return context;
 };

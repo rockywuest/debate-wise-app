@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { DesktopNavigation } from './DesktopNavigation';
 import { MobileNavigation } from './MobileNavigation';
-import { useLanguageConsistency } from '@/components/LanguageConsistencyProvider';
+import { useTranslation } from '@/utils/i18n';
 
 export const Navigation = () => {
   const { user, signOut } = useAuth();
-  const { language, setLanguage } = useLanguageConsistency();
+  const { language, setLanguage } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleLanguage = () => {

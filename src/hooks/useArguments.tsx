@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
@@ -6,11 +7,11 @@ import { useAuth } from '@/hooks/useAuth';
 export interface Argument {
   id: string;
   debatten_id: string;
-  eltern_id?: string;
+  eltern_id?: string | null;
   argument_text: string;
   argument_typ: 'These' | 'Pro' | 'Contra';
   benutzer_id: string;
-  autor_name?: string;
+  autor_name?: string | null;
   erstellt_am: string;
   aktualisiert_am: string;
   childArguments?: Argument[];
@@ -22,7 +23,14 @@ export const useArguments = (debateId?: string) => {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const organizeArgumentsHierarchically = (data: any[]) => {
+  const getErrorMessage = useCallback((error: unknown): string => {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return 'Ein unerwarteter Fehler ist aufgetreten.';
+  }, []);
+
+  const organizeArgumentsHierarchically = (data: Argument[]) => {
     const topLevelArgs = data.filter(arg => !arg.eltern_id);
     const childArgs = data.filter(arg => arg.eltern_id);
 
@@ -32,7 +40,7 @@ export const useArguments = (debateId?: string) => {
     }));
   };
 
-  const fetchArguments = async () => {
+  const fetchArguments = useCallback(async () => {
     if (!debateId) {
       setLoading(false);
       return;
@@ -50,17 +58,17 @@ export const useArguments = (debateId?: string) => {
 
       const argumentsWithChildren = organizeArgumentsHierarchically(data || []);
       setDebateArguments(argumentsWithChildren);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching arguments:', error);
       toast({
         title: "Fehler beim Laden der Argumente",
-        description: error.message,
+        description: getErrorMessage(error),
         variant: "destructive"
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [debateId, getErrorMessage, toast]);
 
   const createArgument = async (
     argumentText: string,
@@ -100,11 +108,11 @@ export const useArguments = (debateId?: string) => {
 
       // No need to manually refresh as real-time will handle it
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating argument:', error);
       toast({
         title: "Fehler beim Erstellen des Arguments",
-        description: error.message,
+        description: getErrorMessage(error),
         variant: "destructive"
       });
       return null;
@@ -113,12 +121,12 @@ export const useArguments = (debateId?: string) => {
 
   useEffect(() => {
     fetchArguments();
-  }, [debateId]);
+  }, [fetchArguments]);
 
   useEffect(() => {
     if (!debateId) return;
 
-    let channel: any = null;
+    let channel: RealtimeChannel | null = null;
 
     const setupRealtimeSubscription = async () => {
       try {
@@ -159,7 +167,7 @@ export const useArguments = (debateId?: string) => {
         supabase.removeChannel(channel);
       }
     };
-  }, [debateId]);
+  }, [debateId, fetchArguments]);
 
   return {
     arguments: debateArguments,

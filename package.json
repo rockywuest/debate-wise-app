@@ -1,12 +1,15 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "debate-wise-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "AI-assisted debate platform for structured, evidence-based discussion.",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "preview": "vite preview"
   },

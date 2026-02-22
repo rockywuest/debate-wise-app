@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { CreateDebateForm } from '@/components/CreateDebateForm';
-import { useLanguageConsistency } from '@/components/LanguageConsistencyProvider';
+import { useTranslation } from '@/utils/i18n';
 import { MessageSquare, Users, Clock, Plus, TrendingUp } from 'lucide-react';
 
 interface Debate {
@@ -23,7 +23,7 @@ const Debates = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { t, language } = useLanguageConsistency();
+  const { t, language } = useTranslation();
 
   const fetchDebates = async () => {
     try {
@@ -69,12 +69,10 @@ const Debates = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div className="mb-4 md:mb-0">
             <h1 className="text-3xl font-bold text-foreground mb-2">
-              {language === 'de' ? 'Intelligente Debatten' : 'Intelligent Debates'}
+              {t('debates.intelligentTitle')}
             </h1>
             <p className="text-muted-foreground">
-              {language === 'de' 
-                ? 'Nehmen Sie an evidenzbasierten Diskussionen teil und entwickeln Sie Ihre Argumente durch KI-Feedback weiter.' 
-                : 'Participate in evidence-based discussions and develop your arguments through AI feedback.'}
+              {t('debates.intelligentSubtitle')}
             </p>
           </div>
           
@@ -84,7 +82,7 @@ const Debates = () => {
               className="gap-2 bg-primary hover:bg-primary/90"
             >
               <Plus className="h-4 w-4" />
-              {language === 'de' ? 'Neue Debatte' : 'New Debate'}
+              {t('debates.newDebate')}
             </Button>
           )}
         </div>
@@ -94,7 +92,7 @@ const Debates = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageSquare className="h-5 w-5" />
-                {language === 'de' ? 'Neue Debatte erstellen' : 'Create New Debate'}
+                {t('debates.create')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -115,12 +113,10 @@ const Debates = () => {
             <CardContent className="p-6 text-center">
               <MessageSquare className="h-12 w-12 text-blue-600 mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">
-                {language === 'de' ? 'Willkommen zur intelligenten Debattenplattform' : 'Welcome to the Intelligent Debate Platform'}
+                {t('debates.welcomeTitle')}
               </h3>
               <p className="text-muted-foreground mb-4">
-                {language === 'de' 
-                  ? 'Melden Sie sich an, um an Debatten teilzunehmen und von KI-gestützter Argumentanalyse zu profitieren.' 
-                  : 'Sign in to participate in debates and benefit from AI-powered argument analysis.'}
+                {t('debates.welcomeDescription')}
               </p>
               <Button onClick={() => navigate('/auth')} className="gap-2">
                 <Users className="h-4 w-4" />
@@ -136,13 +132,9 @@ const Debates = () => {
               <CardContent className="p-12 text-center">
                 <MessageSquare className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">
-                  {language === 'de' ? 'Noch keine Debatten' : 'No debates yet'}
+                  {t('debates.noDebatesTitle')}
                 </h3>
-                <p className="text-muted-foreground">
-                  {language === 'de' 
-                    ? 'Seien Sie der Erste, der eine Debatte startet!' 
-                    : 'Be the first to start a debate!'}
-                </p>
+                <p className="text-muted-foreground">{t('debates.noDebatesDescription')}</p>
               </CardContent>
             </Card>
           ) : (
@@ -166,7 +158,7 @@ const Debates = () => {
                     </div>
                     <Badge variant="outline" className="ml-4 gap-1">
                       <TrendingUp className="h-3 w-3" />
-                      Aktiv
+                      {t('debates.active')}
                     </Badge>
                   </div>
                 </CardHeader>
@@ -183,13 +175,11 @@ const Debates = () => {
                       </div>
                       <div className="flex items-center gap-1">
                         <MessageSquare className="h-4 w-4" />
-                        <span>
-                          {language === 'de' ? 'Diskussion' : 'Discussion'}
-                        </span>
+                        <span>{t('debates.discussion')}</span>
                       </div>
                     </div>
                     <Button variant="ghost" size="sm" className="gap-2">
-                      {language === 'de' ? 'Teilnehmen' : 'Join Discussion'}
+                      {t('debates.joinDiscussion')}
                       <Users className="h-3 w-3" />
                     </Button>
                   </div>

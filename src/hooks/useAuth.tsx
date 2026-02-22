@@ -1,14 +1,14 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import { AuthError, Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
-  signUp: (email: string, password: string, username: string) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, username: string) => Promise<{ error: AuthError | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   loading: boolean;
 }
@@ -78,13 +78,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       return { error };
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const description = error instanceof Error
+        ? error.message
+        : "Ein unerwarteter Fehler ist aufgetreten";
       toast({
         title: "Fehler",
-        description: "Ein unerwarteter Fehler ist aufgetreten",
+        description,
         variant: "destructive"
       });
-      return { error };
+      return { error: null };
     }
   };
 
@@ -104,13 +107,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       return { error };
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const description = error instanceof Error
+        ? error.message
+        : "Ein unerwarteter Fehler ist aufgetreten";
       toast({
         title: "Fehler",
-        description: "Ein unerwarteter Fehler ist aufgetreten",
+        description,
         variant: "destructive"
       });
-      return { error };
+      return { error: null };
     }
   };
 

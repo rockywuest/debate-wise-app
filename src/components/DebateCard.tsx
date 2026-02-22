@@ -188,7 +188,7 @@ export const DebateCard = ({
             <span>{t.lastActive}: {formatRelativeTime(metadata.lastActivity)}</span>
           </div>
           
-          <Link to={`/debate/${id}`}>
+          <Link to={`/debates/${id}`}>
             <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
               {t.participate}
             </Button>

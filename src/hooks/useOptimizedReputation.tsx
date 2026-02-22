@@ -13,11 +13,12 @@ interface RateArgumentResponse {
 
 // Type guard function to safely check if the response has the expected structure
 const isRateArgumentResponse = (data: unknown): data is RateArgumentResponse => {
+  const typedData = data as { success?: unknown };
   return (
     typeof data === 'object' &&
     data !== null &&
     'success' in data &&
-    typeof (data as any).success === 'boolean'
+    typeof typedData.success === 'boolean'
   );
 };
 
@@ -89,7 +90,7 @@ export const useOptimizedReputation = () => {
         description: `+${data.points_awarded || 0} Reputationspunkte vergeben.`
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error rating argument:', error);
       toast({
         title: "Fehler beim Bewerten",

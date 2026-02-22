@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -48,7 +49,7 @@ export const useProfile = (userId?: string) => {
     const targetUserId = userId || user?.id;
     if (!targetUserId) return;
 
-    let channel: any = null;
+    let channel: RealtimeChannel | null = null;
 
     const setupRealtimeSubscription = async () => {
       try {

@@ -5,10 +5,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navigation } from "@/components/navigation/Navigation";
-import { LanguageConsistencyProvider } from "@/components/LanguageConsistencyProvider";
 import { AuthProvider } from "@/hooks/useAuth";
 import { MandatoryOnboarding } from "@/components/MandatoryOnboarding";
 import { PostLoginRedirect } from "@/components/PostLoginRedirect";
+import { I18nProvider } from "@/utils/i18n";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Debates from "./pages/Debates";
@@ -22,7 +22,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <LanguageConsistencyProvider>
+      <I18nProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -41,7 +41,7 @@ const App = () => (
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
-      </LanguageConsistencyProvider>
+      </I18nProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface TrendingDebate {
@@ -17,15 +17,11 @@ export const useTrendingDebates = (activeTab: 'trending' | 'active' | 'recent') 
   const [trendingDebates, setTrendingDebates] = useState<TrendingDebate[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchTrendingDebates();
-  }, [activeTab]);
-
-  const fetchTrendingDebates = async () => {
+  const fetchTrendingDebates = useCallback(async () => {
     try {
       setLoading(true);
       
-      let query = supabase
+      const query = supabase
         .from('debatten')
         .select(`
           id,
@@ -77,18 +73,17 @@ export const useTrendingDebates = (activeTab: 'trending' | 'active' | 'recent') 
       );
 
       // Sort based on active tab
-      let sortedDebates = [...debatesWithMetrics];
-      switch (activeTab) {
-        case 'trending':
-          sortedDebates.sort((a, b) => b.activity_score - a.activity_score);
-          break;
-        case 'active':
-          sortedDebates.sort((a, b) => new Date(b.recent_activity).getTime() - new Date(a.recent_activity).getTime());
-          break;
-        case 'recent':
-          sortedDebates.sort((a, b) => new Date(b.erstellt_am).getTime() - new Date(a.erstellt_am).getTime());
-          break;
-      }
+      const sortedDebates = [...debatesWithMetrics].sort((a, b) => {
+        switch (activeTab) {
+          case 'trending':
+            return b.activity_score - a.activity_score;
+          case 'active':
+            return new Date(b.recent_activity).getTime() - new Date(a.recent_activity).getTime();
+          case 'recent':
+          default:
+            return new Date(b.erstellt_am).getTime() - new Date(a.erstellt_am).getTime();
+        }
+      });
 
       setTrendingDebates(sortedDebates.slice(0, 6));
     } catch (error) {
@@ -96,7 +91,11 @@ export const useTrendingDebates = (activeTab: 'trending' | 'active' | 'recent') 
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab]);
+
+  useEffect(() => {
+    fetchTrendingDebates();
+  }, [fetchTrendingDebates]);
 
   return { trendingDebates, loading };
 };

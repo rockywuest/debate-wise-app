@@ -31,6 +31,10 @@ interface Argument {
   eltern_id?: string;
 }
 
+type NestedArgument = Argument & {
+  children: NestedArgument[];
+};
+
 const DebateDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [argumentsList, setArgumentsList] = useState<Argument[]>([]);
@@ -142,8 +146,8 @@ const DebateDetail = () => {
   };
 
   const organizeArguments = (args: Argument[]) => {
-    const argumentMap = new Map();
-    const rootArguments: any[] = [];
+    const argumentMap = new Map<string, NestedArgument>();
+    const rootArguments: NestedArgument[] = [];
 
     args.forEach(arg => {
       argumentMap.set(arg.id, {

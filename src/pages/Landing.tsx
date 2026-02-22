@@ -7,7 +7,7 @@ import { Menu, X } from 'lucide-react';
 
 const Landing = () => {
   const { user } = useAuth();
-  const [language, setLanguage] = useState<'de' | 'en'>('de');
+  const [language, setLanguage] = useState<'de' | 'en'>('en');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const translations = {

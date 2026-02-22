@@ -2,7 +2,11 @@
 import { supabase } from '@/integrations/supabase/client';
 import { demoUsers } from './createDemoUsers';
 
-export const createDemoRatings = async (createdArguments: any[]) => {
+interface CreatedArgument {
+  id: string;
+}
+
+export const createDemoRatings = async (createdArguments: CreatedArgument[]) => {
   console.log('Creating demo ratings...');
   
   if (!createdArguments || createdArguments.length === 0) {

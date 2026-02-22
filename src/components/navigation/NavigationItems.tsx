@@ -1,20 +1,27 @@
 import { MessageSquare, Trophy, TrendingUp, Settings } from 'lucide-react';
 
-export const getNavItems = (isAdmin: boolean = false) => {
+export const getNavItems = (isAdmin: boolean = false, language: 'de' | 'en' = 'en') => {
+  const labels = {
+    debates: language === 'de' ? 'Debatten' : 'Debates',
+    leaderboard: language === 'de' ? 'Rangliste' : 'Leaderboard',
+    analytics: language === 'de' ? 'Analytik' : 'Analytics',
+    admin: 'Admin'
+  };
+
   const baseItems = [
     {
       path: '/debates',
-      label: 'Debatten',
+      label: labels.debates,
       icon: MessageSquare
     },
     {
       path: '/leaderboard',
-      label: 'Rangliste',
+      label: labels.leaderboard,
       icon: Trophy
     },
     {
       path: '/analytics',
-      label: 'Analytik',
+      label: labels.analytics,
       icon: TrendingUp
     }
   ];
@@ -23,7 +30,7 @@ export const getNavItems = (isAdmin: boolean = false) => {
   if (isAdmin) {
     baseItems.push({
       path: '/admin',
-      label: 'Admin',
+      label: labels.admin,
       icon: Settings
     });
   }
@@ -35,17 +42,17 @@ export const getNavItems = (isAdmin: boolean = false) => {
 export const navItems = [
   {
     path: '/debates',
-    label: 'Debatten',
+    label: 'Debates',
     icon: MessageSquare
   },
   {
     path: '/leaderboard',
-    label: 'Rangliste',
+    label: 'Leaderboard',
     icon: Trophy
   },
   {
     path: '/analytics',
-    label: 'Analytik',
+    label: 'Analytics',
     icon: TrendingUp
   }
 ];

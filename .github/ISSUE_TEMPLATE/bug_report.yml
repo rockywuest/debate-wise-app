@@ -1,0 +1,33 @@
+name: Bug report
+description: Report an issue with reproducible steps.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is broken?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include exact steps and expected vs actual behavior.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser/OS/app version.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Paste errors or screenshots if available.

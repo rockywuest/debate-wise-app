@@ -1,5 +1,6 @@
 
 import React from 'react';
+import type { User } from '@supabase/supabase-js';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Globe } from 'lucide-react';
@@ -8,16 +9,16 @@ import { UserMenu } from './UserMenu';
 import { useUserRole } from '@/hooks/useUserRole';
 
 interface DesktopNavigationProps {
-  user: any;
-  signOut: () => void;
-  language: string;
+  user: User | null;
+  signOut: () => Promise<void> | void;
+  language: 'de' | 'en';
   toggleLanguage: () => void;
 }
 
 export const DesktopNavigation = ({ user, signOut, language, toggleLanguage }: DesktopNavigationProps) => {
   const location = useLocation();
   const { isAdmin } = useUserRole();
-  const navItems = getNavItems(isAdmin());
+  const navItems = getNavItems(isAdmin(), language === 'de' ? 'de' : 'en');
   
   const isActive = (path: string) => location.pathname === path;
 
@@ -57,7 +58,7 @@ export const DesktopNavigation = ({ user, signOut, language, toggleLanguage }: D
         {language.toUpperCase()}
       </Button>
 
-      <UserMenu user={user} signOut={signOut} />
+      <UserMenu user={user} signOut={signOut} language={language === 'de' ? 'de' : 'en'} />
     </div>
   );
 };

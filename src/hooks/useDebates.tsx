@@ -1,8 +1,9 @@
 
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from '@/utils/i18n';
 
 export interface Debate {
   id: string;
@@ -18,8 +19,19 @@ export const useDebates = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { language } = useTranslation();
 
-  const fetchDebates = async () => {
+  const getErrorMessage = useCallback(
+    (error: unknown): string => {
+      if (error instanceof Error) {
+        return error.message;
+      }
+      return language === 'de' ? 'Ein unerwarteter Fehler ist aufgetreten.' : 'An unexpected error occurred.';
+    },
+    [language]
+  );
+
+  const fetchDebates = useCallback(async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
@@ -29,23 +41,25 @@ export const useDebates = () => {
 
       if (error) throw error;
       setDebates(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching debates:', error);
       toast({
-        title: "Fehler beim Laden der Debatten",
-        description: error.message,
+        title: language === 'de' ? 'Fehler beim Laden der Debatten' : 'Failed to load debates',
+        description: getErrorMessage(error),
         variant: "destructive"
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [getErrorMessage, language, toast]);
 
   const createDebate = async (titel: string, beschreibung?: string) => {
     if (!user) {
       toast({
-        title: "Anmeldung erforderlich",
-        description: "Sie müssen angemeldet sein, um eine Debatte zu erstellen.",
+        title: language === 'de' ? 'Anmeldung erforderlich' : 'Sign-in required',
+        description: language === 'de'
+          ? 'Sie müssen angemeldet sein, um eine Debatte zu erstellen.'
+          : 'You must be signed in to create a debate.',
         variant: "destructive"
       });
       return null;
@@ -65,17 +79,19 @@ export const useDebates = () => {
       if (error) throw error;
 
       toast({
-        title: "Debatte erstellt",
-        description: "Die neue Debatte wurde erfolgreich erstellt."
+        title: language === 'de' ? 'Debatte erstellt' : 'Debate created',
+        description: language === 'de'
+          ? 'Die neue Debatte wurde erfolgreich erstellt.'
+          : 'The new debate was created successfully.'
       });
 
       await fetchDebates();
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating debate:', error);
       toast({
-        title: "Fehler beim Erstellen der Debatte",
-        description: error.message,
+        title: language === 'de' ? 'Fehler beim Erstellen der Debatte' : 'Failed to create debate',
+        description: getErrorMessage(error),
         variant: "destructive"
       });
       return null;
@@ -84,7 +100,7 @@ export const useDebates = () => {
 
   useEffect(() => {
     fetchDebates();
-  }, []);
+  }, [fetchDebates]);
 
   return {
     debates,

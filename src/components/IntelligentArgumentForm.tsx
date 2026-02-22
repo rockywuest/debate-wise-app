@@ -11,6 +11,7 @@ import { useSecureArguments } from '@/hooks/useSecureArguments';
 import { RealTimeArgumentAnalysis } from './RealTimeArgumentAnalysis';
 import { useTranslation } from '@/utils/i18n';
 import { Brain, CheckCircle, AlertTriangle, Target } from 'lucide-react';
+import type { ArgumentAnalysis } from '@/types/analysis';
 
 interface IntelligentArgumentFormProps {
   debateId: string;
@@ -21,7 +22,7 @@ interface IntelligentArgumentFormProps {
 export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: IntelligentArgumentFormProps) => {
   const [argumentText, setArgumentText] = useState('');
   const [argumentType, setArgumentType] = useState<'Pro' | 'Contra'>('Pro');
-  const [analysis, setAnalysis] = useState<any>(null);
+  const [analysis, setAnalysis] = useState<ArgumentAnalysis | null>(null);
   const [qualityScore, setQualityScore] = useState<number>(0);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const { user } = useAuth();
@@ -29,7 +30,7 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
   const { toast } = useToast();
   const { t } = useTranslation();
 
-  const handleAnalysisComplete = (analysisData: any, score: number) => {
+  const handleAnalysisComplete = (analysisData: ArgumentAnalysis, score: number) => {
     setAnalysis(analysisData);
     setQualityScore(score);
     setShowAnalysis(true);

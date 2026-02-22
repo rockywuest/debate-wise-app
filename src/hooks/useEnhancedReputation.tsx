@@ -3,13 +3,14 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import type { ArgumentAnalysis } from '@/types/analysis';
 
 export const useEnhancedReputation = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const calculateQualityScore = (analysis: any): number => {
+  const calculateQualityScore = (analysis: Partial<ArgumentAnalysis> | null | undefined): number => {
     if (!analysis) return 0;
     
     let score = 0;
@@ -75,7 +76,7 @@ export const useEnhancedReputation = () => {
           description: `+${rule.points} Punkte: ${rule.reason}`,
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error awarding reputation:', error);
     } finally {
       setLoading(false);

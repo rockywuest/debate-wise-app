@@ -5,19 +5,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { Brain, ThumbsUp, ThumbsDown, AlertCircle, CheckCircle, XCircle, Star } from 'lucide-react';
+import type { ArgumentAnalysis } from '@/types/analysis';
 
 interface ArgumentQualityAnalysisProps {
   argumentText: string;
   debateTitle: string;
   debateDescription: string;
-  onAnalysisComplete?: (analysis: any) => void;
-}
-
-interface AnalysisResult {
-  relevanz: { score: number; begruendung: string };
-  substantiierung: { status: string; begruendung: string };
-  spezifitaet: { status: string; begruendung: string };
-  fehlschluss: { status: string; begruendung: string };
+  onAnalysisComplete?: (analysis: ArgumentAnalysis) => void;
 }
 
 export const ArgumentQualityAnalysis = ({ 
@@ -26,7 +20,7 @@ export const ArgumentQualityAnalysis = ({
   debateDescription,
   onAnalysisComplete 
 }: ArgumentQualityAnalysisProps) => {
-  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [analysis, setAnalysis] = useState<ArgumentAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
   const [userFeedback, setUserFeedback] = useState<'helpful' | 'not_helpful' | null>(null);
 

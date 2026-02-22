@@ -11,6 +11,7 @@ import { ChildArgumentsPreview } from './ChildArgumentsPreview';
 import { ReputationDisplay } from './ReputationDisplay';
 import { useEnhancedReputation } from '@/hooks/useEnhancedReputation';
 import { MessageSquare, ThumbsUp, ThumbsDown, Award, TrendingUp } from 'lucide-react';
+import type { ArgumentAnalysis } from '@/types/analysis';
 
 interface EnhancedArgumentCardProps {
   id: string;
@@ -74,7 +75,7 @@ export const EnhancedArgumentCard = ({
     return { color: 'bg-red-100 text-red-800', label: 'Verbesserungsbedarf', icon: null };
   };
 
-  const handleQualityAnalysis = (analysis: any) => {
+  const handleQualityAnalysis = (analysis: ArgumentAnalysis) => {
     const score = calculateQualityScore(analysis);
     setQualityScore(score);
 

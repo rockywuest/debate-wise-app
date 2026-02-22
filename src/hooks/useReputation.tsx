@@ -27,6 +27,13 @@ export const useReputation = () => {
   const { toast } = useToast();
   const { user } = useAuth();
 
+  const getErrorMessage = (error: unknown) => {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return "Ein unerwarteter Fehler ist aufgetreten.";
+  };
+
   const updateReputation = async (
     targetUserId: string,
     points: number,
@@ -50,11 +57,11 @@ export const useReputation = () => {
         title: "Reputation aktualisiert",
         description: `${points > 0 ? '+' : ''}${points} Punkte für: ${reason}`
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating reputation:', error);
       toast({
         title: "Fehler bei Reputation-Update",
-        description: error.message,
+        description: getErrorMessage(error),
         variant: "destructive"
       });
     } finally {
@@ -129,11 +136,11 @@ export const useReputation = () => {
       
       await updateReputation(argument.benutzer_id, points, reason, argumentId, user.id);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error rating argument:', error);
       toast({
         title: "Fehler beim Bewerten",
-        description: error.message,
+        description: getErrorMessage(error),
         variant: "destructive"
       });
     } finally {
@@ -154,11 +161,11 @@ export const useReputation = () => {
 
       if (error) throw error;
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching leaderboard:', error);
       toast({
         title: "Fehler beim Laden der Rangliste",
-        description: error.message,
+        description: getErrorMessage(error),
         variant: "destructive"
       });
       return [];

@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from '@/utils/i18n';
 
 interface AuthFormProps {
   mode: 'signin' | 'signup';
@@ -17,6 +18,7 @@ export const AuthForm = ({ mode, onModeChange }: AuthFormProps) => {
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,12 +37,12 @@ export const AuthForm = ({ mode, onModeChange }: AuthFormProps) => {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>
-          {mode === 'signin' ? 'Anmelden' : 'Registrieren'}
+          {mode === 'signin' ? t('auth.signIn') : t('auth.signUp')}
         </CardTitle>
         <CardDescription>
           {mode === 'signin' 
-            ? 'Melden Sie sich in Ihrem Konto an' 
-            : 'Erstellen Sie ein neues Konto'
+            ? t('auth.signInDescription')
+            : t('auth.signUpDescription')
           }
         </CardDescription>
       </CardHeader>
@@ -48,47 +50,47 @@ export const AuthForm = ({ mode, onModeChange }: AuthFormProps) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'signup' && (
             <div className="space-y-2">
-              <Label htmlFor="username">Benutzername</Label>
+              <Label htmlFor="username">{t('auth.username')}</Label>
               <Input
                 id="username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                placeholder="Ihr Benutzername"
+                placeholder={t('auth.usernamePlaceholder')}
               />
             </div>
           )}
           
           <div className="space-y-2">
-            <Label htmlFor="email">E-Mail</Label>
+            <Label htmlFor="email">{t('auth.email')}</Label>
             <Input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="ihre.email@beispiel.de"
+              placeholder={t('auth.emailPlaceholder')}
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="password">Passwort</Label>
+            <Label htmlFor="password">{t('auth.password')}</Label>
             <Input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="Ihr Passwort"
+              placeholder={t('auth.passwordPlaceholder')}
               minLength={6}
             />
           </div>
           
           <Button type="submit" className="w-full" disabled={loading}>
             {loading 
-              ? 'Wird verarbeitet...' 
-              : mode === 'signin' ? 'Anmelden' : 'Registrieren'
+              ? t('auth.processing')
+              : mode === 'signin' ? t('auth.signIn') : t('auth.signUp')
             }
           </Button>
         </form>
@@ -100,8 +102,8 @@ export const AuthForm = ({ mode, onModeChange }: AuthFormProps) => {
             className="text-sm"
           >
             {mode === 'signin' 
-              ? 'Noch kein Konto? Hier registrieren' 
-              : 'Bereits ein Konto? Hier anmelden'
+              ? t('auth.noAccount')
+              : t('auth.haveAccount')
             }
           </Button>
         </div>

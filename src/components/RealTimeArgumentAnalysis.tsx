@@ -5,20 +5,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { Brain, CheckCircle, XCircle, AlertTriangle, Target, Search, MessageSquare } from 'lucide-react';
+import type { ArgumentAnalysis } from '@/types/analysis';
 
 interface RealTimeArgumentAnalysisProps {
   argumentText: string;
   debateTitle: string;
   debateDescription: string;
-  onAnalysisComplete?: (analysis: any, qualityScore: number) => void;
+  onAnalysisComplete?: (analysis: ArgumentAnalysis, qualityScore: number) => void;
   autoAnalyze?: boolean;
-}
-
-interface AnalysisResult {
-  relevanz: { score: number; begruendung: string };
-  substantiierung: { status: string; begruendung: string };
-  spezifitaet: { status: string; begruendung: string };
-  fehlschluss: { status: string; begruendung: string };
 }
 
 export const RealTimeArgumentAnalysis = ({ 
@@ -28,11 +22,11 @@ export const RealTimeArgumentAnalysis = ({
   onAnalysisComplete,
   autoAnalyze = false
 }: RealTimeArgumentAnalysisProps) => {
-  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [analysis, setAnalysis] = useState<ArgumentAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
   const [qualityScore, setQualityScore] = useState<number>(0);
 
-  const calculateQualityScore = (analysisData: AnalysisResult): number => {
+  const calculateQualityScore = (analysisData: ArgumentAnalysis): number => {
     let score = 0;
     
     // Relevance (40% weight - most important)

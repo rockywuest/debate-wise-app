@@ -196,7 +196,7 @@ const Index = () => {
                             </CardDescription>
                           )}
                         </div>
-                        <Link to={`/debate/${debate.id}`}>
+                        <Link to={`/debates/${debate.id}`}>
                           <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
                             {t('index.participate')}
                           </Button>

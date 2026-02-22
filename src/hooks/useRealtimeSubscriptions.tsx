@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from 'react';
+import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -8,7 +9,7 @@ interface RealtimeConfig {
   table: string;
   event?: 'INSERT' | 'UPDATE' | 'DELETE' | '*';
   filter?: string;
-  onUpdate?: (payload: any) => void;
+  onUpdate?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
 }
 
 export const useRealtimeSubscriptions = (configs: RealtimeConfig[]) => {
@@ -20,15 +21,15 @@ export const useRealtimeSubscriptions = (configs: RealtimeConfig[]) => {
     if (!user) return;
 
     setConnectionStatus('connecting');
-    const subscriptions: any[] = [];
+    const subscriptions: RealtimeChannel[] = [];
 
     configs.forEach((config) => {
       const { table, event = '*', filter, onUpdate } = config;
       
-      let subscription = supabase
+      const subscription = supabase
         .channel(`realtime-${table}`)
         .on(
-          'postgres_changes' as any,
+          'postgres_changes',
           {
             event,
             schema: 'public',
@@ -78,8 +79,8 @@ export const useRealtimeSubscriptions = (configs: RealtimeConfig[]) => {
     });
 
     return () => {
-      subscriptions.forEach(sub => {
-        supabase.removeChannel(sub);
+      subscriptions.forEach((subscriptionChannel) => {
+        supabase.removeChannel(subscriptionChannel);
       });
       setConnectionStatus('disconnected');
     };

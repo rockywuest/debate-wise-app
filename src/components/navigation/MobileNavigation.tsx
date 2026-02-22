@@ -1,5 +1,6 @@
 
 import React from 'react';
+import type { User } from '@supabase/supabase-js';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -8,9 +9,9 @@ import { getNavItems } from './NavigationItems';
 import { useUserRole } from '@/hooks/useUserRole';
 
 interface MobileNavigationProps {
-  user: any;
-  signOut: () => void;
-  language: string;
+  user: User | null;
+  signOut: () => Promise<void> | void;
+  language: 'de' | 'en';
   toggleLanguage: () => void;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
@@ -26,7 +27,8 @@ export const MobileNavigation = ({
 }: MobileNavigationProps) => {
   const location = useLocation();
   const { isAdmin } = useUserRole();
-  const navItems = getNavItems(isAdmin());
+  const isGerman = language === 'de';
+  const navItems = getNavItems(isAdmin(), isGerman ? 'de' : 'en');
   
   const isActive = (path: string) => location.pathname === path;
   const closeSheet = () => setIsOpen(false);
@@ -105,14 +107,14 @@ export const MobileNavigation = ({
                       className="w-full justify-start gap-4 h-14 text-lg font-semibold text-white hover:bg-fw-border/50"
                     >
                       <LogOut className="h-6 w-6" />
-                      Ausloggen
+                      {isGerman ? 'Abmelden' : 'Sign Out'}
                     </Button>
                   </div>
                 </>
               ) : (
                 <Link to="/auth" onClick={closeSheet}>
                   <Button className="w-full h-14 text-lg font-semibold">
-                    Anmelden
+                    {isGerman ? 'Anmelden' : 'Sign In'}
                   </Button>
                 </Link>
               )}

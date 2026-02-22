@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/button';
 import { useSecureReputation } from '@/hooks/useSecureReputation';
 import { useAuth } from '@/hooks/useAuth';
@@ -26,7 +27,7 @@ export const SecureArgumentRatingButtons = ({ argumentId, authorUserId }: Secure
     concedePointCount: 0
   });
 
-  const fetchRatings = async () => {
+  const fetchRatings = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -54,7 +55,7 @@ export const SecureArgumentRatingButtons = ({ argumentId, authorUserId }: Secure
     } catch (error) {
       console.error('Error fetching ratings:', error);
     }
-  };
+  }, [argumentId, user]);
 
   const handleRating = async (ratingType: 'insightful' | 'concede_point') => {
     await rateArgument(argumentId, ratingType);
@@ -63,12 +64,12 @@ export const SecureArgumentRatingButtons = ({ argumentId, authorUserId }: Secure
   useEffect(() => {
     if (!user) return;
     fetchRatings();
-  }, [argumentId, user]);
+  }, [fetchRatings, user]);
 
   useEffect(() => {
     if (!user) return;
 
-    let channel: any = null;
+    let channel: RealtimeChannel | null = null;
 
     const setupRealtimeSubscription = async () => {
       try {
@@ -103,7 +104,7 @@ export const SecureArgumentRatingButtons = ({ argumentId, authorUserId }: Secure
         supabase.removeChannel(channel);
       }
     };
-  }, [argumentId, user]);
+  }, [argumentId, fetchRatings, user]);
 
   // Hide buttons for own arguments
   if (user?.id === authorUserId) {
