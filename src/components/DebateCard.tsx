@@ -37,7 +37,7 @@ export const DebateCard = ({
   title, 
   description, 
   createdAt, 
-  language = 'de' 
+  language = 'en' 
 }: DebateCardProps) => {
   const [metadata, setMetadata] = useState<DebateMetadata>({
     argumentCount: 0,
