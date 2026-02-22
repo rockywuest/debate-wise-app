@@ -10,14 +10,17 @@ on:
 permissions:
   actions: read
   contents: read
-  id-token: write
-  security-events: write
 
 jobs:
   analysis:
     if: github.event.repository.private == false
     name: Scorecard analysis
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      security-events: write
 
     steps:
       - name: Checkout
