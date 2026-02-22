@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { InputValidator } from '@/utils/inputValidation';
+import { useTranslation } from '@/utils/i18n';
 import type { Argument } from './useArguments';
 
 export const useOptimizedArguments = (debateId?: string) => {
@@ -13,13 +14,16 @@ export const useOptimizedArguments = (debateId?: string) => {
   const [creating, setCreating] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { language } = useTranslation();
+  const text = useCallback((en: string, de: string) => (language === 'de' ? de : en), [language]);
+  const defaultErrorMessage = text('An unexpected error occurred.', 'Ein unerwarteter Fehler ist aufgetreten.');
 
   const getErrorMessage = useCallback((error: unknown): string => {
     if (error instanceof Error) {
       return error.message;
     }
-    return "Ein unerwarteter Fehler ist aufgetreten.";
-  }, []);
+    return defaultErrorMessage;
+  }, [defaultErrorMessage]);
 
   const organizeArgumentsHierarchically = (data: Argument[]) => {
     const topLevelArgs = data.filter(arg => !arg.eltern_id);
@@ -56,14 +60,14 @@ export const useOptimizedArguments = (debateId?: string) => {
     } catch (error: unknown) {
       console.error('Error fetching arguments:', error);
       toast({
-        title: "Fehler beim Laden der Argumente",
+        title: text('Failed to load arguments', 'Fehler beim Laden der Argumente'),
         description: getErrorMessage(error),
         variant: "destructive"
       });
     } finally {
       setLoading(false);
     }
-  }, [debateId, getErrorMessage, toast]);
+  }, [debateId, getErrorMessage, toast, text]);
 
   const createOptimizedArgument = async (
     argumentText: string,
@@ -73,8 +77,8 @@ export const useOptimizedArguments = (debateId?: string) => {
   ) => {
     if (!user || !debateId) {
       toast({
-        title: "Anmeldung erforderlich",
-        description: "Sie müssen angemeldet sein, um ein Argument zu erstellen.",
+        title: text('Sign-in required', 'Anmeldung erforderlich'),
+        description: text('You must be signed in to create an argument.', 'Sie mussen angemeldet sein, um ein Argument zu erstellen.'),
         variant: "destructive"
       });
       return null;
@@ -83,8 +87,8 @@ export const useOptimizedArguments = (debateId?: string) => {
     // Client-side rate limiting check first
     if (!InputValidator.checkRateLimit(user.id, 'create_argument', 3, 60000)) {
       toast({
-        title: "Zu viele Anfragen",
-        description: "Bitte warten Sie eine Minute, bevor Sie ein neues Argument erstellen.",
+        title: text('Too many requests', 'Zu viele Anfragen'),
+        description: text('Please wait one minute before creating another argument.', 'Bitte warten Sie eine Minute, bevor Sie ein neues Argument erstellen.'),
         variant: "destructive"
       });
       return null;
@@ -94,7 +98,7 @@ export const useOptimizedArguments = (debateId?: string) => {
     const argumentValidation = InputValidator.validateAndSanitizeArgument(argumentText);
     if (!argumentValidation.isValid) {
       toast({
-        title: "Ungültiges Argument",
+        title: text('Invalid argument', 'Ungultiges Argument'),
         description: argumentValidation.errors.join(', '),
         variant: "destructive"
       });
@@ -113,7 +117,7 @@ export const useOptimizedArguments = (debateId?: string) => {
         });
 
       if (validationError || !validationResult) {
-        throw new Error('Argument konnte nicht validiert werden');
+        throw new Error(text('Argument could not be validated.', 'Argument konnte nicht validiert werden'));
       }
 
       const { data, error } = await supabase
@@ -132,15 +136,15 @@ export const useOptimizedArguments = (debateId?: string) => {
       if (error) throw error;
 
       toast({
-        title: "Argument hinzugefügt",
-        description: "Das neue Argument wurde erfolgreich erstellt."
+        title: text('Argument added', 'Argument hinzugefugt'),
+        description: text('The new argument was created successfully.', 'Das neue Argument wurde erfolgreich erstellt.')
       });
 
       return data;
     } catch (error: unknown) {
       console.error('Error creating argument:', error);
       toast({
-        title: "Fehler beim Erstellen des Arguments",
+        title: text('Failed to create argument', 'Fehler beim Erstellen des Arguments'),
         description: getErrorMessage(error),
         variant: "destructive"
       });

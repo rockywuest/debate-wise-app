@@ -3,6 +3,7 @@ import React from 'react';
 import { MessageSquare, ThumbsUp, ThumbsDown, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useTranslation } from '@/utils/i18n';
 
 interface ChildArgument {
   id: string;
@@ -17,6 +18,9 @@ interface ChildArgumentsPreviewProps {
 }
 
 export const ChildArgumentsPreview = ({ childArguments, onViewAll }: ChildArgumentsPreviewProps) => {
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
+
   if (childArguments.length === 0) return null;
 
   const getTypeIcon = (type: string) => {
@@ -48,7 +52,7 @@ export const ChildArgumentsPreview = ({ childArguments, onViewAll }: ChildArgume
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
             <h4 className="font-medium text-sm">
-              {childArguments.length} {childArguments.length === 1 ? 'Antwort' : 'Antworten'}
+              {childArguments.length} {childArguments.length === 1 ? text('reply', 'Antwort') : text('replies', 'Antworten')}
             </h4>
           </div>
           {childArguments.length > 2 && (
@@ -58,7 +62,7 @@ export const ChildArgumentsPreview = ({ childArguments, onViewAll }: ChildArgume
               onClick={onViewAll}
               className="text-xs h-auto px-2 py-1 text-muted-foreground hover:text-foreground"
             >
-              Alle anzeigen
+              {text('View all', 'Alle anzeigen')}
               <ChevronRight className="h-3 w-3 ml-1" />
             </Button>
           )}
@@ -83,7 +87,7 @@ export const ChildArgumentsPreview = ({ childArguments, onViewAll }: ChildArgume
           {childArguments.length > 2 && (
             <div className="text-center py-2">
               <span className="text-xs text-muted-foreground bg-background px-3 py-1.5 rounded-full border">
-                + {childArguments.length - 2} weitere {childArguments.length - 2 === 1 ? 'Antwort' : 'Antworten'}
+                + {childArguments.length - 2} {text('more', 'weitere')} {childArguments.length - 2 === 1 ? text('reply', 'Antwort') : text('replies', 'Antworten')}
               </span>
             </div>
           )}

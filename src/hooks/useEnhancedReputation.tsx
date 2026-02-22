@@ -3,12 +3,15 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from '@/utils/i18n';
 import type { ArgumentAnalysis } from '@/types/analysis';
 
 export const useEnhancedReputation = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   const calculateQualityScore = (analysis: Partial<ArgumentAnalysis> | null | undefined): number => {
     if (!analysis) return 0;
@@ -21,17 +24,17 @@ export const useEnhancedReputation = () => {
     }
     
     // Substantiation (25% weight)
-    if (analysis.substantiierung?.status === 'Vorhanden') {
+    if (analysis.substantiierung?.status === 'Vorhanden' || analysis.substantiierung?.status === 'Present') {
       score += 25;
     }
     
     // Specificity (20% weight)
-    if (analysis.spezifitaet?.status === 'Konkret') {
+    if (analysis.spezifitaet?.status === 'Konkret' || analysis.spezifitaet?.status === 'Concrete') {
       score += 20;
     }
     
     // Logic (15% weight)
-    if (analysis.fehlschluss?.status === 'Keiner') {
+    if (analysis.fehlschluss?.status === 'Keiner' || analysis.fehlschluss?.status === 'None') {
       score += 15;
     }
     
@@ -46,11 +49,11 @@ export const useEnhancedReputation = () => {
     if (!user) return;
 
     const reputationRules = {
-      high_quality_argument: { points: 20, reason: 'Hochwertiges Argument verfasst' },
-      steel_manning: { points: 30, reason: 'Fair argumentiert (Steel-Manning)' },
-      source_provided: { points: 10, reason: 'Quellen bereitgestellt' },
-      argument_conceded: { points: 50, reason: 'Punkt zugestanden - intellektuelle Ehrlichkeit' },
-      fallacy_penalty: { points: -10, reason: 'Fehlschluss in Argument erkannt' }
+      high_quality_argument: { points: 20, reason: text('Submitted high-quality argument', 'Hochwertiges Argument verfasst') },
+      steel_manning: { points: 30, reason: text('Fair steel-manning representation', 'Fair argumentiert (Steel-Manning)') },
+      source_provided: { points: 10, reason: text('Provided sources', 'Quellen bereitgestellt') },
+      argument_conceded: { points: 50, reason: text('Conceded a point - intellectual honesty', 'Punkt zugestanden - intellektuelle Ehrlichkeit') },
+      fallacy_penalty: { points: -10, reason: text('Logical fallacy detected in argument', 'Fehlschluss in Argument erkannt') }
     };
 
     const rule = reputationRules[actionType];
@@ -72,8 +75,8 @@ export const useEnhancedReputation = () => {
       // Only show positive feedback to encourage good behavior
       if (rule.points > 0) {
         toast({
-          title: "Reputation aktualisiert",
-          description: `+${rule.points} Punkte: ${rule.reason}`,
+          title: text('Reputation updated', 'Reputation aktualisiert'),
+          description: text(`+${rule.points} points: ${rule.reason}`, `+${rule.points} Punkte: ${rule.reason}`),
         });
       }
     } catch (error: unknown) {

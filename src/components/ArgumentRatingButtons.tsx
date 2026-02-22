@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useReputation } from '@/hooks/useReputation';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from '@/utils/i18n';
 import { Heart, Award, CheckCircle } from 'lucide-react';
 
 interface ArgumentRatingButtonsProps {
@@ -15,6 +16,8 @@ interface ArgumentRatingButtonsProps {
 export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRatingButtonsProps) => {
   const { rateArgument, loading } = useReputation();
   const { user } = useAuth();
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
   const [ratings, setRatings] = useState<{
     hasRatedInsightful: boolean;
     hasConcedePoint: boolean;
@@ -31,13 +34,13 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
     if (!user) return;
 
     try {
-      // Hole alle Bewertungen für dieses Argument
+      // Load all ratings for this argument.
       const { data: allRatings } = await supabase
         .from('argument_ratings')
         .select('*')
         .eq('argument_id', argumentId);
 
-      // Prüfe, ob der aktuelle Benutzer bereits bewertet hat
+      // Check whether current user already rated.
       const userInsightfulRating = allRatings?.find(r => 
         r.rated_by_user_id === user.id && r.rating_type === 'insightful'
       );
@@ -45,7 +48,7 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
         r.rated_by_user_id === user.id && r.rating_type === 'concede_point'
       );
 
-      // Zähle Bewertungen
+      // Count ratings.
       const insightfulCount = allRatings?.filter(r => r.rating_type === 'insightful').length || 0;
       const concedePointCount = allRatings?.filter(r => r.rating_type === 'concede_point').length || 0;
 
@@ -77,10 +80,10 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
 
     const setupRealtimeSubscription = async () => {
       try {
-        // Create a unique channel name to avoid conflicts
+        // Create a unique channel name to avoid conflicts.
         const channelName = `ratings-${argumentId}-${Math.random().toString(36).substr(2, 9)}`;
         
-        // Set up real-time subscription for rating changes
+        // Subscribe to rating changes.
         channel = supabase
           .channel(channelName)
           .on(
@@ -97,7 +100,7 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
             }
           );
 
-        // Subscribe and wait for it to be ready
+        // Subscribe and wait for readiness.
         await channel.subscribe();
       } catch (error) {
         console.error('Error setting up realtime subscription:', error);
@@ -113,12 +116,12 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
     };
   }, [argumentId, fetchRatings, user]);
 
-  // Verstecke Buttons für eigene Argumente
+  // Hide buttons on own arguments.
   if (user?.id === authorUserId) {
     return null;
   }
 
-  // Verstecke Buttons für nicht angemeldete Benutzer
+  // Hide buttons for anonymous users.
   if (!user) {
     return null;
   }
@@ -133,7 +136,7 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
         className="gap-1"
       >
         {ratings.hasRatedInsightful ? <CheckCircle className="h-3 w-3" /> : <Heart className="h-3 w-3" />}
-        Einsichtig ({ratings.insightfulCount})
+        {text('Insightful', 'Einsichtig')} ({ratings.insightfulCount})
       </Button>
       
       <Button
@@ -144,7 +147,7 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
         className="gap-1"
       >
         {ratings.hasConcedePoint ? <CheckCircle className="h-3 w-3" /> : <Award className="h-3 w-3" />}
-        Punkt zugestehen ({ratings.concedePointCount})
+        {text('Concede point', 'Punkt zugestehen')} ({ratings.concedePointCount})
       </Button>
     </div>
   );

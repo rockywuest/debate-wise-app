@@ -1,8 +1,9 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from '@/utils/i18n';
 
 export interface ReputationTransaction {
   id: string;
@@ -26,12 +27,14 @@ export const useReputation = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   const getErrorMessage = (error: unknown) => {
     if (error instanceof Error) {
       return error.message;
     }
-    return "Ein unerwarteter Fehler ist aufgetreten.";
+    return text('An unexpected error occurred.', 'Ein unerwarteter Fehler ist aufgetreten.');
   };
 
   const updateReputation = async (
@@ -54,13 +57,16 @@ export const useReputation = () => {
       if (error) throw error;
 
       toast({
-        title: "Reputation aktualisiert",
-        description: `${points > 0 ? '+' : ''}${points} Punkte für: ${reason}`
+        title: text('Reputation updated', 'Reputation aktualisiert'),
+        description: text(
+          `${points > 0 ? '+' : ''}${points} points for: ${reason}`,
+          `${points > 0 ? '+' : ''}${points} Punkte fur: ${reason}`
+        )
       });
     } catch (error: unknown) {
       console.error('Error updating reputation:', error);
       toast({
-        title: "Fehler bei Reputation-Update",
+        title: text('Failed to update reputation', 'Fehler bei Reputation-Update'),
         description: getErrorMessage(error),
         variant: "destructive"
       });
@@ -72,8 +78,8 @@ export const useReputation = () => {
   const rateArgument = async (argumentId: string, ratingType: 'insightful' | 'concede_point') => {
     if (!user) {
       toast({
-        title: "Anmeldung erforderlich",
-        description: "Sie müssen angemeldet sein, um zu bewerten.",
+        title: text('Sign-in required', 'Anmeldung erforderlich'),
+        description: text('You must be signed in to rate.', 'Sie mussen angemeldet sein, um zu bewerten.'),
         variant: "destructive"
       });
       return;
@@ -82,7 +88,7 @@ export const useReputation = () => {
     try {
       setLoading(true);
       
-      // Prüfe, ob der Benutzer bereits bewertet hat
+      // Check whether the user already submitted this rating.
       const { data: existingRating } = await supabase
         .from('argument_ratings')
         .select('*')
@@ -93,33 +99,33 @@ export const useReputation = () => {
 
       if (existingRating) {
         toast({
-          title: "Bereits bewertet",
-          description: "Sie haben dieses Argument bereits so bewertet.",
+          title: text('Already rated', 'Bereits bewertet'),
+          description: text('You already submitted this rating for the argument.', 'Sie haben dieses Argument bereits so bewertet.'),
           variant: "destructive"
         });
         return;
       }
 
-      // Hole Argument-Details für Autor
+      // Fetch argument details to identify the target author.
       const { data: argument } = await supabase
         .from('argumente')
         .select('benutzer_id')
         .eq('id', argumentId)
         .single();
 
-      if (!argument) throw new Error('Argument nicht gefunden');
+      if (!argument) throw new Error(text('Argument not found', 'Argument nicht gefunden'));
 
-      // Verhindere Selbstbewertung
+      // Prevent self-rating.
       if (argument.benutzer_id === user.id) {
         toast({
-          title: "Selbstbewertung nicht erlaubt",
-          description: "Sie können Ihre eigenen Argumente nicht bewerten.",
+          title: text('Self-rating not allowed', 'Selbstbewertung nicht erlaubt'),
+          description: text('You cannot rate your own arguments.', 'Sie konnen Ihre eigenen Argumente nicht bewerten.'),
           variant: "destructive"
         });
         return;
       }
 
-      // Erstelle die Bewertung
+      // Create the rating.
       const { error: ratingError } = await supabase
         .from('argument_ratings')
         .insert({
@@ -130,16 +136,18 @@ export const useReputation = () => {
 
       if (ratingError) throw ratingError;
 
-      // Vergebe Reputationspunkte
+      // Grant reputation points.
       const points = ratingType === 'insightful' ? 5 : 20;
-      const reason = ratingType === 'insightful' ? 'Argument als einsichtig bewertet' : 'Punkt zugestanden';
+      const reason = ratingType === 'insightful'
+        ? text('Argument rated as insightful', 'Argument als einsichtig bewertet')
+        : text('Conceded a point', 'Punkt zugestanden');
       
       await updateReputation(argument.benutzer_id, points, reason, argumentId, user.id);
 
     } catch (error: unknown) {
       console.error('Error rating argument:', error);
       toast({
-        title: "Fehler beim Bewerten",
+        title: text('Failed to submit rating', 'Fehler beim Bewerten'),
         description: getErrorMessage(error),
         variant: "destructive"
       });
@@ -150,9 +158,6 @@ export const useReputation = () => {
 
   const getLeaderboard = async () => {
     try {
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
       const { data, error } = await supabase
         .from('profiles')
         .select('id, username, reputation_score')
@@ -164,7 +169,7 @@ export const useReputation = () => {
     } catch (error: unknown) {
       console.error('Error fetching leaderboard:', error);
       toast({
-        title: "Fehler beim Laden der Rangliste",
+        title: text('Failed to load leaderboard', 'Fehler beim Laden der Rangliste'),
         description: getErrorMessage(error),
         variant: "destructive"
       });

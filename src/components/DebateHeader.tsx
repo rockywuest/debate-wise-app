@@ -25,6 +25,8 @@ export const DebateHeader = ({
   language, 
   onShowForm 
 }: DebateHeaderProps) => {
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
+
   return (
     <div className="debate-header p-8 mb-8">
       <div className="flex justify-between items-start mb-6">
@@ -44,15 +46,19 @@ export const DebateHeader = ({
         <div className="flex items-center gap-8 text-muted-foreground">
           <div className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
-            <span className="font-medium">{argumentsCount} Argumente</span>
+            <span className="font-medium">
+              {argumentsCount} {argumentsCount === 1 ? text('argument', 'Argument') : text('arguments', 'Argumente')}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            <span className="font-medium">{participantsCount} Teilnehmer</span>
+            <span className="font-medium">
+              {participantsCount} {participantsCount === 1 ? text('participant', 'Teilnehmer') : text('participants', 'Teilnehmer')}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <Activity className="h-5 w-5" />
-            <span className="font-medium">Aktive Diskussion</span>
+            <span className="font-medium">{text('Active discussion', 'Aktive Diskussion')}</span>
           </div>
         </div>
         
@@ -61,7 +67,7 @@ export const DebateHeader = ({
           className="modern-button modern-button-primary"
         >
           <Plus className="h-4 w-4" />
-          Argument beitragen
+          {text('Contribute argument', 'Argument beitragen')}
         </Button>
       </div>
     </div>

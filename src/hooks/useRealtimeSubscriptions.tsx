@@ -1,9 +1,10 @@
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from '@/utils/i18n';
 
 interface RealtimeConfig {
   table: string;
@@ -15,6 +16,8 @@ interface RealtimeConfig {
 export const useRealtimeSubscriptions = (configs: RealtimeConfig[]) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { language } = useTranslation();
+  const text = useCallback((en: string, de: string) => (language === 'de' ? de : en), [language]);
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
 
   useEffect(() => {
@@ -44,20 +47,20 @@ export const useRealtimeSubscriptions = (configs: RealtimeConfig[]) => {
               switch (payload.eventType) {
                 case 'INSERT':
                   toast({
-                    title: "Neue Aktivität",
-                    description: `Neuer Eintrag in ${table}`,
+                    title: text('New activity', 'Neue Aktivitat'),
+                    description: text(`New entry in ${table}`, `Neuer Eintrag in ${table}`),
                   });
                   break;
                 case 'UPDATE':
                   toast({
-                    title: "Aktualisierung",
-                    description: `Eintrag in ${table} wurde aktualisiert`,
+                    title: text('Update', 'Aktualisierung'),
+                    description: text(`Entry in ${table} was updated`, `Eintrag in ${table} wurde aktualisiert`),
                   });
                   break;
                 case 'DELETE':
                   toast({
-                    title: "Gelöscht",
-                    description: `Eintrag aus ${table} wurde entfernt`,
+                    title: text('Deleted', 'Geloscht'),
+                    description: text(`Entry removed from ${table}`, `Eintrag aus ${table} wurde entfernt`),
                   });
                   break;
               }
@@ -84,7 +87,7 @@ export const useRealtimeSubscriptions = (configs: RealtimeConfig[]) => {
       });
       setConnectionStatus('disconnected');
     };
-  }, [user, configs, toast]);
+  }, [user, configs, toast, text]);
 
   return { connectionStatus };
 };
