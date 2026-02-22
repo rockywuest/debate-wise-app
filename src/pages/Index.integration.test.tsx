@@ -27,7 +27,12 @@ vi.mock('@/components/CreateDebateForm', () => ({
 const renderIndex = () => {
   return render(
     <I18nProvider>
-      <MemoryRouter>
+      <MemoryRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true
+        }}
+      >
         <Index />
       </MemoryRouter>
     </I18nProvider>
