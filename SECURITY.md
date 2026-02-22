@@ -8,7 +8,11 @@ This project is early-stage. Security fixes are applied to the default branch fi
 
 Please do not open public issues for security vulnerabilities.
 
-Instead, report privately to the maintainers with:
+Use GitHub private vulnerability reporting:
+
+- [Report a vulnerability](https://github.com/rockywuest/debate-wise-app/security/advisories/new)
+
+Include the following details with your report:
 
 - vulnerability description
 - reproduction steps
