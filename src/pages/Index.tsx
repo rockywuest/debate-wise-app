@@ -14,6 +14,7 @@ const Index = () => {
   const { user, loading: authLoading } = useAuth();
   const { debates, loading: debatesLoading } = useDebates();
   const { t, language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   if (authLoading) {
     return (
@@ -66,7 +67,7 @@ const Index = () => {
                     </div>
                     <div className="text-2xl font-bold text-blue-600">{debates.length}</div>
                     <div className="text-sm text-muted-foreground">
-                      {language === 'de' ? 'Aktive Debatten' : 'Active Debates'}
+                      {text('Active debates', 'Aktive Debatten')}
                     </div>
                   </CardContent>
                 </Card>
@@ -77,7 +78,7 @@ const Index = () => {
                     </div>
                     <div className="text-2xl font-bold text-purple-600">AI</div>
                     <div className="text-sm text-muted-foreground">
-                      {language === 'de' ? 'Qualitätsanalyse' : 'Quality Analysis'}
+                      {text('Quality analysis', 'Qualitatsanalyse')}
                     </div>
                   </CardContent>
                 </Card>
@@ -88,7 +89,7 @@ const Index = () => {
                     </div>
                     <div className="text-2xl font-bold text-green-600">Merit</div>
                     <div className="text-sm text-muted-foreground">
-                      {language === 'de' ? 'Basierte Reputation' : 'Based Reputation'}
+                      {text('Merit-based reputation', 'Merit-basierte Reputation')}
                     </div>
                   </CardContent>
                 </Card>
@@ -106,13 +107,10 @@ const Index = () => {
                       <Brain className="h-8 w-8 text-blue-600" />
                     </div>
                     <h3 className="font-semibold mb-2">
-                      {language === 'de' ? 'KI-Analyse' : 'AI Analysis'}
+                      {text('AI analysis', 'KI-Analyse')}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {language === 'de' 
-                        ? 'Jedes Argument wird auf Qualität und Logik analysiert'
-                        : 'Every argument is analyzed for quality and logic'
-                      }
+                      {text('Every argument is analyzed for quality and logic', 'Jedes Argument wird auf Qualitat und Logik analysiert')}
                     </p>
                   </div>
                   <div className="text-center">
@@ -120,13 +118,10 @@ const Index = () => {
                       <Award className="h-8 w-8 text-purple-600" />
                     </div>
                     <h3 className="font-semibold mb-2">
-                      {language === 'de' ? 'Merit-System' : 'Merit System'}
+                      {text('Merit system', 'Merit-System')}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {language === 'de' 
-                        ? 'Reputation durch intellektuelle Ehrlichkeit'
-                        : 'Reputation through intellectual honesty'
-                      }
+                      {text('Reputation through intellectual honesty', 'Reputation durch intellektuelle Ehrlichkeit')}
                     </p>
                   </div>
                   <div className="text-center">
@@ -134,13 +129,10 @@ const Index = () => {
                       <Star className="h-8 w-8 text-green-600" />
                     </div>
                     <h3 className="font-semibold mb-2">
-                      {language === 'de' ? 'Faire Diskussion' : 'Fair Discussion'}
+                      {text('Fair discussion', 'Faire Diskussion')}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {language === 'de' 
-                        ? 'Steel-Manning und konstruktive Kritik'
-                        : 'Steel-manning and constructive criticism'
-                      }
+                      {text('Steel-manning and constructive criticism', 'Steel-Manning und konstruktive Kritik')}
                     </p>
                   </div>
                 </div>
@@ -211,7 +203,7 @@ const Index = () => {
                         </div>
                         <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                           <TrendingUp className="h-3 w-3 mr-1" />
-                          {language === 'de' ? 'Aktiv' : 'Active'}
+                          {text('Active', 'Aktiv')}
                         </Badge>
                       </div>
                     </CardContent>

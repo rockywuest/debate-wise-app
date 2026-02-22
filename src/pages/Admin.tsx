@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { AdminDashboard } from '@/components/AdminDashboard';
@@ -14,6 +14,7 @@ const Admin = () => {
   const { language } = useTranslation();
   const { toast } = useToast();
   const [checking, setChecking] = useState(true);
+  const text = useCallback((en: string, de: string) => (language === 'de' ? de : en), [language]);
 
   useEffect(() => {
     if (!authLoading && !roleLoading) {
@@ -24,10 +25,8 @@ const Admin = () => {
 
       if (!isAdmin()) {
         toast({
-          title: language === 'de' ? 'Zugriff verweigert' : 'Access denied',
-          description: language === 'de' 
-            ? 'Sie haben keine Berechtigung für diesen Bereich.' 
-            : 'You do not have permission to access this area.',
+          title: text('Access denied', 'Zugriff verweigert'),
+          description: text('You do not have permission to access this area.', 'Sie haben keine Berechtigung fur diesen Bereich.'),
           variant: 'destructive'
         });
         navigate('/debates');
@@ -36,7 +35,7 @@ const Admin = () => {
 
       setChecking(false);
     }
-  }, [user, role, authLoading, roleLoading, isAdmin, navigate, toast, language]);
+  }, [user, role, authLoading, roleLoading, isAdmin, navigate, toast, text]);
 
   if (authLoading || roleLoading || checking) {
     return (
@@ -44,7 +43,7 @@ const Admin = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
           <p className="mt-2 text-muted-foreground">
-            {language === 'de' ? 'Überprüfe Berechtigungen...' : 'Checking permissions...'}
+            {text('Checking permissions...', 'Uberprufe Berechtigungen...')}
           </p>
         </div>
       </div>

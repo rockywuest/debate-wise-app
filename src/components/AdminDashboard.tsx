@@ -22,6 +22,7 @@ export const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
 
   const handleSeedContent = async () => {
     setLoading(true);
@@ -29,27 +30,24 @@ export const AdminDashboard = () => {
       const success = await createDemoContent();
       if (success) {
         toast({
-          title: language === 'de' ? 'Plattform-Inhalte erstellt!' : 'Platform content created!',
-          description: language === 'de' 
-            ? 'Die Plattform wurde erfolgreich mit hochwertigen Debatten und Argumenten gefüllt.' 
-            : 'The platform has been successfully populated with high-quality debates and arguments.',
+          title: text('Platform content created!', 'Plattform-Inhalte erstellt!'),
+          description: text(
+            'The platform has been successfully populated with high-quality debates and arguments.',
+            'Die Plattform wurde erfolgreich mit hochwertigen Debatten und Argumenten gefullt.'
+          ),
         });
       } else {
         toast({
-          title: language === 'de' ? 'Fehler' : 'Error',
-          description: language === 'de' 
-            ? 'Plattform-Inhalte konnten nicht erstellt werden.' 
-            : 'Failed to create platform content.',
+          title: text('Error', 'Fehler'),
+          description: text('Failed to create platform content.', 'Plattform-Inhalte konnten nicht erstellt werden.'),
           variant: 'destructive'
         });
       }
     } catch (error) {
       console.error('Error creating platform content:', error);
       toast({
-        title: language === 'de' ? 'Fehler' : 'Error',
-        description: language === 'de' 
-          ? 'Ein unerwarteter Fehler ist aufgetreten.' 
-          : 'An unexpected error occurred.',
+        title: text('Error', 'Fehler'),
+        description: text('An unexpected error occurred.', 'Ein unerwarteter Fehler ist aufgetreten.'),
         variant: 'destructive'
       });
     } finally {
@@ -62,10 +60,10 @@ export const AdminDashboard = () => {
       <div className="flex items-center gap-3 mb-8">
         <Shield className="h-8 w-8 text-primary" />
         <h1 className="text-3xl font-bold">
-          {language === 'de' ? 'Admin Dashboard' : 'Admin Dashboard'}
+          {text('Admin Dashboard', 'Admin Dashboard')}
         </h1>
         <Badge variant="destructive" className="ml-auto">
-          {language === 'de' ? 'Nur Admin' : 'Admin Only'}
+          {text('Admin only', 'Nur Admin')}
         </Badge>
       </div>
 
@@ -80,15 +78,12 @@ export const AdminDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Database className="h-5 w-5" />
-              {language === 'de' ? 'Inhalte verwalten' : 'Content Management'}
+              {text('Content management', 'Inhalte verwalten')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              {language === 'de' 
-                ? 'Verwalten Sie die Plattform-Inhalte und fügen Sie hochwertige Demo-Debatten hinzu.'
-                : 'Manage platform content and add high-quality demo debates.'
-              }
+              {text('Manage platform content and add high-quality demo debates.', 'Verwalten Sie die Plattform-Inhalte und fugen Sie hochwertige Demo-Debatten hinzu.')}
             </p>
             <Button 
               onClick={handleSeedContent}
@@ -101,8 +96,8 @@ export const AdminDashboard = () => {
                 <Sparkles className="h-4 w-4" />
               )}
               {loading 
-                ? (language === 'de' ? 'Erstelle Inhalte...' : 'Creating content...') 
-                : (language === 'de' ? 'Demo-Inhalte hinzufügen' : 'Add demo content')
+                ? text('Creating content...', 'Erstelle Inhalte...')
+                : text('Add demo content', 'Demo-Inhalte hinzufugen')
               }
             </Button>
           </CardContent>
@@ -113,18 +108,15 @@ export const AdminDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="h-5 w-5" />
-              {language === 'de' ? 'Plattform-Statistiken' : 'Platform Analytics'}
+              {text('Platform analytics', 'Plattform-Statistiken')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              {language === 'de' 
-                ? 'Engagement-Metriken und Plattform-Performance überwachen.'
-                : 'Monitor engagement metrics and platform performance.'
-              }
+              {text('Monitor engagement metrics and platform performance.', 'Engagement-Metriken und Plattform-Performance uberwachen.')}
             </p>
             <Button variant="outline" className="w-full mt-4" disabled>
-              {language === 'de' ? 'Bald verfügbar' : 'Coming soon'}
+              {text('Coming soon', 'Bald verfugbar')}
             </Button>
           </CardContent>
         </Card>
@@ -134,18 +126,15 @@ export const AdminDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <MessageSquare className="h-5 w-5" />
-              {language === 'de' ? 'Debatten moderieren' : 'Debate Moderation'}
+              {text('Debate moderation', 'Debatten moderieren')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              {language === 'de' 
-                ? 'Debatten überprüfen, moderieren und die Qualität sicherstellen.'
-                : 'Review, moderate debates and ensure quality standards.'
-              }
+              {text('Review and moderate debates while ensuring quality standards.', 'Debatten uberprufen, moderieren und die Qualitat sicherstellen.')}
             </p>
             <Button variant="outline" className="w-full mt-4" disabled>
-              {language === 'de' ? 'Bald verfügbar' : 'Coming soon'}
+              {text('Coming soon', 'Bald verfugbar')}
             </Button>
           </CardContent>
         </Card>
@@ -155,18 +144,15 @@ export const AdminDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Settings className="h-5 w-5" />
-              {language === 'de' ? 'Plattform-Einstellungen' : 'Platform Settings'}
+              {text('Platform settings', 'Plattform-Einstellungen')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              {language === 'de' 
-                ? 'Allgemeine Plattform-Konfiguration und -Einstellungen.'
-                : 'General platform configuration and settings.'
-              }
+              {text('General platform configuration and settings.', 'Allgemeine Plattform-Konfiguration und -Einstellungen.')}
             </p>
             <Button variant="outline" className="w-full mt-4" disabled>
-              {language === 'de' ? 'Bald verfügbar' : 'Coming soon'}
+              {text('Coming soon', 'Bald verfugbar')}
             </Button>
           </CardContent>
         </Card>
@@ -175,32 +161,32 @@ export const AdminDashboard = () => {
       <Card className="mt-8">
         <CardHeader>
           <CardTitle className="text-lg">
-            {language === 'de' ? 'Admin-Hinweise' : 'Admin Notes'}
+            {text('Admin notes', 'Admin-Hinweise')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
             <p className="text-sm">
-              {language === 'de' 
-                ? '🎯 Demo-Inhalte hinzufügen: Erstellt hochwertige, professionelle Debatten mit realistischen Benutzerprofilen, Argumenten und Engagement-Metriken.'
-                : '🎯 Add Demo Content: Creates high-quality, professional debates with realistic user profiles, arguments, and engagement metrics.'
-              }
+              {text(
+                'Demo content: creates high-quality debates with realistic user profiles, arguments, and engagement metrics.',
+                'Demo-Inhalte: erstellt hochwertige Debatten mit realistischen Benutzerprofilen, Argumenten und Engagement-Metriken.'
+              )}
             </p>
           </div>
           <div className="p-4 bg-green-50 rounded-lg border border-green-200">
             <p className="text-sm">
-              {language === 'de' 
-                ? '👤 Benutzer befördern: Verwenden Sie das Formular oben, um andere Benutzer zu Administratoren zu befördern. Sie finden Benutzer-IDs in der Supabase Auth Users Tabelle.'
-                : '👤 Promote Users: Use the form above to promote other users to administrators. You can find user IDs in the Supabase Auth Users table.'
-              }
+              {text(
+                'Promote users: use the form above to grant admin rights. You can find user IDs in the Supabase Auth Users table.',
+                'Benutzer befordern: verwenden Sie das Formular oben, um Admin-Rechte zu vergeben. Benutzer-IDs finden Sie in der Supabase Auth Users Tabelle.'
+              )}
             </p>
           </div>
           <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
             <p className="text-sm">
-              {language === 'de' 
-                ? '⚠️ Diese Funktionen sind nur für Plattform-Administratoren verfügbar. Der Zugriff ist durch ein ordnungsgemäßes Rollensystem geschützt.'
-                : '⚠️ These features are only available to platform administrators. Access is protected by a proper role system.'
-              }
+              {text(
+                'These features are only available to platform administrators. Access is protected by role-based controls.',
+                'Diese Funktionen sind nur fur Plattform-Administratoren verfugbar. Der Zugriff ist durch rollenbasierte Kontrollen geschutzt.'
+              )}
             </p>
           </div>
         </CardContent>

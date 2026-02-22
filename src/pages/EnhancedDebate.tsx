@@ -27,6 +27,7 @@ type FilterOption = 'all' | 'active' | 'recent' | 'popular';
 const EnhancedDebate = () => {
   const { debates, loading } = useDebates();
   const { t, language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [filterBy, setFilterBy] = useState<FilterOption>('all');
@@ -87,20 +88,20 @@ const EnhancedDebate = () => {
 
   const getSortLabel = (option: SortOption) => {
     const labels = {
-      newest: language === 'de' ? 'Neueste' : 'Newest',
-      oldest: language === 'de' ? 'Älteste' : 'Oldest',
-      most_active: language === 'de' ? 'Aktivste' : 'Most Active',
-      most_arguments: language === 'de' ? 'Meiste Argumente' : 'Most Arguments'
+      newest: text('Newest', 'Neueste'),
+      oldest: text('Oldest', 'Alteste'),
+      most_active: text('Most active', 'Aktivste'),
+      most_arguments: text('Most arguments', 'Meiste Argumente')
     };
     return labels[option];
   };
 
   const getFilterLabel = (option: FilterOption) => {
     const labels = {
-      all: language === 'de' ? 'Alle' : 'All',
-      active: language === 'de' ? 'Aktiv' : 'Active',
-      recent: language === 'de' ? 'Letzte 7 Tage' : 'Last 7 Days',
-      popular: language === 'de' ? 'Beliebt' : 'Popular'
+      all: text('All', 'Alle'),
+      active: text('Active', 'Aktiv'),
+      recent: text('Last 7 days', 'Letzte 7 Tage'),
+      popular: text('Popular', 'Beliebt')
     };
     return labels[option];
   };
@@ -128,7 +129,7 @@ const EnhancedDebate = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Search className="h-5 w-5" />
-                {language === 'de' ? 'Alle Debatten durchsuchen' : 'Search All Debates'}
+                {text('Search all debates', 'Alle Debatten durchsuchen')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -137,7 +138,7 @@ const EnhancedDebate = () => {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
-                    placeholder={language === 'de' ? 'Debatte suchen...' : 'Search debates...'}
+                    placeholder={text('Search debates...', 'Debatte suchen...')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -148,7 +149,7 @@ const EnhancedDebate = () => {
                 <div className="flex flex-wrap gap-2 items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-muted-foreground">
-                      {language === 'de' ? 'Filter:' : 'Filter:'}
+                      {text('Filter:', 'Filter:')}
                     </span>
                     {(['all', 'active', 'recent', 'popular'] as FilterOption[]).map((filter) => (
                       <Badge
@@ -164,7 +165,7 @@ const EnhancedDebate = () => {
 
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-muted-foreground">
-                      {language === 'de' ? 'Sortieren:' : 'Sort:'}
+                      {text('Sort:', 'Sortieren:')}
                     </span>
                     <select
                       value={sortBy}
@@ -189,9 +190,9 @@ const EnhancedDebate = () => {
 
                 {/* Results Count */}
                 <div className="text-sm text-muted-foreground">
-                  {filteredAndSortedDebates.length} {language === 'de' ? 'Debatten gefunden' : 'debates found'}
+                  {filteredAndSortedDebates.length} {text('debates found', 'Debatten gefunden')}
                   {searchTerm && (
-                    <span> {language === 'de' ? 'für' : 'for'} "{searchTerm}"</span>
+                    <span> {text('for', 'fur')} "{searchTerm}"</span>
                   )}
                 </div>
               </div>
@@ -215,13 +216,13 @@ const EnhancedDebate = () => {
                   {searchTerm ? (
                     <div>
                       <h3 className="text-xl font-semibold mb-2">
-                        {language === 'de' ? 'Keine Ergebnisse gefunden' : 'No results found'}
+                        {text('No results found', 'Keine Ergebnisse gefunden')}
                       </h3>
                       <p className="text-muted-foreground">
-                        {language === 'de' 
-                          ? `Keine Debatten für "${searchTerm}" gefunden. Versuchen Sie andere Suchbegriffe.`
-                          : `No debates found for "${searchTerm}". Try different search terms.`
-                        }
+                        {text(
+                          `No debates found for "${searchTerm}". Try different search terms.`,
+                          `Keine Debatten fur "${searchTerm}" gefunden. Versuchen Sie andere Suchbegriffe.`
+                        )}
                       </p>
                     </div>
                   ) : (
