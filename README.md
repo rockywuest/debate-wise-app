@@ -108,6 +108,7 @@ npm run build
 - `npm run bootstrap` - install dependencies and initialize local environment
 - `npm run check` - run full local quality gate (lint, typecheck, test, build, audit)
 - `npm run check:i18n` - fail on legacy inline EN/DE text helper duplication
+- `npm run check:bundle` - enforce JS/CSS bundle budgets on `dist/assets`
 - `npm run smoke:routes` - run production-preview smoke checks for critical routes
 - `npm run build` - production build
 - `npm run build:dev` - development-mode build
@@ -121,7 +122,7 @@ npm run build
 
 ## Market Readiness Snapshot (Feb 22, 2026)
 
-- Build pipeline: green (`lint`, `check:i18n`, `typecheck`, `test`, `build`, `smoke:routes`, `audit:prod`)
+- Build pipeline: green (`lint`, `check:i18n`, `typecheck`, `test`, `build`, `check:bundle`, `smoke:routes`, `audit:prod`)
 - Test baseline: unit + integration tests plus Playwright E2E smoke flows for auth, debates, and language toggle
 - i18n guardrail: consistency check in local/CI quality gates (`check:i18n`)
 - Security baseline: no production dependency vulnerabilities in current lockfile

@@ -23,6 +23,7 @@ Ship Debate Wise as an open-source, English-first project with bilingual UI supp
 - `npm run test`: passing
 - `npm run test:e2e`: passing
 - `npm run build`: passing
+- `npm run check:bundle`: passing
 - `npm run smoke:routes`: passing
 - `npm run audit:prod`: passing (0 vulnerabilities)
 - Integration baseline: UI + hook integration tests cover `AuthForm`, `Index`, `Debates`, `useAuth`, and `useDebates`

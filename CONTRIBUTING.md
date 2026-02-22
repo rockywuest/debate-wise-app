@@ -47,6 +47,12 @@ For user-critical flow changes, run end-to-end checks:
 npm run test:e2e
 ```
 
+For dependency or rendering changes, verify bundle budgets:
+
+```bash
+npm run check:bundle
+```
+
 If lint fails due existing baseline issues, include only changes relevant to your scope and mention remaining unrelated lint findings in the PR description.
 
 ## Coding Guidelines

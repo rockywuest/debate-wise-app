@@ -16,6 +16,9 @@ npm run test
 echo "==> Build"
 npm run build
 
+echo "==> Bundle budget"
+npm run check:bundle
+
 echo "==> Route smoke checks"
 npm run smoke:routes
 
