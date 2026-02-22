@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { ModernArgumentCard } from './ModernArgumentCard';
+import { useTranslation } from '@/utils/i18n';
 
 interface Argument {
   id: string;
@@ -20,6 +21,9 @@ interface ModernDebateThreadProps {
 }
 
 export const ModernDebateThread = ({ arguments: args, debateId, level = 0 }: ModernDebateThreadProps) => {
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
+
   const getIndentationClass = (level: number) => {
     if (level === 0) return '';
     
@@ -47,7 +51,7 @@ export const ModernDebateThread = ({ arguments: args, debateId, level = 0 }: Mod
             title={argument.argument_text.substring(0, 80) + (argument.argument_text.length > 80 ? '...' : '')}
             content={argument.argument_text}
             type={argument.argument_typ}
-            author={argument.autor_name || 'Anonym'}
+            author={argument.autor_name || text('Anonymous', 'Anonym')}
             authorUserId={argument.benutzer_id}
             createdAt={argument.erstellt_am}
             debateId={debateId}

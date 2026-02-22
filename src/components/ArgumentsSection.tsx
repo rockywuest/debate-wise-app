@@ -2,6 +2,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { ModernDebateThread } from './ModernDebateThread';
+import { useTranslation } from '@/utils/i18n';
 import { ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
 
 interface Argument {
@@ -22,6 +23,9 @@ interface ArgumentsSectionProps {
 }
 
 export const ArgumentsSection = ({ type, arguments: args, debateId }: ArgumentsSectionProps) => {
+  const { language } = useTranslation();
+  const text = (en: string, de: string) => (language === 'de' ? de : en);
+
   if (args.length === 0) return null;
 
   const getSectionConfig = () => {
@@ -29,21 +33,21 @@ export const ArgumentsSection = ({ type, arguments: args, debateId }: ArgumentsS
       case 'pro':
         return {
           icon: <ThumbsUp className="h-5 w-5" />,
-          title: 'Pro-Argumente',
+          title: text('Pro arguments', 'Pro-Argumente'),
           titleColor: 'text-emerald-700 dark:text-emerald-400',
           sectionClass: 'pro-section'
         };
       case 'contra':
         return {
           icon: <ThumbsDown className="h-5 w-5" />,
-          title: 'Contra-Argumente',
+          title: text('Contra arguments', 'Contra-Argumente'),
           titleColor: 'text-red-700 dark:text-red-400',
           sectionClass: 'contra-section'
         };
       default:
         return {
           icon: <MessageSquare className="h-5 w-5" />,
-          title: 'Neutrale Argumente',
+          title: text('Neutral arguments', 'Neutrale Argumente'),
           titleColor: 'text-blue-700 dark:text-blue-400',
           sectionClass: 'neutral-section'
         };
