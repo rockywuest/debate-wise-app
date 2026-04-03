@@ -11,6 +11,13 @@ Debate Wise is an AI-assisted debate platform for structured, evidence-based dis
 
 The project is now prepared as an **English-first open-source repository** while keeping **German and English in-product language support**.
 
+One-line positioning: **Open-source civic discourse infrastructure for higher-quality public reasoning.**
+
+## For AI Agents
+
+- Machine-readable project map: `llms.txt`
+- Agent operating guide: `docs/AI_AGENT_GUIDE.md`
+
 ## Why This Project Exists
 
 Most social platforms optimize for engagement velocity, not reasoning quality. Debate Wise explores a different model:
@@ -217,6 +224,9 @@ Architecture and roadmap:
 - Maintainer runbook: see `docs/MAINTAINER_RUNBOOK.md`
 - Security reporting: see `SECURITY.md`
 - Security code-scanning status: see `docs/SECURITY_CODE_SCANNING_STATUS.md`
+- AI agent guide: see `docs/AI_AGENT_GUIDE.md`
+- Machine-readable LLM index: see `llms.txt`
+- Growth and distribution playbook: see `docs/GROWTH_PLAYBOOK.md`
 
 ## License
 
