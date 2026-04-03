@@ -1,0 +1,46 @@
+# Debate Wise
+
+Debate Wise is an open-source AI-assisted debate platform for structured, evidence-based discussions.
+
+Primary language is English. The product supports English and German (EN/DE).
+
+## Canonical Repository
+
+- https://github.com/rockywuest/debate-wise-app
+
+## Core Docs
+
+- README: ./README.md
+- Architecture: ./docs/ARCHITECTURE.md
+- Roadmap: ./docs/ROADMAP.md
+- Contributing: ./CONTRIBUTING.md
+- Security: ./SECURITY.md
+- AI Agent Guide: ./docs/AI_AGENT_GUIDE.md
+
+## Quick Start
+
+1. `npm run bootstrap`
+2. `cp .env.example .env`
+3. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`
+4. `npm run dev`
+
+## Quality Gates
+
+- `npm run check`
+- `npm run test:e2e`
+- `npm run audit:prod`
+
+## Tech Stack
+
+- React + TypeScript + Vite
+- Supabase (Postgres, Auth, RLS, Realtime, Edge Functions)
+- Tailwind CSS + shadcn/ui
+
+## Product Modes
+
+1. Public Commons Mode (shared open instance)
+2. Self-Hosted Space Mode (private/curated deployments)
+
+## Keywords
+
+debate platform, AI argument analysis, civic discourse, critical thinking, evidence-based discussion, open-source debate software, bilingual EN/DE
