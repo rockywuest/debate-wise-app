@@ -224,6 +224,8 @@ Architecture and roadmap:
 - Maintainer runbook: see `docs/MAINTAINER_RUNBOOK.md`
 - Security reporting: see `SECURITY.md`
 - Security code-scanning status: see `docs/SECURITY_CODE_SCANNING_STATUS.md`
+- Security SOP (`CodeReviewID`): see `docs/SOP_CODE_REVIEW_ALERT.md`
+- Security SOP (`CIIBestPracticesID`): see `docs/SOP_OPENSSF_BADGE_ALERT.md`
 - AI agent guide: see `docs/AI_AGENT_GUIDE.md`
 - Machine-readable LLM index: see `llms.txt`
 - Growth and distribution playbook: see `docs/GROWTH_PLAYBOOK.md`
