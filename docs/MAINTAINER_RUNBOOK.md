@@ -10,6 +10,8 @@ This runbook gives maintainers a lightweight, repeatable operating model.
 4. If Scorecard alerts `CodeReviewID` or `CIIBestPracticesID` are open, execute:
    - `docs/SOP_CODE_REVIEW_ALERT.md`
    - `docs/SOP_OPENSSF_BADGE_ALERT.md`
+   - `https://github.com/rockywuest/debate-wise-app/issues/49`
+   - `https://github.com/rockywuest/debate-wise-app/issues/48`
 
 ## Monthly
 

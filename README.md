@@ -226,6 +226,7 @@ Architecture and roadmap:
 - Security code-scanning status: see `docs/SECURITY_CODE_SCANNING_STATUS.md`
 - Security SOP (`CodeReviewID`): see `docs/SOP_CODE_REVIEW_ALERT.md`
 - Security SOP (`CIIBestPracticesID`): see `docs/SOP_OPENSSF_BADGE_ALERT.md`
+- Security unblockers: see [#49](https://github.com/rockywuest/debate-wise-app/issues/49) and [#48](https://github.com/rockywuest/debate-wise-app/issues/48)
 - AI agent guide: see `docs/AI_AGENT_GUIDE.md`
 - Machine-readable LLM index: see `llms.txt`
 - Growth and distribution playbook: see `docs/GROWTH_PLAYBOOK.md`
