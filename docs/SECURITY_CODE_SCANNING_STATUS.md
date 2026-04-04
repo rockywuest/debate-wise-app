@@ -9,12 +9,14 @@ Last updated: April 4, 2026
    - Why open: Scorecard reports not enough merged changesets with review approvals in repository history.
    - What closes it: merge upcoming changes via pull requests with explicit approvals from another reviewer account.
    - SOP: `docs/SOP_CODE_REVIEW_ALERT.md`
+   - Tracking issue: [#49](https://github.com/rockywuest/debate-wise-app/issues/49)
 
 2. `CIIBestPracticesID` (low)
    - Status: open
    - Why open: no OpenSSF Best Practices badge project entry exists yet for this repository.
    - What closes it: register the project at [bestpractices.dev](https://www.bestpractices.dev/projects/new) and add the badge to `README.md`.
    - SOP: `docs/SOP_OPENSSF_BADGE_ALERT.md`
+   - Tracking issue: [#48](https://github.com/rockywuest/debate-wise-app/issues/48)
 
 ## Recently closed
 
@@ -32,3 +34,5 @@ Last updated: April 4, 2026
 
 - `docs/SOP_CODE_REVIEW_ALERT.md`
 - `docs/SOP_OPENSSF_BADGE_ALERT.md`
+- `https://github.com/rockywuest/debate-wise-app/issues/49`
+- `https://github.com/rockywuest/debate-wise-app/issues/48`
