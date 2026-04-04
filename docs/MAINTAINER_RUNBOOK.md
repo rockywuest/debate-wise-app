@@ -7,6 +7,9 @@ This runbook gives maintainers a lightweight, repeatable operating model.
 1. Review new issues and PRs for first response within 48 hours.
 2. Re-label and scope incoming items (`bug`, `feature`, `good first issue`, `needs-info`).
 3. Check CI and security automation status (CI, Dependabot, CodeQL, Scorecard).
+4. If Scorecard alerts `CodeReviewID` or `CIIBestPracticesID` are open, execute:
+   - `docs/SOP_CODE_REVIEW_ALERT.md`
+   - `docs/SOP_OPENSSF_BADGE_ALERT.md`
 
 ## Monthly
 
