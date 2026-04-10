@@ -1,11 +1,11 @@
 # Security Code Scanning Status
 
-Last updated: April 4, 2026
+Last updated: April 10, 2026
 
 ## Current open items from GitHub code scanning
 
 1. `CodeReviewID` (high)
-   - Status: open
+   - Status: **in progress** — branch protection now requires 1 approving review + last-push approval. Waiting for merged PRs with review pattern to satisfy Scorecard.
    - Why open: Scorecard reports not enough merged changesets with review approvals in repository history.
    - What closes it: merge upcoming changes via pull requests with explicit approvals from another reviewer account.
    - SOP: `docs/SOP_CODE_REVIEW_ALERT.md`
@@ -22,6 +22,7 @@ Last updated: April 4, 2026
 
 - `VulnerabilitiesID` (high): closed after lockfile remediation and clean `npm audit`.
 - `FuzzingID` (medium): closed after adding property-based fuzz tests in `src/utils/inputValidation.fuzz.test.ts`.
+- Removed unused `calendar.tsx` component and `react-day-picker`/`date-fns` dependencies (April 10, 2026).
 
 ## Maintainer checklist to close the remaining structural open items
 
