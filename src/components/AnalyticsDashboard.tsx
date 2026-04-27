@@ -41,9 +41,9 @@ export const AnalyticsDashboard = () => {
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-  // Recent activity (last 24 hours)
-  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  const recentEvents = events.filter(e => new Date(e.timestamp) > yesterday);
+  // Recent activity (last 24 hours). Stable window captured once per mount so render stays pure.
+  const [recentWindowCutoff] = React.useState(() => Date.now() - 24 * 60 * 60 * 1000);
+  const recentEvents = events.filter(e => new Date(e.timestamp).getTime() > recentWindowCutoff);
 
   return (
     <div className="space-y-6">
