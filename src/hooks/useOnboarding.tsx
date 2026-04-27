@@ -1,16 +1,10 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export const useOnboarding = () => {
-  const [showOnboarding, setShowOnboarding] = useState(false);
-
-  useEffect(() => {
-    // Check if user has seen onboarding
-    const hasSeenOnboarding = localStorage.getItem('debatewise-onboarding-completed');
-    if (!hasSeenOnboarding) {
-      setShowOnboarding(true);
-    }
-  }, []);
+  const [showOnboarding, setShowOnboarding] = useState(
+    () => !localStorage.getItem('debatewise-onboarding-completed'),
+  );
 
   const completeOnboarding = () => {
     localStorage.setItem('debatewise-onboarding-completed', 'true');

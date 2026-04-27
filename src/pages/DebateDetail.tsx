@@ -37,7 +37,6 @@ type NestedArgument = Argument & {
 
 const DebateDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [argumentsList, setArgumentsList] = useState<Argument[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const [showArgumentForm, setShowArgumentForm] = useState(false);
   const { trackPageView, trackInteraction } = useAnalytics();
@@ -123,24 +122,16 @@ const DebateDetail = () => {
   useEffect(() => {
     if (id) {
       getDebate();
-      getArguments().then(data => {
-        if (data) setArgumentsList(data);
-      });
+      getArguments();
       trackPageView(`debate_detail_${id}`);
     }
   }, [id, getDebate, getArguments, trackPageView]);
 
-  useEffect(() => {
-    if (cachedArguments) {
-      setArgumentsList(cachedArguments);
-    }
-  }, [cachedArguments]);
+  const argumentsList: Argument[] = cachedArguments ?? [];
 
   const handleArgumentSuccess = () => {
     invalidateArgumentsCache();
-    getArguments().then(data => {
-      if (data) setArgumentsList(data);
-    });
+    getArguments();
     trackInteraction('argument_created', { debate_id: id });
     setShowArgumentForm(false);
   };
