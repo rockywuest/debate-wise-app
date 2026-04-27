@@ -145,6 +145,16 @@ export const translations = {
   'onboarding.start': { en: 'Start Debating', de: 'Debattieren beginnen' },
   'onboarding.skip': { en: 'Skip intro', de: 'Einführung überspringen' },
 
+  // NotFound page
+  'notFound.title': { en: 'Page not found', de: 'Seite nicht gefunden' },
+  'notFound.description': {
+    en: "The page you're looking for doesn't exist or has been moved.",
+    de: 'Die gesuchte Seite existiert nicht oder wurde verschoben.'
+  },
+  'notFound.goToDebates': { en: 'Go to Debates', de: 'Zu den Debatten' },
+  'notFound.signIn': { en: 'Sign In', de: 'Anmelden' },
+  'notFound.backHome': { en: 'Back to Home', de: 'Zur Startseite' },
+
   // Common
   'common.loading': { en: 'Loading...', de: 'Wird geladen...' },
   'common.error': { en: 'Error', de: 'Fehler' },
