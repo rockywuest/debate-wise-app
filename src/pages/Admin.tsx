@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { AdminDashboard } from '@/components/AdminDashboard';
@@ -12,31 +12,29 @@ const Admin = () => {
   const { role, loading: roleLoading, isAdmin } = useUserRole();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [checking, setChecking] = useState(true);
   const text = useLocalizedText();
 
+  const authorized = !authLoading && !roleLoading && !!user && isAdmin();
+
   useEffect(() => {
-    if (!authLoading && !roleLoading) {
-      if (!user) {
-        navigate('/auth');
-        return;
-      }
+    if (authLoading || roleLoading) return;
 
-      if (!isAdmin()) {
-        toast({
-          title: text('Access denied', 'Zugriff verweigert'),
-          description: text('You do not have permission to access this area.', 'Sie haben keine Berechtigung fur diesen Bereich.'),
-          variant: 'destructive'
-        });
-        navigate('/debates');
-        return;
-      }
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
 
-      setChecking(false);
+    if (!isAdmin()) {
+      toast({
+        title: text('Access denied', 'Zugriff verweigert'),
+        description: text('You do not have permission to access this area.', 'Sie haben keine Berechtigung fur diesen Bereich.'),
+        variant: 'destructive'
+      });
+      navigate('/debates');
     }
   }, [user, role, authLoading, roleLoading, isAdmin, navigate, toast, text]);
 
-  if (authLoading || roleLoading || checking) {
+  if (!authorized) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
