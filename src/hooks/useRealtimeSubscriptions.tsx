@@ -17,12 +17,13 @@ export const useRealtimeSubscriptions = (configs: RealtimeConfig[]) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const text = useLocalizedText();
-  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
+  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>(
+    user ? 'connecting' : 'disconnected',
+  );
 
   useEffect(() => {
     if (!user) return;
 
-    setConnectionStatus('connecting');
     const subscriptions: RealtimeChannel[] = [];
 
     configs.forEach((config) => {

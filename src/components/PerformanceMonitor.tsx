@@ -24,7 +24,6 @@ export const PerformanceMonitor = () => {
     memoryUsage: 0,
     connectionQuality: 'good'
   });
-  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     // Measure initial load time
@@ -74,12 +73,11 @@ export const PerformanceMonitor = () => {
     updateConnectionQuality();
     const interval = setInterval(updateConnectionQuality, 30000);
 
-    // Show monitor in development or when performance is poor
-    const shouldShow = import.meta.env.DEV || loadTime > 3000;
-    setIsVisible(shouldShow);
-
     return () => clearInterval(interval);
   }, []);
+
+  // Show monitor in development or when performance is poor (derived, not stored).
+  const isVisible = import.meta.env.DEV || metrics.loadTime > 3000;
 
   const getConnectionIcon = () => {
     switch (metrics.connectionQuality) {
