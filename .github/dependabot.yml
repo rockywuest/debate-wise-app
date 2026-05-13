@@ -19,6 +19,13 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # Pinned at 7.0.1 in package.json. 7.1.x introduces stricter
+      # set-state-in-effect / purity rules that flag 14 existing call
+      # sites; bumping needs its own dedicated PR with those fixes, not
+      # a group sweep. Without this entry Dependabot re-proposes the
+      # bump every Monday via the npm-non-breaking group.
+      - dependency-name: "eslint-plugin-react-hooks"
 
   - package-ecosystem: "github-actions"
     directory: "/"
