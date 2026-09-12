@@ -6,11 +6,34 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { InputValidator } from '@/utils/inputValidation';
 import { useLocalizedText } from '@/utils/i18n';
-import type { Argument } from './useArguments';
+import { organizeArgumentsHierarchically, type Argument } from './useArguments';
+
+// Wie loadArguments in useArguments, aber mit dem indexgestuetzten Join auf
+// profiles. Faesst keinen React-State an, damit der Effect das Ergebnis erst
+// NACH dem await schreiben kann (react-hooks/set-state-in-effect).
+const loadOptimizedArguments = async (debateId: string): Promise<Argument[]> => {
+  const { data, error } = await supabase
+    .from('argumente')
+    .select(`
+      *,
+      profiles!inner(username, reputation_score)
+    `)
+    .eq('debatten_id', debateId)
+    .order('erstellt_am', { ascending: true });
+
+  if (error) throw error;
+  return organizeArgumentsHierarchically(data || []);
+};
 
 export const useOptimizedArguments = (debateId?: string) => {
-  const [debateArguments, setDebateArguments] = useState<Argument[]>([]);
-  const [loading, setLoading] = useState(true);
+  // loadedFor haelt fest, zu welcher Debatte die Daten gehoeren. Daraus laesst
+  // sich loading ableiten, statt ein eigenes Flag im Effect synchron zu setzen.
+  const [state, setState] = useState<{ loadedFor: string | null; args: Argument[] }>({
+    loadedFor: null,
+    args: [],
+  });
+  const debateArguments = state.args;
+  const loading = Boolean(debateId) && state.loadedFor !== debateId;
   const [creating, setCreating] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -24,49 +47,30 @@ export const useOptimizedArguments = (debateId?: string) => {
     return defaultErrorMessage;
   }, [defaultErrorMessage]);
 
-  const organizeArgumentsHierarchically = (data: Argument[]) => {
-    const topLevelArgs = data.filter(arg => !arg.eltern_id);
-    const childArgs = data.filter(arg => arg.eltern_id);
-
-    return topLevelArgs.map(parent => ({
-      ...parent,
-      childArguments: childArgs.filter(child => child.eltern_id === parent.id)
-    }));
-  };
-
-  const fetchArguments = useCallback(async () => {
-    if (!debateId) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      // Use the optimized query with proper indexes
-      const { data, error } = await supabase
-        .from('argumente')
-        .select(`
-          *,
-          profiles!inner(username, reputation_score)
-        `)
-        .eq('debatten_id', debateId)
-        .order('erstellt_am', { ascending: true });
-
-      if (error) throw error;
-
-      const argumentsWithChildren = organizeArgumentsHierarchically(data || []);
-      setDebateArguments(argumentsWithChildren);
-    } catch (error: unknown) {
+  const reportLoadFailure = useCallback(
+    (error: unknown) => {
       console.error('Error fetching arguments:', error);
       toast({
         title: text('Failed to load arguments', 'Fehler beim Laden der Argumente'),
         description: getErrorMessage(error),
         variant: "destructive"
       });
-    } finally {
-      setLoading(false);
+    },
+    [getErrorMessage, toast, text]
+  );
+
+  // Manuelles Neuladen — aus Event-Handlern und aus dem Realtime-Callback.
+  // Beides laeuft nicht im synchronen Effect-Rumpf, setState ist hier erlaubt.
+  const fetchArguments = useCallback(async () => {
+    if (!debateId) return;
+
+    try {
+      setState({ loadedFor: debateId, args: await loadOptimizedArguments(debateId) });
+    } catch (error: unknown) {
+      reportLoadFailure(error);
+      setState(prev => ({ ...prev, loadedFor: debateId }));
     }
-  }, [debateId, getErrorMessage, toast, text]);
+  }, [debateId, reportLoadFailure]);
 
   const createOptimizedArgument = async (
     argumentText: string,
@@ -154,8 +158,25 @@ export const useOptimizedArguments = (debateId?: string) => {
   };
 
   useEffect(() => {
-    fetchArguments();
-  }, [fetchArguments]);
+    if (!debateId) return;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const args = await loadOptimizedArguments(debateId);
+        if (!cancelled) setState({ loadedFor: debateId, args });
+      } catch (error: unknown) {
+        if (cancelled) return;
+        reportLoadFailure(error);
+        setState(prev => ({ ...prev, loadedFor: debateId }));
+      }
+    })();
+    // Debattenwechsel oder Unmount waehrend eines laufenden Abrufs darf das
+    // alte Ergebnis nicht mehr einspielen.
+    return () => {
+      cancelled = true;
+    };
+  }, [debateId, reportLoadFailure]);
 
   useEffect(() => {
     if (!debateId) return;

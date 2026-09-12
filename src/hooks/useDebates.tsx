@@ -14,9 +14,29 @@ export interface Debate {
   aktualisiert_am: string;
 }
 
+// Laedt die Debatten, ohne React-State anzufassen. Dadurch kann der Effect das
+// Ergebnis erst NACH dem await in den State schreiben — ein synchrones setState
+// im Effect-Rumpf loest sonst eine Renderkaskade aus
+// (react-hooks/set-state-in-effect).
+const loadDebates = async (): Promise<Debate[]> => {
+  const { data, error } = await supabase
+    .from('debatten')
+    .select('*')
+    .order('erstellt_am', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+};
+
 export const useDebates = () => {
-  const [debates, setDebates] = useState<Debate[]>([]);
-  const [loading, setLoading] = useState(true);
+  // loaded und debates liegen zusammen im State, damit sich loading ableiten
+  // laesst statt es als eigenes Flag im Effect synchron setzen zu muessen.
+  const [state, setState] = useState<{ loaded: boolean; debates: Debate[] }>({
+    loaded: false,
+    debates: [],
+  });
+  const debates = state.debates;
+  const loading = !state.loaded;
   const { toast } = useToast();
   const { user } = useAuth();
   const { language } = useTranslation();
@@ -31,27 +51,29 @@ export const useDebates = () => {
     [language]
   );
 
-  const fetchDebates = useCallback(async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('debatten')
-        .select('*')
-        .order('erstellt_am', { ascending: false });
-
-      if (error) throw error;
-      setDebates(data || []);
-    } catch (error: unknown) {
+  const reportLoadFailure = useCallback(
+    (error: unknown) => {
       console.error('Error fetching debates:', error);
       toast({
         title: language === 'de' ? 'Fehler beim Laden der Debatten' : 'Failed to load debates',
         description: getErrorMessage(error),
         variant: "destructive"
       });
-    } finally {
-      setLoading(false);
+    },
+    [getErrorMessage, language, toast]
+  );
+
+  // Manuelles Neuladen aus Event-Handlern (z.B. nach createDebate). setState ist
+  // hier unbedenklich, weil der Aufruf nicht aus einem Effect kommt.
+  const fetchDebates = useCallback(async () => {
+    setState(prev => ({ ...prev, loaded: false }));
+    try {
+      setState({ loaded: true, debates: await loadDebates() });
+    } catch (error: unknown) {
+      reportLoadFailure(error);
+      setState(prev => ({ ...prev, loaded: true }));
     }
-  }, [getErrorMessage, language, toast]);
+  }, [reportLoadFailure]);
 
   const createDebate = async (titel: string, beschreibung?: string) => {
     if (!user) {
@@ -99,8 +121,23 @@ export const useDebates = () => {
   };
 
   useEffect(() => {
-    fetchDebates();
-  }, [fetchDebates]);
+    let cancelled = false;
+    (async () => {
+      try {
+        const loadedDebates = await loadDebates();
+        if (!cancelled) setState({ loaded: true, debates: loadedDebates });
+      } catch (error: unknown) {
+        if (cancelled) return;
+        reportLoadFailure(error);
+        setState(prev => ({ ...prev, loaded: true }));
+      }
+    })();
+    // Unmount waehrend eines laufenden Abrufs darf weder State schreiben noch
+    // einen Toast ausloesen.
+    return () => {
+      cancelled = true;
+    };
+  }, [reportLoadFailure]);
 
   return {
     debates,

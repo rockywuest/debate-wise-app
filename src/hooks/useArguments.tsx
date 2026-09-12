@@ -18,9 +18,40 @@ export interface Argument {
   childArguments?: Argument[];
 }
 
+export const organizeArgumentsHierarchically = (data: Argument[]) => {
+  const topLevelArgs = data.filter(arg => !arg.eltern_id);
+  const childArgs = data.filter(arg => arg.eltern_id);
+
+  return topLevelArgs.map(parent => ({
+    ...parent,
+    childArguments: childArgs.filter(child => child.eltern_id === parent.id)
+  }));
+};
+
+// Laedt die Argumente, ohne React-State anzufassen. Dadurch kann der Effect das
+// Ergebnis erst NACH dem await in den State schreiben — ein synchrones setState
+// im Effect-Rumpf loest sonst eine Renderkaskade aus
+// (react-hooks/set-state-in-effect).
+export const loadArguments = async (debateId: string): Promise<Argument[]> => {
+  const { data, error } = await supabase
+    .from('argumente')
+    .select('*')
+    .eq('debatten_id', debateId)
+    .order('erstellt_am', { ascending: true });
+
+  if (error) throw error;
+  return organizeArgumentsHierarchically(data || []);
+};
+
 export const useArguments = (debateId?: string) => {
-  const [debateArguments, setDebateArguments] = useState<Argument[]>([]);
-  const [loading, setLoading] = useState(true);
+  // loadedFor haelt fest, zu welcher Debatte die Daten gehoeren. Daraus laesst
+  // sich loading ableiten, statt ein eigenes Flag im Effect synchron zu setzen.
+  const [state, setState] = useState<{ loadedFor: string | null; args: Argument[] }>({
+    loadedFor: null,
+    args: [],
+  });
+  const debateArguments = state.args;
+  const loading = Boolean(debateId) && state.loadedFor !== debateId;
   const { toast } = useToast();
   const { user } = useAuth();
   const text = useLocalizedText();
@@ -33,45 +64,30 @@ export const useArguments = (debateId?: string) => {
     return defaultErrorMessage;
   }, [defaultErrorMessage]);
 
-  const organizeArgumentsHierarchically = (data: Argument[]) => {
-    const topLevelArgs = data.filter(arg => !arg.eltern_id);
-    const childArgs = data.filter(arg => arg.eltern_id);
-
-    return topLevelArgs.map(parent => ({
-      ...parent,
-      childArguments: childArgs.filter(child => child.eltern_id === parent.id)
-    }));
-  };
-
-  const fetchArguments = useCallback(async () => {
-    if (!debateId) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('argumente')
-        .select('*')
-        .eq('debatten_id', debateId)
-        .order('erstellt_am', { ascending: true });
-
-      if (error) throw error;
-
-      const argumentsWithChildren = organizeArgumentsHierarchically(data || []);
-      setDebateArguments(argumentsWithChildren);
-    } catch (error: unknown) {
+  const reportLoadFailure = useCallback(
+    (error: unknown) => {
       console.error('Error fetching arguments:', error);
       toast({
         title: text('Failed to load arguments', 'Fehler beim Laden der Argumente'),
         description: getErrorMessage(error),
         variant: "destructive"
       });
-    } finally {
-      setLoading(false);
+    },
+    [getErrorMessage, toast, text]
+  );
+
+  // Manuelles Neuladen — aus Event-Handlern und aus dem Realtime-Callback.
+  // Beides laeuft nicht im synchronen Effect-Rumpf, setState ist hier erlaubt.
+  const fetchArguments = useCallback(async () => {
+    if (!debateId) return;
+
+    try {
+      setState({ loadedFor: debateId, args: await loadArguments(debateId) });
+    } catch (error: unknown) {
+      reportLoadFailure(error);
+      setState(prev => ({ ...prev, loadedFor: debateId }));
     }
-  }, [debateId, getErrorMessage, toast, text]);
+  }, [debateId, reportLoadFailure]);
 
   const createArgument = async (
     argumentText: string,
@@ -123,8 +139,25 @@ export const useArguments = (debateId?: string) => {
   };
 
   useEffect(() => {
-    fetchArguments();
-  }, [fetchArguments]);
+    if (!debateId) return;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const args = await loadArguments(debateId);
+        if (!cancelled) setState({ loadedFor: debateId, args });
+      } catch (error: unknown) {
+        if (cancelled) return;
+        reportLoadFailure(error);
+        setState(prev => ({ ...prev, loadedFor: debateId }));
+      }
+    })();
+    // Debattenwechsel oder Unmount waehrend eines laufenden Abrufs darf das
+    // alte Ergebnis nicht mehr einspielen.
+    return () => {
+      cancelled = true;
+    };
+  }, [debateId, reportLoadFailure]);
 
   useEffect(() => {
     if (!debateId) return;

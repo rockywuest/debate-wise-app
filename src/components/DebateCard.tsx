@@ -33,6 +33,44 @@ interface DebateMetadata {
   isActive: boolean;
 }
 
+// Liest die Kennzahlen einer Debatte, ohne React-State anzufassen. Dadurch kann
+// der Effect das Ergebnis erst NACH dem await schreiben — ein synchrones setState
+// im Effect-Rumpf loest sonst eine Renderkaskade aus
+// (react-hooks/set-state-in-effect).
+const loadDebateMetadata = async (
+  id: string,
+  createdAt: string
+): Promise<DebateMetadata> => {
+  // Get argument statistics
+  const { data: argumentsData, error: argError } = await supabase
+    .from('argumente')
+    .select('benutzer_id, argument_typ, erstellt_am')
+    .eq('debatten_id', id);
+
+  if (argError) throw argError;
+
+  const argumentCount = argumentsData?.length || 0;
+  const participantCount = new Set(argumentsData?.map(arg => arg.benutzer_id)).size;
+  const lastActivity = argumentsData?.length > 0
+    ? Math.max(...argumentsData.map(arg => new Date(arg.erstellt_am).getTime()))
+    : new Date(createdAt).getTime();
+
+  const proCount = argumentsData?.filter(arg => arg.argument_typ === 'Pro').length || 0;
+  const contraCount = argumentsData?.filter(arg => arg.argument_typ === 'Contra').length || 0;
+
+  // Consider active if there was activity in the last 7 days
+  const isActive = Date.now() - lastActivity < 7 * 24 * 60 * 60 * 1000;
+
+  return {
+    argumentCount,
+    participantCount,
+    lastActivity: new Date(lastActivity).toISOString(),
+    proCount,
+    contraCount,
+    isActive
+  };
+};
+
 export const DebateCard = ({ 
   id, 
   title, 
@@ -48,7 +86,11 @@ export const DebateCard = ({
     contraCount: 0,
     isActive: false
   });
-  const [loading, setLoading] = useState(true);
+  // Ein eigenes loading-Flag muesste im Effect synchron gesetzt werden und
+  // loeste dort eine Renderkaskade aus (react-hooks/set-state-in-effect).
+  // Stattdessen wird abgeleitet, ob der erste Abruf schon zurueck ist.
+  const [loaded, setLoaded] = useState(false);
+  const loading = !loaded;
 
   const translations = {
     de: {
@@ -75,48 +117,25 @@ export const DebateCard = ({
 
   const t = translations[language];
 
-  const fetchDebateMetadata = useCallback(async () => {
-    try {
-      setLoading(true);
-      
-      // Get argument statistics
-      const { data: argumentsData, error: argError } = await supabase
-        .from('argumente')
-        .select('benutzer_id, argument_typ, erstellt_am')
-        .eq('debatten_id', id);
-
-      if (argError) throw argError;
-
-      const argumentCount = argumentsData?.length || 0;
-      const participantCount = new Set(argumentsData?.map(arg => arg.benutzer_id)).size;
-      const lastActivity = argumentsData?.length > 0 
-        ? Math.max(...argumentsData.map(arg => new Date(arg.erstellt_am).getTime()))
-        : new Date(createdAt).getTime();
-      
-      const proCount = argumentsData?.filter(arg => arg.argument_typ === 'Pro').length || 0;
-      const contraCount = argumentsData?.filter(arg => arg.argument_typ === 'Contra').length || 0;
-      
-      // Consider active if there was activity in the last 7 days
-      const isActive = Date.now() - lastActivity < 7 * 24 * 60 * 60 * 1000;
-
-      setMetadata({
-        argumentCount,
-        participantCount,
-        lastActivity: new Date(lastActivity).toISOString(),
-        proCount,
-        contraCount,
-        isActive
-      });
-    } catch (error) {
-      console.error('Error fetching debate metadata:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [createdAt, id]);
-
   useEffect(() => {
-    fetchDebateMetadata();
-  }, [fetchDebateMetadata]);
+    let cancelled = false;
+    (async () => {
+      try {
+        const loadedMetadata = await loadDebateMetadata(id, createdAt);
+        if (!cancelled) setMetadata(loadedMetadata);
+      } catch (error) {
+        console.error('Error fetching debate metadata:', error);
+      } finally {
+        // Auch nach einem Fehler ist der Ladevorgang beendet — sonst bliebe der
+        // Platzhalter dauerhaft stehen.
+        if (!cancelled) setLoaded(true);
+      }
+    })();
+    // Unmount waehrend eines laufenden Abrufs darf keinen State mehr schreiben.
+    return () => {
+      cancelled = true;
+    };
+  }, [createdAt, id]);
 
   const formatRelativeTime = (dateString: string) => {
     const date = new Date(dateString);

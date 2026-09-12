@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface CacheEntry<T> {
@@ -14,6 +14,32 @@ interface CacheConfig {
   enableLocalStorage?: boolean;
 }
 
+// Liest einen noch gueltigen Eintrag aus dem localStorage. Abgelaufene Eintraege
+// werden dabei gleich entfernt. Reine Funktion gegenueber React: sie fasst keinen
+// State an und ist damit als Lazy-Initializer von useState verwendbar.
+const readCachedEntry = <T,>(
+  key: string,
+  enableLocalStorage: boolean
+): Map<string, CacheEntry<T>> => {
+  const empty = new Map<string, CacheEntry<T>>();
+  if (!enableLocalStorage) return empty;
+
+  try {
+    const stored = localStorage.getItem(`cache_${key}`);
+    if (!stored) return empty;
+
+    const entry: CacheEntry<T> = JSON.parse(stored);
+    if (Date.now() - entry.timestamp < entry.ttl) {
+      empty.set(key, entry);
+      return empty;
+    }
+    localStorage.removeItem(`cache_${key}`);
+  } catch (e) {
+    console.warn('Failed to load cache from localStorage:', e);
+  }
+  return empty;
+};
+
 export const useAdvancedCache = <T,>(
   key: string, 
   fetcher: () => Promise<T>,
@@ -25,27 +51,24 @@ export const useAdvancedCache = <T,>(
     enableLocalStorage = true 
   } = config;
 
-  const [cache, setCache] = useState<Map<string, CacheEntry<T>>>(new Map());
+  // Der localStorage-Eintrag wird beim ersten Render gelesen, nicht per Effect
+  // nachgereicht. Das spart den Render mit leerem Cache — der Verbraucher sah
+  // sonst erst "keine Daten" und einen Frame spaeter den Treffer — und vermeidet
+  // ein synchrones setState im Effect (react-hooks/set-state-in-effect).
+  const [cache, setCache] = useState<Map<string, CacheEntry<T>>>(() =>
+    readCachedEntry<T>(key, enableLocalStorage)
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  // Load from localStorage on mount
+  // Ein Wechsel von key oder enableLocalStorage betrifft einen anderen Eintrag,
+  // deshalb wird hier nachgeladen. setCache laeuft erst im Callback von
+  // requestAnimationFrame, also ausserhalb des synchronen Effect-Rumpfs.
+  const hydratedFor = useRef(key);
   useEffect(() => {
-    if (enableLocalStorage) {
-      try {
-        const stored = localStorage.getItem(`cache_${key}`);
-        if (stored) {
-          const entry: CacheEntry<T> = JSON.parse(stored);
-          if (Date.now() - entry.timestamp < entry.ttl) {
-            setCache(prev => new Map(prev.set(key, entry)));
-          } else {
-            localStorage.removeItem(`cache_${key}`);
-          }
-        }
-      } catch (e) {
-        console.warn('Failed to load cache from localStorage:', e);
-      }
-    }
+    if (hydratedFor.current === key) return;
+    hydratedFor.current = key;
+    setCache(readCachedEntry<T>(key, enableLocalStorage));
   }, [key, enableLocalStorage]);
 
   const invalidateCache = useCallback((cacheKey?: string) => {
@@ -117,7 +140,15 @@ export const useAdvancedCache = <T,>(
   }, [cache, key, fetcher, ttl, maxSize, enableLocalStorage]);
 
   const cachedData = cache.get(key)?.data;
-  const isStale = cache.get(key) ? Date.now() - cache.get(key)!.timestamp > ttl : true;
+
+  // Frueher wurde das waehrend des Renderns aus Date.now() berechnet. Das ist
+  // unrein (react-hooks/purity): derselbe Render liefert je nach Zeitpunkt ein
+  // anderes Ergebnis, was mit Memoisierung und konkurrierendem Rendern bricht.
+  // Als Funktion fragt der Aufrufer den Zeitpunkt ab, an dem es ihn interessiert.
+  const isStale = useCallback(() => {
+    const entry = cache.get(key);
+    return entry ? Date.now() - entry.timestamp > ttl : true;
+  }, [cache, key, ttl]);
 
   return {
     data: cachedData,
