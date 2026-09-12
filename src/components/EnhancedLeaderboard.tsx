@@ -18,25 +18,33 @@ export const EnhancedLeaderboard = () => {
     username: string;
     reputation_score: number;
   }>>([]);
-  const [loading, setLoading] = useState(true);
+  // Ein eigenes loading-Flag muesste im Effect synchron gesetzt werden und
+  // loeste dort eine Renderkaskade aus (react-hooks/set-state-in-effect).
+  // Stattdessen wird abgeleitet, ob der erste Abruf schon zurueck ist.
+  const [loaded, setLoaded] = useState(false);
+  const loading = !loaded;
   const isGerman = language === 'de';
   const text = (de: string, en: string) => (isGerman ? de : en);
 
-  const fetchLeaderboard = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await getLeaderboard();
-      setLeaders(data || []);
-    } catch (error) {
-      console.error('Error fetching leaderboard:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [getLeaderboard]);
-
   useEffect(() => {
-    fetchLeaderboard();
-  }, [fetchLeaderboard]);
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await getLeaderboard();
+        if (!cancelled) setLeaders(data || []);
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+      } finally {
+        // Auch nach einem Fehler ist der Ladevorgang beendet — sonst bliebe der
+        // Spinner dauerhaft stehen.
+        if (!cancelled) setLoaded(true);
+      }
+    })();
+    // Unmount waehrend eines laufenden Abrufs darf keinen State mehr schreiben.
+    return () => {
+      cancelled = true;
+    };
+  }, [getLeaderboard]);
 
   const getRankDisplay = (rank: number) => {
     switch (rank) {

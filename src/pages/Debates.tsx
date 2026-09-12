@@ -17,32 +17,61 @@ interface Debate {
   erstellt_am: string;
 }
 
+// Laedt die Debatten, ohne React-State anzufassen. Dadurch kann der Effect das
+// Ergebnis erst NACH dem await in den State schreiben — ein synchrones setState
+// im Effect-Rumpf loest sonst eine Renderkaskade aus
+// (react-hooks/set-state-in-effect).
+const loadDebates = async (): Promise<Debate[]> => {
+  const { data, error } = await supabase
+    .from('debatten')
+    .select('*')
+    .order('erstellt_am', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+};
+
 const Debates = () => {
   const [debates, setDebates] = useState<Debate[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Ein eigenes loading-Flag muesste im Effect synchron gesetzt werden.
+  // Stattdessen wird abgeleitet, ob der erste Abruf schon zurueck ist.
+  const [loaded, setLoaded] = useState(false);
+  const loading = !loaded;
   const [showCreateForm, setShowCreateForm] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
   const { t, language } = useTranslation();
 
+  // Manuelles Neuladen aus dem Event-Handler nach dem Anlegen einer Debatte.
+  // setState ist hier unbedenklich, weil der Aufruf nicht aus einem Effect kommt.
   const fetchDebates = async () => {
     try {
-      const { data, error } = await supabase
-        .from('debatten')
-        .select('*')
-        .order('erstellt_am', { ascending: false });
-
-      if (error) throw error;
-      setDebates(data || []);
+      setDebates(await loadDebates());
     } catch (error) {
       console.error('Error fetching debates:', error);
     } finally {
-      setLoading(false);
+      setLoaded(true);
     }
   };
 
   useEffect(() => {
-    fetchDebates();
+    let cancelled = false;
+    (async () => {
+      try {
+        const loadedDebates = await loadDebates();
+        if (!cancelled) setDebates(loadedDebates);
+      } catch (error) {
+        console.error('Error fetching debates:', error);
+      } finally {
+        // Auch nach einem Fehler ist der Ladevorgang beendet — sonst bliebe der
+        // Spinner dauerhaft stehen.
+        if (!cancelled) setLoaded(true);
+      }
+    })();
+    // Unmount waehrend eines laufenden Abrufs darf keinen State mehr schreiben.
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const handleDebateCreated = () => {
