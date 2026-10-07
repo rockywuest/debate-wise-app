@@ -101,12 +101,7 @@ const Carousel = React.forwardRef<
         return
       }
 
-      // Schedule setApi to avoid setting state synchronously in effect
-      const timeoutId = setTimeout(() => {
-        setApi(api)
-      }, 0)
-
-      return () => clearTimeout(timeoutId)
+      setApi(api)
     }, [api, setApi])
 
     React.useEffect(() => {
@@ -114,16 +109,12 @@ const Carousel = React.forwardRef<
         return
       }
 
-      // Schedule onSelect to avoid setting state synchronously in effect
-      const timeoutId = setTimeout(() => {
-        onSelect(api)
-      }, 0)
-
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- initial sync with the external Embla API (vendored shadcn component); deferring it would briefly show wrong prev/next state
+      onSelect(api)
       api.on("reInit", onSelect)
       api.on("select", onSelect)
 
       return () => {
-        clearTimeout(timeoutId)
         api?.off("select", onSelect)
       }
     }, [api, onSelect])
