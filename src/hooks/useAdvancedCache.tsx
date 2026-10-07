@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface CacheEntry<T> {
@@ -25,22 +25,15 @@ export const useAdvancedCache = <T,>(
     enableLocalStorage = true 
   } = config;
 
-  const [cache, setCache] = useState<Map<string, CacheEntry<T>>>(new Map());
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  // Load from localStorage on mount
-  useEffect(() => {
+  const [cache, setCache] = useState<Map<string, CacheEntry<T>>>(() => {
+    // Initialize cache from localStorage on mount
     if (enableLocalStorage) {
       try {
         const stored = localStorage.getItem(`cache_${key}`);
         if (stored) {
           const entry: CacheEntry<T> = JSON.parse(stored);
           if (Date.now() - entry.timestamp < entry.ttl) {
-            // Schedule the state update to avoid setting state synchronously in effect
-            setTimeout(() => {
-              setCache(prev => new Map(prev.set(key, entry)));
-            }, 0);
+            return new Map().set(key, entry);
           } else {
             localStorage.removeItem(`cache_${key}`);
           }
@@ -49,7 +42,10 @@ export const useAdvancedCache = <T,>(
         console.warn('Failed to load cache from localStorage:', e);
       }
     }
-  }, [key, enableLocalStorage]);
+    return new Map();
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
   const invalidateCache = useCallback((cacheKey?: string) => {
     const keyToInvalidate = cacheKey || key;

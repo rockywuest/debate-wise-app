@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -16,43 +16,46 @@ export const useProfile = (userId?: string) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const mountedRef = useRef(true);
+
+  const fetchProfile = useCallback(async (targetUserId: string) => {
+    try {
+      if (mountedRef.current) setLoading(true);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', targetUserId)
+        .single();
+
+      if (error) throw error;
+      if (mountedRef.current) setProfile(data);
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      if (mountedRef.current) setProfile(null);
+    } finally {
+      if (mountedRef.current) setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    let mounted = true;
+    let localMounted = true;
 
-    const fetchProfile = async (targetUserId: string) => {
-      try {
-        if (mounted) setLoading(true);
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', targetUserId)
-          .single();
-
-        if (error) throw error;
-        if (mounted) setProfile(data);
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-        if (mounted) setProfile(null);
-      } finally {
-        if (mounted) setLoading(false);
+    const load = async () => {
+      const targetUserId = userId || user?.id;
+      if (targetUserId && localMounted) {
+        await fetchProfile(targetUserId);
+      } else if (!targetUserId && localMounted) {
+        setLoading(false);
       }
     };
 
-    const targetUserId = userId || user?.id;
-    if (targetUserId) {
-      fetchProfile(targetUserId);
-    } else {
-      // Schedule the state update to avoid setting state synchronously in effect
-      setTimeout(() => {
-        if (mounted) setLoading(false);
-      }, 0);
-    }
+    load();
 
     return () => {
-      mounted = false;
+      localMounted = false;
+      mountedRef.current = false;
     };
-  }, [userId, user?.id]);
+  }, [userId, user?.id, fetchProfile]);
 
   useEffect(() => {
     const targetUserId = userId || user?.id;
