@@ -99,7 +99,19 @@ export const useDebates = () => {
   };
 
   useEffect(() => {
-    fetchDebates();
+    let mounted = true;
+
+    const loadDebates = async () => {
+      if (mounted) {
+        await fetchDebates();
+      }
+    };
+
+    loadDebates();
+
+    return () => {
+      mounted = false;
+    };
   }, [fetchDebates]);
 
   return {

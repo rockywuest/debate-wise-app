@@ -14,6 +14,27 @@ interface CacheConfig {
   enableLocalStorage?: boolean;
 }
 
+const readStoredEntry = <T,>(
+  key: string,
+  enableLocalStorage: boolean
+): Map<string, CacheEntry<T>> => {
+  if (enableLocalStorage) {
+    try {
+      const stored = localStorage.getItem(`cache_${key}`);
+      if (stored) {
+        const entry: CacheEntry<T> = JSON.parse(stored);
+        if (Date.now() - entry.timestamp < entry.ttl) {
+          return new Map([[key, entry]]);
+        }
+        localStorage.removeItem(`cache_${key}`);
+      }
+    } catch (e) {
+      console.warn('Failed to load cache from localStorage:', e);
+    }
+  }
+  return new Map();
+};
+
 export const useAdvancedCache = <T,>(
   key: string, 
   fetcher: () => Promise<T>,
@@ -25,28 +46,21 @@ export const useAdvancedCache = <T,>(
     enableLocalStorage = true 
   } = config;
 
-  const [cache, setCache] = useState<Map<string, CacheEntry<T>>>(new Map());
+  const [cache, setCache] = useState<Map<string, CacheEntry<T>>>(() =>
+    readStoredEntry<T>(key, enableLocalStorage)
+  );
+
+  // Bei einem key-Wechsel ohne Remount (z.B. /debates/1 → /debates/2) den
+  // localStorage-Eintrag des neuen keys nachladen — als State-Anpassung während
+  // des Renders statt per Effect (React-Muster für "State aus Props ableiten").
+  const [loadedKey, setLoadedKey] = useState(key);
+  if (loadedKey !== key) {
+    setLoadedKey(key);
+    const stored = readStoredEntry<T>(key, enableLocalStorage).get(key);
+    if (stored) setCache(prev => new Map(prev).set(key, stored));
+  }
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    if (enableLocalStorage) {
-      try {
-        const stored = localStorage.getItem(`cache_${key}`);
-        if (stored) {
-          const entry: CacheEntry<T> = JSON.parse(stored);
-          if (Date.now() - entry.timestamp < entry.ttl) {
-            setCache(prev => new Map(prev.set(key, entry)));
-          } else {
-            localStorage.removeItem(`cache_${key}`);
-          }
-        }
-      } catch (e) {
-        console.warn('Failed to load cache from localStorage:', e);
-      }
-    }
-  }, [key, enableLocalStorage]);
 
   const invalidateCache = useCallback((cacheKey?: string) => {
     const keyToInvalidate = cacheKey || key;
@@ -117,7 +131,12 @@ export const useAdvancedCache = <T,>(
   }, [cache, key, fetcher, ttl, maxSize, enableLocalStorage]);
 
   const cachedData = cache.get(key)?.data;
-  const isStale = cache.get(key) ? Date.now() - cache.get(key)!.timestamp > ttl : true;
+
+  // Provide a function to check if cache is stale (avoids calling Date.now() during render)
+  const getIsStale = useCallback(() => {
+    const entry = cache.get(key);
+    return entry ? Date.now() - entry.timestamp > ttl : true;
+  }, [cache, key, ttl]);
 
   return {
     data: cachedData,
@@ -125,7 +144,7 @@ export const useAdvancedCache = <T,>(
     error,
     getData,
     invalidateCache,
-    isStale,
+    getIsStale,
     refresh: () => getData(true)
   };
 };

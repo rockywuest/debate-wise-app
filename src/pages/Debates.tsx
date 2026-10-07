@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,7 +25,7 @@ const Debates = () => {
   const navigate = useNavigate();
   const { t, language } = useTranslation();
 
-  const fetchDebates = async () => {
+  const fetchDebates = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('debatten')
@@ -39,15 +39,27 @@ const Debates = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchDebates();
   }, []);
 
+  useEffect(() => {
+    let mounted = true;
+
+    const loadDebates = async () => {
+      if (mounted) {
+        await fetchDebates();
+      }
+    };
+
+    loadDebates();
+
+    return () => {
+      mounted = false;
+    };
+  }, [fetchDebates]);
+
   const handleDebateCreated = () => {
-    fetchDebates();
     setShowCreateForm(false);
+    fetchDebates();
   };
 
   if (loading) {

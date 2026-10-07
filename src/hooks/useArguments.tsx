@@ -123,7 +123,19 @@ export const useArguments = (debateId?: string) => {
   };
 
   useEffect(() => {
-    fetchArguments();
+    let mounted = true;
+
+    const loadArguments = async () => {
+      if (mounted) {
+        await fetchArguments();
+      }
+    };
+
+    loadArguments();
+
+    return () => {
+      mounted = false;
+    };
   }, [fetchArguments]);
 
   useEffect(() => {

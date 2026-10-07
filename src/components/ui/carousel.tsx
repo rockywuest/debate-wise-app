@@ -109,6 +109,7 @@ const Carousel = React.forwardRef<
         return
       }
 
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- initial sync with the external Embla API (vendored shadcn component); deferring it would briefly show wrong prev/next state
       onSelect(api)
       api.on("reInit", onSelect)
       api.on("select", onSelect)
