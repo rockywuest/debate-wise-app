@@ -94,7 +94,19 @@ export const useTrendingDebates = (activeTab: 'trending' | 'active' | 'recent') 
   }, [activeTab]);
 
   useEffect(() => {
-    fetchTrendingDebates();
+    let mounted = true;
+
+    const loadTrendingDebates = async () => {
+      if (mounted) {
+        await fetchTrendingDebates();
+      }
+    };
+
+    loadTrendingDebates();
+
+    return () => {
+      mounted = false;
+    };
   }, [fetchTrendingDebates]);
 
   return { trendingDebates, loading };

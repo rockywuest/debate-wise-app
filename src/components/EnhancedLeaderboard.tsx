@@ -35,7 +35,19 @@ export const EnhancedLeaderboard = () => {
   }, [getLeaderboard]);
 
   useEffect(() => {
-    fetchLeaderboard();
+    let mounted = true;
+
+    const loadLeaderboard = async () => {
+      if (mounted) {
+        await fetchLeaderboard();
+      }
+    };
+
+    loadLeaderboard();
+
+    return () => {
+      mounted = false;
+    };
   }, [fetchLeaderboard]);
 
   const getRankDisplay = (rank: number) => {

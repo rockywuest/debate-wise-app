@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface CacheEntry<T> {
@@ -37,7 +37,10 @@ export const useAdvancedCache = <T,>(
         if (stored) {
           const entry: CacheEntry<T> = JSON.parse(stored);
           if (Date.now() - entry.timestamp < entry.ttl) {
-            setCache(prev => new Map(prev.set(key, entry)));
+            // Schedule the state update to avoid setting state synchronously in effect
+            setTimeout(() => {
+              setCache(prev => new Map(prev.set(key, entry)));
+            }, 0);
           } else {
             localStorage.removeItem(`cache_${key}`);
           }
@@ -117,7 +120,12 @@ export const useAdvancedCache = <T,>(
   }, [cache, key, fetcher, ttl, maxSize, enableLocalStorage]);
 
   const cachedData = cache.get(key)?.data;
-  const isStale = cache.get(key) ? Date.now() - cache.get(key)!.timestamp > ttl : true;
+
+  // Provide a function to check if cache is stale (avoids calling Date.now() during render)
+  const getIsStale = useCallback(() => {
+    const entry = cache.get(key);
+    return entry ? Date.now() - entry.timestamp > ttl : true;
+  }, [cache, key, ttl]);
 
   return {
     data: cachedData,
@@ -125,7 +133,7 @@ export const useAdvancedCache = <T,>(
     error,
     getData,
     invalidateCache,
-    isStale,
+    getIsStale,
     refresh: () => getData(true)
   };
 };

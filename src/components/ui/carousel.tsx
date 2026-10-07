@@ -101,7 +101,12 @@ const Carousel = React.forwardRef<
         return
       }
 
-      setApi(api)
+      // Schedule setApi to avoid setting state synchronously in effect
+      const timeoutId = setTimeout(() => {
+        setApi(api)
+      }, 0)
+
+      return () => clearTimeout(timeoutId)
     }, [api, setApi])
 
     React.useEffect(() => {
@@ -109,11 +114,16 @@ const Carousel = React.forwardRef<
         return
       }
 
-      onSelect(api)
+      // Schedule onSelect to avoid setting state synchronously in effect
+      const timeoutId = setTimeout(() => {
+        onSelect(api)
+      }, 0)
+
       api.on("reInit", onSelect)
       api.on("select", onSelect)
 
       return () => {
+        clearTimeout(timeoutId)
         api?.off("select", onSelect)
       }
     }, [api, onSelect])

@@ -78,7 +78,7 @@ export const DebateCard = ({
   const fetchDebateMetadata = useCallback(async () => {
     try {
       setLoading(true);
-      
+
       // Get argument statistics
       const { data: argumentsData, error: argError } = await supabase
         .from('argumente')
@@ -89,13 +89,13 @@ export const DebateCard = ({
 
       const argumentCount = argumentsData?.length || 0;
       const participantCount = new Set(argumentsData?.map(arg => arg.benutzer_id)).size;
-      const lastActivity = argumentsData?.length > 0 
+      const lastActivity = argumentsData?.length > 0
         ? Math.max(...argumentsData.map(arg => new Date(arg.erstellt_am).getTime()))
         : new Date(createdAt).getTime();
-      
+
       const proCount = argumentsData?.filter(arg => arg.argument_typ === 'Pro').length || 0;
       const contraCount = argumentsData?.filter(arg => arg.argument_typ === 'Contra').length || 0;
-      
+
       // Consider active if there was activity in the last 7 days
       const isActive = Date.now() - lastActivity < 7 * 24 * 60 * 60 * 1000;
 
@@ -115,7 +115,19 @@ export const DebateCard = ({
   }, [createdAt, id]);
 
   useEffect(() => {
-    fetchDebateMetadata();
+    let mounted = true;
+
+    const loadMetadata = async () => {
+      if (mounted) {
+        await fetchDebateMetadata();
+      }
+    };
+
+    loadMetadata();
+
+    return () => {
+      mounted = false;
+    };
   }, [fetchDebateMetadata]);
 
   const formatRelativeTime = (dateString: string) => {

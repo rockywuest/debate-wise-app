@@ -17,32 +17,41 @@ export const useProfile = (userId?: string) => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
-  const fetchProfile = async (targetUserId: string) => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', targetUserId)
-        .single();
-
-      if (error) throw error;
-      setProfile(data);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      setProfile(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    let mounted = true;
+
+    const fetchProfile = async (targetUserId: string) => {
+      try {
+        if (mounted) setLoading(true);
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', targetUserId)
+          .single();
+
+        if (error) throw error;
+        if (mounted) setProfile(data);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        if (mounted) setProfile(null);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+
     const targetUserId = userId || user?.id;
     if (targetUserId) {
       fetchProfile(targetUserId);
     } else {
-      setLoading(false);
+      // Schedule the state update to avoid setting state synchronously in effect
+      setTimeout(() => {
+        if (mounted) setLoading(false);
+      }, 0);
     }
+
+    return () => {
+      mounted = false;
+    };
   }, [userId, user?.id]);
 
   useEffect(() => {
