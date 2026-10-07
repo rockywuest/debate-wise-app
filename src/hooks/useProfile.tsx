@@ -37,6 +37,16 @@ export const useProfile = (userId?: string) => {
     }
   }, []);
 
+  // Eigener Effect nur für den Mount-Status: Der Ref darf nicht im Cleanup des
+  // Lade-Effects zurückgesetzt werden, sonst bleibt er nach einem userId-Wechsel
+  // (oder dem StrictMode-Doppel-Mount) dauerhaft false und kein Update kommt an.
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
   useEffect(() => {
     let localMounted = true;
 
@@ -53,7 +63,6 @@ export const useProfile = (userId?: string) => {
 
     return () => {
       localMounted = false;
-      mountedRef.current = false;
     };
   }, [userId, user?.id, fetchProfile]);
 

@@ -14,6 +14,27 @@ interface CacheConfig {
   enableLocalStorage?: boolean;
 }
 
+const readStoredEntry = <T,>(
+  key: string,
+  enableLocalStorage: boolean
+): Map<string, CacheEntry<T>> => {
+  if (enableLocalStorage) {
+    try {
+      const stored = localStorage.getItem(`cache_${key}`);
+      if (stored) {
+        const entry: CacheEntry<T> = JSON.parse(stored);
+        if (Date.now() - entry.timestamp < entry.ttl) {
+          return new Map([[key, entry]]);
+        }
+        localStorage.removeItem(`cache_${key}`);
+      }
+    } catch (e) {
+      console.warn('Failed to load cache from localStorage:', e);
+    }
+  }
+  return new Map();
+};
+
 export const useAdvancedCache = <T,>(
   key: string, 
   fetcher: () => Promise<T>,
@@ -25,25 +46,19 @@ export const useAdvancedCache = <T,>(
     enableLocalStorage = true 
   } = config;
 
-  const [cache, setCache] = useState<Map<string, CacheEntry<T>>>(() => {
-    // Initialize cache from localStorage on mount
-    if (enableLocalStorage) {
-      try {
-        const stored = localStorage.getItem(`cache_${key}`);
-        if (stored) {
-          const entry: CacheEntry<T> = JSON.parse(stored);
-          if (Date.now() - entry.timestamp < entry.ttl) {
-            return new Map().set(key, entry);
-          } else {
-            localStorage.removeItem(`cache_${key}`);
-          }
-        }
-      } catch (e) {
-        console.warn('Failed to load cache from localStorage:', e);
-      }
-    }
-    return new Map();
-  });
+  const [cache, setCache] = useState<Map<string, CacheEntry<T>>>(() =>
+    readStoredEntry<T>(key, enableLocalStorage)
+  );
+
+  // Bei einem key-Wechsel ohne Remount (z.B. /debates/1 → /debates/2) den
+  // localStorage-Eintrag des neuen keys nachladen — als State-Anpassung während
+  // des Renders statt per Effect (React-Muster für "State aus Props ableiten").
+  const [loadedKey, setLoadedKey] = useState(key);
+  if (loadedKey !== key) {
+    setLoadedKey(key);
+    const stored = readStoredEntry<T>(key, enableLocalStorage).get(key);
+    if (stored) setCache(prev => new Map(prev).set(key, stored));
+  }
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
