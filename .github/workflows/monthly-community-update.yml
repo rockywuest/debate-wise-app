@@ -53,6 +53,11 @@ jobs:
               }
             }
 
+            // join("\n") erzeugt echte Zeilenumbrueche. Vorher stand hier
+            // join("\\n") — YAML verarbeitet in einem |-Block-Skalar keine Escapes,
+            // JavaScript bekommt den Inhalt also woertlich, und "\\n" ist Backslash
+            // plus n. Die Issues #122 und #140 sind deshalb als eine einzige
+            // unleserliche Zeile mit sichtbaren \n entstanden.
             const body = [
               "## What shipped in the last month",
               "- ",
@@ -73,7 +78,7 @@ jobs:
               "- Share feedback on onboarding friction points",
               "",
               "_This issue is created automatically each month to keep roadmap and release communication consistent._"
-            ].join("\\n");
+            ].join("\n");
 
             await github.rest.issues.create({
               owner,
