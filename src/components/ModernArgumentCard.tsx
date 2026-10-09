@@ -83,14 +83,14 @@ export const ModernArgumentCard = ({
         <CardContent className="p-6">
           {/* Header */}
           <div className="flex items-start gap-4 mb-4">
-            <div className={`p-2 rounded-full ${typeConfig.iconBg} flex-shrink-0`}>
+            <div className={`p-2 rounded-full ${typeConfig.iconBg} shrink-0`}>
               {typeConfig.icon}
             </div>
             
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-semibold text-lg leading-tight text-balance">{title}</h3>
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
                   <Badge className={typeConfig.badgeColor}>
                     {typeConfig.badge}
                   </Badge>

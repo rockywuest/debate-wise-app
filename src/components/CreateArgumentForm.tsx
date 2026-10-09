@@ -15,7 +15,7 @@ interface CreateArgumentFormProps {
   debateId: string;
   parentId?: string;
   buttonText?: string;
-  buttonVariant?: "default" | "outline" | "ghost";
+  buttonVariant?: "default" | "outline-solid" | "ghost";
 }
 
 export const CreateArgumentForm = ({ 

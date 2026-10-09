@@ -84,11 +84,11 @@ export const EnhancedLeaderboard = () => {
     }
     switch (rank) {
       case 1:
-        return "bg-gradient-to-r from-yellow-500 to-amber-500 text-white";
+        return "bg-linear-to-r from-yellow-500 to-amber-500 text-white";
       case 2:
-        return "bg-gradient-to-r from-gray-400 to-slate-500 text-white";
+        return "bg-linear-to-r from-gray-400 to-slate-500 text-white";
       case 3:
-        return "bg-gradient-to-r from-amber-500 to-orange-500 text-white";
+        return "bg-linear-to-r from-amber-500 to-orange-500 text-white";
       default:
         return "bg-fw-panel text-white hover:bg-fw-border/50";
     }
@@ -124,7 +124,7 @@ export const EnhancedLeaderboard = () => {
   return (
     <div className="space-y-8">
       <Card className="bg-fw-panel border-fw-border shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+        <CardHeader className="bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
           <CardTitle className="flex items-center gap-3 text-3xl font-bold">
             <Trophy className="h-10 w-10 text-yellow-300" />
             {text('Meritokratie-Rangliste', 'Meritocracy Leaderboard')}

@@ -180,7 +180,7 @@ export const ArgumentQualityAnalysis = ({
                 <span className="text-xs text-muted-foreground">{text('Was this analysis helpful?', 'War diese Analyse hilfreich?')}</span>
                 <div className="flex gap-1">
                   <Button
-                    variant={userFeedback === 'helpful' ? 'default' : 'outline'}
+                    variant={userFeedback === 'helpful' ? 'default' : 'outline-solid'}
                     size="sm"
                     onClick={() => submitFeedback('helpful')}
                     className="h-6 w-6 p-0"
@@ -188,7 +188,7 @@ export const ArgumentQualityAnalysis = ({
                     <ThumbsUp className="h-3 w-3" />
                   </Button>
                   <Button
-                    variant={userFeedback === 'not_helpful' ? 'default' : 'outline'}
+                    variant={userFeedback === 'not_helpful' ? 'default' : 'outline-solid'}
                     size="sm"
                     onClick={() => submitFeedback('not_helpful')}
                     className="h-6 w-6 p-0"
