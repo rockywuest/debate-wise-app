@@ -88,7 +88,7 @@ export const SecureArgumentRatingButtons = ({ argumentId, authorUserId }: Secure
       </div>
 
       <Button
-        variant={hasRatedInsightful ? "default" : "outline"}
+        variant={hasRatedInsightful ? "default" : "outline-solid"}
         size="sm"
         onClick={() => handleRating('insightful')}
         disabled={loading || hasRatedInsightful}
@@ -99,7 +99,7 @@ export const SecureArgumentRatingButtons = ({ argumentId, authorUserId }: Secure
       </Button>
 
       <Button
-        variant={hasConcedePoint ? "default" : "outline"}
+        variant={hasConcedePoint ? "default" : "outline-solid"}
         size="sm"
         onClick={() => handleRating('concede_point')}
         disabled={loading || hasConcedePoint}

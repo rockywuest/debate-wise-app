@@ -1,7 +1,327 @@
+@import 'tailwindcss';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@plugin 'tailwindcss-animate';
+
+@custom-variant dark (&:is(.dark *));
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+  @media (width >= --theme(--breakpoint-sm)) {
+    max-width: none;
+  }
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
+}
+
+/* v3-Kompatibilität (per Pixel-Diff belegt):
+   - Ring: v3 nutzte ohne ring-Farbe Blau-500 mit 50 % Deckkraft, v4 currentColor.
+     Fokus-Ringe (Tastaturbedienung) sähen sonst anders aus.
+   - space-x/y: v4 setzt margin auf :not(:last-child) statt Geschwister-Selektor;
+     mit leeren/versteckten Kindern verschieben sich sonst Abstände. */
+/* v3-Kompatibilität: v3-Preflight ließ Eingabefelder mit Browser-Standard-
+   Hintergrund (Field), v4-Preflight setzt sie transparent. Da bg-background
+   mangels Farb-Token in der Config nicht greift (Altlast), sonst sichtbar. */
+@layer base {
+  input:where(:not([type='button'], [type='reset'], [type='submit'])),
+  textarea,
+  select {
+    background-color: Field;
+  }
+}
+
+@theme {
+  --default-ring-color: rgb(59 130 246 / 0.5);
+}
+
+@utility space-y-* {
+  & > :not([hidden]) ~ :not([hidden]) {
+    margin-top: calc(var(--spacing) * --value(number));
+    margin-bottom: 0;
+  }
+  & > :not(:last-child) {
+    margin-bottom: 0;
+  }
+}
+
+@utility space-x-* {
+  & > :not([hidden]) ~ :not([hidden]) {
+    margin-left: calc(var(--spacing) * --value(number));
+    margin-right: 0;
+  }
+  & > :not(:last-child) {
+    margin-right: 0;
+  }
+}
+
+@theme {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial,
+    sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, Segoe UI, serif;
+
+  --color-fw-bg: #1a1a1a;
+  --color-fw-panel: #2a2a2a;
+  --color-fw-accent: #e91e63;
+  --color-fw-accent2: #ff9800;
+  --color-fw-accent3: #2196f3;
+  --color-fw-accent4: #4caf50;
+  --color-fw-petrol: #00acc1;
+  --color-fw-text: #ffffff;
+  --color-fw-subtext: #b0b0b0;
+  --color-fw-border: #404040;
+
+  --color-accent: #e91e63;
+  --color-accent-alt: #ff9800;
+
+  --radius-lg: 12px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
+
+  --shadow-card: 0 4px 24px 0 rgba(0, 0, 0, 0.3);
+  --shadow-button: 0 2px 8px 0 rgba(233, 30, 99, 0.3);
+
+  --animate-pulse-brand: pulse-brand 2s infinite;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility argument-card {
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: calc(var(--radius) + 2px);
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px -1px rgb(0 0 0 / 0.1);
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow:
+      0 4px 6px -1px rgb(0 0 0 / 0.1),
+      0 2px 4px -2px rgb(0 0 0 / 0.1);
+    transform: translateY(-1px);
+  }
+}
+
+@utility argument-content {
+  color: hsl(var(--foreground));
+  line-height: 1.7;
+}
+
+@utility thread-line {
+  border-left: 2px solid hsl(var(--border));
+}
+
+@utility debate-header {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--background)) 0%,
+    hsl(var(--muted)) 100%
+  );
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+}
+
+@utility section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+@utility section-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-weight: 500;
+
+  .pro-section & {
+    background-color: rgb(220 252 231);
+    color: rgb(5 150 105);
+  }
+
+  .contra-section & {
+    background-color: rgb(254 226 226);
+    color: rgb(220 38 38);
+  }
+
+  .neutral-section & {
+    background-color: rgb(219 234 254);
+    color: rgb(37 99 235);
+  }
+
+  .dark .pro-section & {
+    background-color: rgb(6 78 59);
+    color: rgb(52 211 153);
+  }
+
+  .dark .contra-section & {
+    background-color: rgb(127 29 29);
+    color: rgb(248 113 113);
+  }
+
+  .dark .neutral-section & {
+    background-color: rgb(30 58 138);
+    color: rgb(96 165 250);
+  }
+}
+
+@utility pro-section {
+  & .section-icon {
+    background-color: rgb(220 252 231);
+    color: rgb(5 150 105);
+  }
+
+  .dark & .section-icon {
+    background-color: rgb(6 78 59);
+    color: rgb(52 211 153);
+  }
+}
+
+@utility contra-section {
+  & .section-icon {
+    background-color: rgb(254 226 226);
+    color: rgb(220 38 38);
+  }
+
+  .dark & .section-icon {
+    background-color: rgb(127 29 29);
+    color: rgb(248 113 113);
+  }
+}
+
+@utility neutral-section {
+  & .section-icon {
+    background-color: rgb(219 234 254);
+    color: rgb(37 99 235);
+  }
+
+  .dark & .section-icon {
+    background-color: rgb(30 58 138);
+    color: rgb(96 165 250);
+  }
+}
+
+@utility dark {
+  & .pro-section .section-icon {
+    background-color: rgb(6 78 59);
+    color: rgb(52 211 153);
+  }
+
+  & .contra-section .section-icon {
+    background-color: rgb(127 29 29);
+    color: rgb(248 113 113);
+  }
+
+  & .neutral-section .section-icon {
+    background-color: rgb(30 58 138);
+    color: rgb(96 165 250);
+  }
+}
+
+@utility modern-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+}
+
+@utility modern-button-primary {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  padding: 0.5rem 1rem;
+  height: 2.25rem;
+
+  &:hover {
+    background-color: hsl(var(--primary) / 0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px hsl(var(--primary) / 0.4);
+  }
+}
+
+@utility modern-button-secondary {
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+  padding: 0.5rem 1rem;
+  height: 2.25rem;
+
+  &:hover {
+    background-color: hsl(var(--secondary) / 0.8);
+  }
+}
+
+@utility modern-button-ghost {
+  color: hsl(var(--foreground));
+  padding: 0.25rem 0.5rem;
+  height: 2rem;
+
+  &:hover {
+    background-color: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@utility glass-effect {
+  backdrop-filter: blur(10px);
+  background-color: hsl(var(--background) / 0.8);
+}
+
+@utility subtle-shadow {
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+@utility elevated-shadow {
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
 
 /* Modern design system with professional color palette */
 @layer base {
@@ -75,163 +395,4 @@
   h2 { font-size: 1.875rem; line-height: 2.25rem; }
   h3 { font-size: 1.5rem; line-height: 2rem; }
   h4 { font-size: 1.25rem; line-height: 1.75rem; }
-}
-
-@layer components {
-  .argument-card {
-    background-color: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
-    border-radius: calc(var(--radius) + 2px);
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .argument-card:hover {
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    transform: translateY(-1px);
-  }
-  
-  .argument-content {
-    color: hsl(var(--foreground));
-    line-height: 1.7;
-  }
-  
-  .thread-line {
-    border-left: 2px solid hsl(var(--border));
-  }
-  
-  .debate-header {
-    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%);
-    border: 1px solid hsl(var(--border));
-    border-radius: var(--radius);
-  }
-  
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid hsl(var(--border));
-  }
-  
-  .section-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    font-weight: 500;
-  }
-  
-  .pro-section .section-icon {
-    background-color: rgb(220 252 231);
-    color: rgb(5 150 105);
-  }
-  
-  .contra-section .section-icon {
-    background-color: rgb(254 226 226);
-    color: rgb(220 38 38);
-  }
-  
-  .neutral-section .section-icon {
-    background-color: rgb(219 234 254);
-    color: rgb(37 99 235);
-  }
-  
-  .dark .pro-section .section-icon {
-    background-color: rgb(6 78 59);
-    color: rgb(52 211 153);
-  }
-  
-  .dark .contra-section .section-icon {
-    background-color: rgb(127 29 29);
-    color: rgb(248 113 113);
-  }
-  
-  .dark .neutral-section .section-icon {
-    background-color: rgb(30 58 138);
-    color: rgb(96 165 250);
-  }
-  
-  .modern-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-    border-radius: var(--radius);
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: all 0.2s ease-in-out;
-    cursor: pointer;
-    border: none;
-    outline: none;
-    text-decoration: none;
-  }
-  
-  .modern-button:focus-visible {
-    outline: 2px solid hsl(var(--ring));
-    outline-offset: 2px;
-  }
-  
-  .modern-button:disabled {
-    pointer-events: none;
-    opacity: 0.5;
-  }
-  
-  .modern-button-primary {
-    background-color: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-    padding: 0.5rem 1rem;
-    height: 2.25rem;
-  }
-  
-  .modern-button-primary:hover {
-    background-color: hsl(var(--primary) / 0.9);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px hsl(var(--primary) / 0.4);
-  }
-  
-  .modern-button-secondary {
-    background-color: hsl(var(--secondary));
-    color: hsl(var(--secondary-foreground));
-    padding: 0.5rem 1rem;
-    height: 2.25rem;
-  }
-  
-  .modern-button-secondary:hover {
-    background-color: hsl(var(--secondary) / 0.8);
-  }
-  
-  .modern-button-ghost {
-    color: hsl(var(--foreground));
-    padding: 0.25rem 0.5rem;
-    height: 2rem;
-  }
-  
-  .modern-button-ghost:hover {
-    background-color: hsl(var(--accent));
-    color: hsl(var(--accent-foreground));
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-  
-  .glass-effect {
-    backdrop-filter: blur(10px);
-    background-color: hsl(var(--background) / 0.8);
-  }
-  
-  .subtle-shadow {
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  }
-  
-  .elevated-shadow {
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  }
 }

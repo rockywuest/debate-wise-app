@@ -69,11 +69,11 @@ export const Leaderboard = () => {
     }
     switch (rank) {
       case 1:
-        return "bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-yellow-400 hover:bg-yellow-100";
+        return "bg-linear-to-r from-yellow-50 to-amber-50 border-l-4 border-yellow-400 hover:bg-yellow-100";
       case 2:
-        return "bg-gradient-to-r from-gray-50 to-slate-50 border-l-4 border-gray-400 hover:bg-gray-100";
+        return "bg-linear-to-r from-gray-50 to-slate-50 border-l-4 border-gray-400 hover:bg-gray-100";
       case 3:
-        return "bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 hover:bg-amber-100";
+        return "bg-linear-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 hover:bg-amber-100";
       default:
         return "hover:bg-muted/50";
     }
@@ -109,7 +109,7 @@ export const Leaderboard = () => {
   return (
     <div className="space-y-6">
       <Card className="shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+        <CardHeader className="bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
           <CardTitle className="flex items-center gap-3 text-2xl">
             <Trophy className="h-7 w-7" />
             {text('Meritokratie-Rangliste', 'Meritocracy Leaderboard')}

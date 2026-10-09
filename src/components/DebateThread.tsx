@@ -29,10 +29,10 @@ export const DebateThread = ({ arguments: args, debateId, level = 0 }: DebateThr
     
     // Create progressive visual hierarchy with connection lines
     const levelStyles = {
-      1: "ml-6 pl-4 border-l-2 border-blue-300 bg-gradient-to-r from-blue-50/40 to-transparent rounded-r-lg",
-      2: "ml-6 pl-4 border-l-2 border-purple-300 bg-gradient-to-r from-purple-50/30 to-transparent rounded-r-lg", 
-      3: "ml-6 pl-4 border-l-2 border-green-300 bg-gradient-to-r from-green-50/30 to-transparent rounded-r-lg",
-      4: "ml-6 pl-4 border-l-2 border-amber-300 bg-gradient-to-r from-amber-50/20 to-transparent rounded-r-lg"
+      1: "ml-6 pl-4 border-l-2 border-blue-300 bg-linear-to-r from-blue-50/40 to-transparent rounded-r-lg",
+      2: "ml-6 pl-4 border-l-2 border-purple-300 bg-linear-to-r from-purple-50/30 to-transparent rounded-r-lg", 
+      3: "ml-6 pl-4 border-l-2 border-green-300 bg-linear-to-r from-green-50/30 to-transparent rounded-r-lg",
+      4: "ml-6 pl-4 border-l-2 border-amber-300 bg-linear-to-r from-amber-50/20 to-transparent rounded-r-lg"
     };
     
     const maxLevel = Math.min(level, 4);

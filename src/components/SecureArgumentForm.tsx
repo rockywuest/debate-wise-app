@@ -18,7 +18,7 @@ interface SecureArgumentFormProps {
   debateId: string;
   parentId?: string;
   buttonText?: string;
-  buttonVariant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive";
+  buttonVariant?: "default" | "outline-solid" | "secondary" | "ghost" | "link" | "destructive";
   onSubmit?: () => void;
 }
 

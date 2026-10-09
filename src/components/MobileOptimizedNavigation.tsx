@@ -50,7 +50,7 @@ export const MobileOptimizedNavigation = () => {
   const closeSheet = () => setIsOpen(false);
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-xs">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}

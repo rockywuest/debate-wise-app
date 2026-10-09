@@ -83,7 +83,7 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
   return (
     <div className="flex items-center gap-2">
       <Button
-        variant={hasRatedInsightful ? "default" : "outline"}
+        variant={hasRatedInsightful ? "default" : "outline-solid"}
         size="sm"
         onClick={() => handleRating('insightful')}
         disabled={loading || hasRatedInsightful}
@@ -94,7 +94,7 @@ export const ArgumentRatingButtons = ({ argumentId, authorUserId }: ArgumentRati
       </Button>
 
       <Button
-        variant={hasConcedePoint ? "default" : "outline"}
+        variant={hasConcedePoint ? "default" : "outline-solid"}
         size="sm"
         onClick={() => handleRating('concede_point')}
         disabled={loading || hasConcedePoint}

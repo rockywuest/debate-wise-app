@@ -131,7 +131,7 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
           <div className="flex gap-2 mb-3">
             <Button
               type="button"
-              variant={argumentType === 'Pro' ? 'default' : 'outline'}
+              variant={argumentType === 'Pro' ? 'default' : 'outline-solid'}
               size="sm"
               onClick={() => setArgumentType('Pro')}
               className="flex-1"
@@ -140,7 +140,7 @@ export const IntelligentArgumentForm = ({ debateId, parentId, onSuccess }: Intel
             </Button>
             <Button
               type="button"
-              variant={argumentType === 'Contra' ? 'default' : 'outline'}
+              variant={argumentType === 'Contra' ? 'default' : 'outline-solid'}
               size="sm"
               onClick={() => setArgumentType('Contra')}
               className="flex-1"

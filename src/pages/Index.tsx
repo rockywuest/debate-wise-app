@@ -31,13 +31,13 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-6 bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             {t('index.welcome')}
           </h1>
           
           {user ? (
             <div className="space-y-8">
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200">
+              <div className="bg-linear-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200">
                 <p className="text-xl text-gray-700 mb-4">
                   {t('index.hello')}
                 </p>
@@ -97,7 +97,7 @@ const Index = () => {
             </div>
           ) : (
             <div className="space-y-8">
-              <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-8 border border-gray-200">
+              <div className="bg-linear-to-r from-gray-50 to-blue-50 rounded-xl p-8 border border-gray-200">
                 <p className="text-xl text-gray-700 mb-6">
                   {t('index.structuredDiscussion')}
                 </p>
@@ -137,7 +137,7 @@ const Index = () => {
                   </div>
                 </div>
                 <Link to="/auth">
-                  <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                  <Button size="lg" className="bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                     {t('index.getStarted')}
                   </Button>
                 </Link>
@@ -189,7 +189,7 @@ const Index = () => {
                           )}
                         </div>
                         <Link to={`/debates/${debate.id}`}>
-                          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                          <Button className="bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
                             {t('index.participate')}
                           </Button>
                         </Link>

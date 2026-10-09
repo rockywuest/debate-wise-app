@@ -103,7 +103,7 @@ export const PerformanceMonitor = () => {
   if (!isVisible) return null;
 
   return (
-    <Card className="fixed bottom-4 right-4 w-80 shadow-lg border-2 border-blue-200 bg-blue-50/90 backdrop-blur-sm z-50">
+    <Card className="fixed bottom-4 right-4 w-80 shadow-lg border-2 border-blue-200 bg-blue-50/90 backdrop-blur-xs z-50">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <Activity className="h-4 w-4" />
